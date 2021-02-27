@@ -29,6 +29,8 @@ public class SimpleOdata4Register {
      */
     @RequestMapping("/simple.svc/*")
     private void serv(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException {
+        System.err.println("TRACE:serv:req:URI:" + req.getRequestURI());
+        System.err.println("TRACE:serv:req:query:" + req.getQueryString());
         try {
             OData odata = OData.newInstance();
 

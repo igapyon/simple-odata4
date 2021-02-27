@@ -43,7 +43,7 @@ public class SimpleEntityDataBuilder {
 
         EntityCollection eCollection = new EntityCollection();
 
-        if (!SimpleEdmProvider.ES_PRODUCTS_NAME.equals(edmEntitySet.getName())) {
+        if (!SimpleEdmProvider.ES_MYPRODUCTS_NAME.equals(edmEntitySet.getName())) {
             // 処理対象外の要素セットです. 処理せずに戻します.
             return eCollection;
         }
@@ -86,7 +86,7 @@ public class SimpleEntityDataBuilder {
                         .addProperty( //
                                 new Property(null, SimpleEdmProvider.FIELDS[2], ValueType.PRIMITIVE, //
                                         rset.getString(3)));
-                ent.setId(createId(SimpleEdmProvider.ES_PRODUCTS_NAME, rset.getInt(1)));
+                ent.setId(createId(SimpleEdmProvider.ES_MYPRODUCTS_NAME, rset.getInt(1)));
                 eCollection.getEntities().add(ent);
             }
         } catch (SQLException ex) {
