@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * OData を Spring Boot の Servlet として動作.
  *
- * EdmProvider と EntityCollectionProcessor を登録.
+ * EdmProvider と EntityCollectionProcessor を OData に結びつけてパスに登録.
  */
 @RestController
 public class SimpleOdata4Servlet extends HttpServlet {

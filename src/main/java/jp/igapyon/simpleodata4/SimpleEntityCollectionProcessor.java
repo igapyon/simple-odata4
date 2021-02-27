@@ -44,8 +44,9 @@ public class SimpleEntityCollectionProcessor implements EntityCollectionProcesso
     }
 
     @Override
-    public void readEntityCollection(ODataRequest request, ODataResponse response, UriInfo uriInfo,
-            ContentType responseFormat) throws ODataApplicationException, SerializerException {
+    public void readEntityCollection(ODataRequest request, ODataResponse response, //
+            UriInfo uriInfo, ContentType responseFormat) //
+            throws ODataApplicationException, SerializerException {
 
         // 1st we have retrieve the requested EntitySet from the uriInfo object
         // (representation of the parsed service URI)
@@ -98,14 +99,14 @@ public class SimpleEntityCollectionProcessor implements EntityCollectionProcesso
                     .addProperty(new Property(null, "Name", ValueType.PRIMITIVE, "1UMTS PDA"))
                     .addProperty(new Property(null, "Description", ValueType.PRIMITIVE,
                             "Ultrafast 3G UMTS/HSDPA Pocket PC, supports GSM network"));
-            e2.setId(createId("Products", 1));
+            e2.setId(createId("Products", 2));
             productList.add(e2);
 
             final Entity e3 = new Entity().addProperty(new Property(null, "ID", ValueType.PRIMITIVE, 3))
                     .addProperty(new Property(null, "Name", ValueType.PRIMITIVE, "Ergo Screen"))
                     .addProperty(new Property(null, "Description", ValueType.PRIMITIVE,
                             "19 Optimum Resolution 1024 x 768 @ 85Hz, resolution 1280 x 960"));
-            e3.setId(createId("Products", 1));
+            e3.setId(createId("Products", 3));
             productList.add(e3);
         }
 
