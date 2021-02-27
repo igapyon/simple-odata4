@@ -22,9 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
  * EdmProvider と EntityCollectionProcessor を OData に結びつけてパスに登録.
  */
 @RestController
-public class SimpleOdata4Servlet extends HttpServlet {
-    private static final long serialVersionUID = 1L;
-
+public class SimpleOdata4Servlet {
     /**
      * サーブレットのエントリポイント.
      * 
@@ -33,9 +31,8 @@ public class SimpleOdata4Servlet extends HttpServlet {
      * @throws ServletException サーブレット例外.
      * @throws IOException IO例外.
      */
-    @Override
     @RequestMapping("/simple.svc/*")
-    protected void service(final HttpServletRequest req, final HttpServletResponse resp)
+    private void service(final HttpServletRequest req, final HttpServletResponse resp)
             throws ServletException, IOException {
         try {
             OData odata = OData.newInstance();
