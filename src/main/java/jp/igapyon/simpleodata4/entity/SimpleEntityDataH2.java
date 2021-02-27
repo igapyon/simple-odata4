@@ -24,8 +24,9 @@ public class SimpleEntityDataH2 {
             e.printStackTrace();
             throw new IllegalArgumentException(e);
         }
-        final var jdbcConnStr = "jdbc:h2:mem:product;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=FALSE;CASE_INSENSITIVE_IDENTIFIERS=TRUE";
-        System.err.println("[connect jdbc] " + jdbcConnStr);
+        // SQL Server 互換モードで動作させる.
+        final var jdbcConnStr = "jdbc:h2:mem:product;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=FALSE;CASE_INSENSITIVE_IDENTIFIERS=TRUE;MODE=MSSQLServer";
+        System.err.println("TRACE: DEMO: [connect jdbc] " + jdbcConnStr);
         try {
             conn = DriverManager.getConnection(//
                     jdbcConnStr, "sa", "");

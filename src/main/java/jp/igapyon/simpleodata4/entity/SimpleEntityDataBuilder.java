@@ -63,9 +63,11 @@ public class SimpleEntityDataBuilder {
                 } else {
                     sql += ",";
                 }
-                MemberImpl member = (MemberImpl) orderByItem.getExpression();
-                // 前後の鉤括弧を除去。
-                sql += member.toString().replace("[", "").replace("]", "");
+                
+                // 項目名を SQL Serverクオート付きで指定.
+                // SQL Server 互換モードで h2 を動作させているから可能になる指定方法.
+                sql += ((MemberImpl) orderByItem.getExpression()).toString();
+
                 if (orderByItem.isDescending()) {
                     sql += " DESC";
                 }
