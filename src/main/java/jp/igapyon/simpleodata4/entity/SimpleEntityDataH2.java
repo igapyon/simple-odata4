@@ -118,7 +118,10 @@ public class SimpleEntityDataH2 {
 
             conn.commit();
 
-            for (int index = 0; index < 5000; index++) {
+            // 増殖カウント. 最終的に 5000を目標にしたい.
+            final int ZOUSYOKU = 10;
+
+            for (int index = 0; index < ZOUSYOKU; index++) {
                 stmt.clearParameters();
                 stmt.setInt(1, idCounter++);
                 stmt.setString(2, "PopTablet" + idCounter);
@@ -127,7 +130,7 @@ public class SimpleEntityDataH2 {
             }
             conn.commit();
 
-            for (int index = 0; index < 5000; index++) {
+            for (int index = 0; index < ZOUSYOKU; index++) {
                 stmt.clearParameters();
                 stmt.setInt(1, idCounter++);
                 stmt.setString(2, "DummyPC" + idCounter);
