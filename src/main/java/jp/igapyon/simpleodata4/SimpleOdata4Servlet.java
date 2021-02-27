@@ -46,9 +46,9 @@ public class SimpleOdata4Servlet extends HttpServlet {
                     return "/simple.svc";
                 }
             }, resp);
-        } catch (RuntimeException e) {
-            System.err.println("Server Error: " + e.toString());
-            throw new ServletException(e);
+        } catch (RuntimeException ex) {
+            System.err.println("Server Error: " + ex.toString());
+            throw new ServletException(ex);
         }
     }
 }
