@@ -33,7 +33,7 @@ public class SimpleServlet extends HttpServlet {
             OData odata = OData.newInstance();
 
             // EdmProvider を登録.
-            ServiceMetadata edm = odata.createServiceMetadata(new DemoEdmProvider(), new ArrayList<EdmxReference>());
+            ServiceMetadata edm = odata.createServiceMetadata(new SimpleEdmProvider(), new ArrayList<EdmxReference>());
             ODataHttpHandler handler = odata.createHandler(edm);
 
             // EntityCollectionProcessor を登録.

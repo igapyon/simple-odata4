@@ -83,7 +83,7 @@ public class SimpleEntityCollectionProcessor implements EntityCollectionProcesso
     private EntityCollection getData(EdmEntitySet edmEntitySet) {
         EntityCollection productsCollection = new EntityCollection();
         // check for which EdmEntitySet the data is requested
-        if (DemoEdmProvider.ES_PRODUCTS_NAME.equals(edmEntitySet.getName())) {
+        if (SimpleEdmProvider.ES_PRODUCTS_NAME.equals(edmEntitySet.getName())) {
             List<Entity> productList = productsCollection.getEntities();
 
             // add some sample product entities

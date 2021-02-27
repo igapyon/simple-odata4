@@ -16,7 +16,7 @@ import org.apache.olingo.commons.api.edm.provider.CsdlProperty;
 import org.apache.olingo.commons.api.edm.provider.CsdlPropertyRef;
 import org.apache.olingo.commons.api.edm.provider.CsdlSchema;
 
-public class DemoEdmProvider extends CsdlAbstractEdmProvider {
+public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
     // Service Namespace
     public static final String NAMESPACE = "OData.Demo";
 
