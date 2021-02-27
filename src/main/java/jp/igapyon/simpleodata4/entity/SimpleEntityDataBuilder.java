@@ -1,7 +1,12 @@
 package jp.igapyon.simpleodata4.entity;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 import org.apache.olingo.commons.api.data.Entity;
 import org.apache.olingo.commons.api.data.EntityCollection;
@@ -68,9 +73,88 @@ public class SimpleEntityDataBuilder {
      */
     public static URI createId(String entitySetName, Object id) {
         try {
-            return new URI(entitySetName + "-" + String.valueOf(id));
+            return new URI(entitySetName + "(" + String.valueOf(id) + ")");
         } catch (URISyntaxException ex) {
             throw new ODataRuntimeException("Fail to create ID EntitySet name: " + entitySetName, ex);
+        }
+    }
+
+    public static void buildH2database() {
+        try (Connection conn = getH2Connection()) {
+            try (PreparedStatement stmt = conn.prepareStatement("sql")) {
+
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    /**
+     * h2 データベースへのDB接続を取得します。
+     * 
+     * @return データベース接続。
+     */
+    public static Connection getH2Connection() {
+        Connection conn;
+        try {
+            Class.forName("org.h2.Driver");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            throw new IllegalArgumentException(e);
+        }
+        final var jdbcConnStr = "jdbc:h2:mem:product;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=FALSE;CASE_INSENSITIVE_IDENTIFIERS=TRUE";
+        System.err.println("[connect jdbc] " + jdbcConnStr);
+        try {
+            conn = DriverManager.getConnection(//
+                    jdbcConnStr, "sa", "");
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            throw new IllegalArgumentException(ex);
+        }
+
+        setupTable(conn);
+
+        return conn;
+    }
+
+    /**
+     * SQL検索プレースホルダの文字列を生成します。
+     * 
+     * @param count プレースホルダ数。
+     * @return プレースホルダ文字列。
+     */
+    public static String getQueryPlaceholderString(int count) {
+        String queryPlaceholder = "";
+        for (int col = 0; col < count; col++) {
+            if (col != 0) {
+                queryPlaceholder += ",";
+            }
+            queryPlaceholder += "?";
+        }
+
+        return queryPlaceholder;
+    }
+
+    /**
+     * 情報を格納するためのテーブルをセットアップします。
+     * 
+     * @param conn データベース接続。
+     */
+    public static void setupTable(final Connection conn) {
+        System.err.println("TRACE: 作業用データベーステーブルを作成");
+        /**
+         * 主テーブル.
+         */
+        try (var stmt = conn.prepareStatement("CREATE TABLE IF NOT EXISTS " //
+                + "Products (" //
+                + "ID VARCHAR(80) NOT NULL" //
+                + ",Name VARCHAR(80)" //
+                + ",Desc VARCHAR(250)" // 
+                + ",PRIMARY KEY(ID)" //
+                + ")")) {
+            stmt.executeUpdate();
+        } catch (SQLException ex) {
+            throw new IllegalArgumentException("テーブル作成に失敗: " + ex.toString(), ex);
         }
     }
 }
