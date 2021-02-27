@@ -23,7 +23,7 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
     /**
      * サービスの名前空間.
      */
-    public static final String NAMESPACE = "OData.Demo";
+    public static final String NAMESPACE = "Igapyon.Simple";
 
     /**
      * EDMコンテナ名.
@@ -51,6 +51,11 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
     public static final String ES_PRODUCTS_NAME = "Products";
 
     /**
+     * エンティティのフィールド一覧.
+     */
+    public static final String[] FIELDS = new String[] { "ID", "Name", "Desc" };
+
+    /**
      * 与えられた型名のEntityType(要素型)のCSDLを取得.
      * 
      * @param entityTypeName 要素型名のFQN.
@@ -62,16 +67,16 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
             // 処理対象の型名です。
 
             // 要素の情報をプロパティとして組み上げ.
-            CsdlProperty id = new CsdlProperty().setName("ID")
+            CsdlProperty id = new CsdlProperty().setName(FIELDS[0])
                     .setType(EdmPrimitiveTypeKind.Int32.getFullQualifiedName());
-            CsdlProperty name = new CsdlProperty().setName("Name")
+            CsdlProperty name = new CsdlProperty().setName(FIELDS[1])
                     .setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
-            CsdlProperty description = new CsdlProperty().setName("Description")
+            CsdlProperty description = new CsdlProperty().setName(FIELDS[2])
                     .setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
 
             // キー要素を CsdlPropertyRef として設定.
             CsdlPropertyRef propertyRef = new CsdlPropertyRef();
-            propertyRef.setName("ID");
+            propertyRef.setName(FIELDS[0]);
 
             // CSDL要素型として情報を組み上げ.
             CsdlEntityType entityType = new CsdlEntityType();

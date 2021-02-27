@@ -116,25 +116,27 @@ public class SimpleEntityCollectionProcessor implements EntityCollectionProcesso
 
             // いくつかサンプルデータを作成.
             final Entity e1 = new Entity() //
-                    .addProperty(new Property(null, "ID", ValueType.PRIMITIVE, 1))
-                    .addProperty(new Property(null, "Name", ValueType.PRIMITIVE, "MacBookPro16,2"))
-                    .addProperty(new Property(null, "Description", ValueType.PRIMITIVE,
+                    .addProperty(new Property(null, SimpleEdmProvider.FIELDS[0], ValueType.PRIMITIVE, 1))
+                    .addProperty(new Property(null, SimpleEdmProvider.FIELDS[1], ValueType.PRIMITIVE, "MacBookPro16,2"))
+                    .addProperty(new Property(null, SimpleEdmProvider.FIELDS[2], ValueType.PRIMITIVE,
                             "MacBook Pro (13-inch, 2020, Thunderbolt 3ポートx 4)"));
             e1.setId(createId("Products", 1));
             eList.add(e1);
 
             final Entity e2 = new Entity() //
-                    .addProperty(new Property(null, "ID", ValueType.PRIMITIVE, 2))
-                    .addProperty(new Property(null, "Name", ValueType.PRIMITIVE, "MacBookPro E2015"))
-                    .addProperty(new Property(null, "Description", ValueType.PRIMITIVE,
+                    .addProperty(new Property(null, SimpleEdmProvider.FIELDS[0], ValueType.PRIMITIVE, 2))
+                    .addProperty(
+                            new Property(null, SimpleEdmProvider.FIELDS[1], ValueType.PRIMITIVE, "MacBookPro E2015"))
+                    .addProperty(new Property(null, SimpleEdmProvider.FIELDS[2], ValueType.PRIMITIVE,
                             "MacBook Pro (Retina, 13-inch, Early 2015)"));
             e2.setId(createId("Products", 2));
             eList.add(e2);
 
             final Entity e3 = new Entity() //
-                    .addProperty(new Property(null, "ID", ValueType.PRIMITIVE, 3))
-                    .addProperty(new Property(null, "Name", ValueType.PRIMITIVE, "Surface Laptop 2"))
-                    .addProperty(new Property(null, "Description", ValueType.PRIMITIVE,
+                    .addProperty(new Property(null, SimpleEdmProvider.FIELDS[0], ValueType.PRIMITIVE, 3))
+                    .addProperty(
+                            new Property(null, SimpleEdmProvider.FIELDS[1], ValueType.PRIMITIVE, "Surface Laptop 2"))
+                    .addProperty(new Property(null, SimpleEdmProvider.FIELDS[2], ValueType.PRIMITIVE,
                             "Surface Laptop 2, 画面:13.5 インチ PixelSense ディスプレイ, インテル Core"));
             e3.setId(createId("Products", 3));
             eList.add(e3);
