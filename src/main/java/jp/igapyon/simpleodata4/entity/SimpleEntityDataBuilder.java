@@ -58,13 +58,21 @@ public class SimpleEntityDataBuilder {
         if (uriInfo.getSelectOption() == null) {
             sql += "*";
         } else {
+            boolean isIDExists = false;
             int itemCount = 0;
             for (SelectItem item : uriInfo.getSelectOption().getSelectItems()) {
                 // TODO STAR未対応.
                 for (UriResource res : item.getResourcePath().getUriResourceParts()) {
                     sql += (itemCount++ == 0 ? "" : ",");
                     sql += ("[" + res.toString() + "]");
+                    if (res.toString().equals("ID")) {
+                        isIDExists = true;
+                    }
                 }
+            }
+            if (!isIDExists) {
+                sql += (itemCount++ == 0 ? "" : ",");
+                sql += ("[ID]");
             }
         }
 
@@ -115,8 +123,8 @@ public class SimpleEntityDataBuilder {
                                             rset.getString(index + 1)));
                             break;
                     }
-
                 }
+                ent.setId(createId(SimpleEdmProvider.ES_MYPRODUCTS_NAME, rset.getInt("ID")));
                 eCollection.getEntities().add(ent);
             }
         } catch (SQLException ex) {
