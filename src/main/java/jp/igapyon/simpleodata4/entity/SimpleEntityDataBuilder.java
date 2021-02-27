@@ -2,7 +2,6 @@ package jp.igapyon.simpleodata4.entity;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.List;
 
 import org.apache.olingo.commons.api.data.Entity;
 import org.apache.olingo.commons.api.data.EntityCollection;
