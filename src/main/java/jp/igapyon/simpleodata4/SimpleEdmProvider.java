@@ -36,28 +36,32 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
     public static final FullQualifiedName CONTAINER = new FullQualifiedName(NAMESPACE, CONTAINER_NAME);
 
     /**
-     * エンティティ型名.
+     * 要素型名.
      */
     public static final String ET_PRODUCT_NAME = "Product";
 
     /**
-     * エンティティ型のFQN(完全修飾名).
+     * 要素型のFQN(完全修飾名).
      */
     public static final FullQualifiedName ET_PRODUCT_FQN = new FullQualifiedName(NAMESPACE, ET_PRODUCT_NAME);
 
     /**
-     * エンティティ型名の複数形.
+     * 要素型名の複数形.
      */
     public static final String ES_PRODUCTS_NAME = "Products";
 
+    /**
+     * 与えられた型名のEntityType(要素型)のCSDLを取得.
+     * 
+     * @param entityTypeName 要素型名のFQN.
+     * @return CSDL要素型.
+     */
     @Override
     public CsdlEntityType getEntityType(FullQualifiedName entityTypeName) {
-
-        // this method is called for one of the EntityTypes that are configured in the
-        // Schema
         if (entityTypeName.equals(ET_PRODUCT_FQN)) {
+            // 処理対象の型名です。
 
-            // create EntityType properties
+            // 要素の情報をプロパティとして組み上げ.
             CsdlProperty id = new CsdlProperty().setName("ID")
                     .setType(EdmPrimitiveTypeKind.Int32.getFullQualifiedName());
             CsdlProperty name = new CsdlProperty().setName("Name")
@@ -65,11 +69,11 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
             CsdlProperty description = new CsdlProperty().setName("Description")
                     .setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
 
-            // create CsdlPropertyRef for Key element
+            // キー要素を CsdlPropertyRef として設定.
             CsdlPropertyRef propertyRef = new CsdlPropertyRef();
             propertyRef.setName("ID");
 
-            // configure EntityType
+            // CSDL要素型として情報を組み上げ.
             CsdlEntityType entityType = new CsdlEntityType();
             entityType.setName(ET_PRODUCT_NAME);
             entityType.setProperties(Arrays.asList(id, name, description));
@@ -78,14 +82,24 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
             return entityType;
         }
 
+        // 該当する型名の要素型はありません.
         return null;
     }
 
+    /**
+     * 与えられた型名の EntitySet(要素セット)情報を取得. 複数形.
+     * 
+     * @param entityContainer 要素コンテナ.
+     * @param entitySetName   要素セット(複数形)の名前.
+     * @return CSDL要素セット.
+     */
     @Override
     public CsdlEntitySet getEntitySet(FullQualifiedName entityContainer, String entitySetName) {
-
         if (entityContainer.equals(CONTAINER)) {
+            // コンテナが一致する場合.
             if (entitySetName.equals(ES_PRODUCTS_NAME)) {
+                // 要素セット名が一致する場合.
+                // CSDL要素セットとして情報を組み上げ.
                 CsdlEntitySet entitySet = new CsdlEntitySet();
                 entitySet.setName(ES_PRODUCTS_NAME);
                 entitySet.setType(ET_PRODUCT_FQN);
@@ -94,6 +108,7 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
             }
         }
 
+        // 該当する型名の要素セットはありません.
         return null;
     }
 
