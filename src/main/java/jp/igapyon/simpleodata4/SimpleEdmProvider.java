@@ -95,31 +95,40 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
      */
     @Override
     public CsdlEntitySet getEntitySet(FullQualifiedName entityContainer, String entitySetName) {
-        if (entityContainer.equals(CONTAINER)) {
-            // コンテナが一致する場合.
-            if (entitySetName.equals(ES_PRODUCTS_NAME)) {
-                // 要素セット名が一致する場合.
-                // CSDL要素セットとして情報を組み上げ.
-                CsdlEntitySet entitySet = new CsdlEntitySet();
-                entitySet.setName(ES_PRODUCTS_NAME);
-                entitySet.setType(ET_PRODUCT_FQN);
+        if (!entityContainer.equals(CONTAINER)) {
+            // 該当する型名の要素セットはありません.
+            return null;
+        }
 
-                return entitySet;
-            }
+        // コンテナが一致する場合.
+
+        // 要素セット名が一致する場合.
+        if (entitySetName.equals(ES_PRODUCTS_NAME)) {
+            // 要素セット名が一致する場合.
+            // CSDL要素セットとして情報を組み上げ.
+            CsdlEntitySet entitySet = new CsdlEntitySet();
+            entitySet.setName(ES_PRODUCTS_NAME);
+            entitySet.setType(ET_PRODUCT_FQN);
+
+            return entitySet;
         }
 
         // 該当する型名の要素セットはありません.
         return null;
     }
 
+    /**
+     * 要素コンテナを取得.
+     * 
+     * @return CSDL要素コンテナ.
+     */
     @Override
     public CsdlEntityContainer getEntityContainer() {
-
-        // create EntitySets
+        // 要素セットを作成.
         List<CsdlEntitySet> entitySets = new ArrayList<CsdlEntitySet>();
         entitySets.add(getEntitySet(CONTAINER, ES_PRODUCTS_NAME));
 
-        // create EntityContainer
+        // 要素コンテナを作成.
         CsdlEntityContainer entityContainer = new CsdlEntityContainer();
         entityContainer.setName(CONTAINER_NAME);
         entityContainer.setEntitySets(entitySets);
@@ -127,33 +136,42 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
         return entityContainer;
     }
 
+    /**
+     * スキーマ一覧を取得.
+     * 
+     * @return CSDLスキーマ.
+     */
     @Override
     public List<CsdlSchema> getSchemas() {
-
-        // create Schema
+        // CSDLスキーマを作成.
         CsdlSchema schema = new CsdlSchema();
         schema.setNamespace(NAMESPACE);
 
-        // add EntityTypes
-        List<CsdlEntityType> entityTypes = new ArrayList<CsdlEntityType>();
+        // 要素型を設定.
+        List<CsdlEntityType> entityTypes = new ArrayList<>();
         entityTypes.add(getEntityType(ET_PRODUCT_FQN));
         schema.setEntityTypes(entityTypes);
 
-        // add EntityContainer
+        // 要素コンテナを設定.
         schema.setEntityContainer(getEntityContainer());
 
-        // finally
-        List<CsdlSchema> schemas = new ArrayList<CsdlSchema>();
+        // CSDLスキーマを設定.
+        List<CsdlSchema> schemas = new ArrayList<>();
         schemas.add(schema);
 
         return schemas;
     }
 
+    /**
+     * 要素コンテナ情報を取得.
+     * 
+     * 次のようなURLの場合に呼び出される: http://localhost:8080/simple.svc/
+     * 
+     * @param entityContainerName 要素コンテナ名.
+     * @return CSDL要素コンテナ情報.
+     */
     @Override
     public CsdlEntityContainerInfo getEntityContainerInfo(FullQualifiedName entityContainerName) {
-
-        // This method is invoked when displaying the Service Document at e.g.
-        // http://localhost:8080/DemoService/DemoService.svc
         if (entityContainerName == null || entityContainerName.equals(CONTAINER)) {
             CsdlEntityContainerInfo entityContainerInfo = new CsdlEntityContainerInfo();
             entityContainerInfo.setContainerName(CONTAINER);
