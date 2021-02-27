@@ -82,6 +82,17 @@ public class SimpleEntityDataH2 {
      * @param conn データベース接続。
      */
     public static void setupTableData(final Connection conn) {
+        try (var stmt = conn.prepareStatement("SELECT COUNT(ID) FROM Products")) {
+            stmt.executeQuery();
+            var rset = stmt.getResultSet();
+            rset.next();
+            if (rset.getInt(1) > 0) {
+                return;
+            }
+        } catch (SQLException ex) {
+            throw new IllegalArgumentException("検索失敗:" + ex.toString(), ex);
+        }
+
         System.err.println("TRACE: 作業用サンプルデータを作成");
 
         try (var stmt = conn.prepareStatement(

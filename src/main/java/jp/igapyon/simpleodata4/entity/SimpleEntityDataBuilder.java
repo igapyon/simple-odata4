@@ -1,11 +1,8 @@
 package jp.igapyon.simpleodata4.entity;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import org.apache.olingo.commons.api.data.Entity;
@@ -29,12 +26,14 @@ public class SimpleEntityDataBuilder {
      * @return 要素コレクション.
      */
     public static EntityCollection buildData(EdmEntitySet edmEntitySet) {
+        // インメモリ作業データベースに接続.
         Connection conn = SimpleEntityDataH2.getH2Connection();
 
         // テーブルをセットアップ.
         SimpleEntityDataH2.setupTable(conn);
 
         // テーブルデータをセットアップ.
+        // サンプルデータ.
         SimpleEntityDataH2.setupTableData(conn);
 
         EntityCollection eCollection = new EntityCollection();
@@ -44,30 +43,32 @@ public class SimpleEntityDataBuilder {
             return eCollection;
         }
 
-        // いくつかサンプルデータを作成.
-        final Entity e1 = new Entity() //
-                .addProperty(new Property(null, SimpleEdmProvider.FIELDS[0], ValueType.PRIMITIVE, 1))
-                .addProperty(new Property(null, SimpleEdmProvider.FIELDS[1], ValueType.PRIMITIVE, "MacBookPro16,2"))
-                .addProperty(new Property(null, SimpleEdmProvider.FIELDS[2], ValueType.PRIMITIVE,
-                        "MacBook Pro (13-inch, 2020, Thunderbolt 3ポートx 4)"));
-        e1.setId(createId(SimpleEdmProvider.ES_PRODUCTS_NAME, 1));
-        eCollection.getEntities().add(e1);
+        try (var stmt = conn.prepareStatement("SELECT ID, Name, Description FROM Products ORDER BY ID")) {
+            stmt.executeQuery();
+            var rset = stmt.getResultSet();
+            for (; rset.next();) {
+                final Entity ent = new Entity() //
+                        .addProperty( //
+                                new Property(null, SimpleEdmProvider.FIELDS[0], ValueType.PRIMITIVE, //
+                                        rset.getInt(1)))
+                        .addProperty( //
+                                new Property(null, SimpleEdmProvider.FIELDS[1], ValueType.PRIMITIVE, //
+                                        rset.getString(2)))
+                        .addProperty( //
+                                new Property(null, SimpleEdmProvider.FIELDS[2], ValueType.PRIMITIVE, //
+                                        rset.getString(3)));
+                ent.setId(createId(SimpleEdmProvider.ES_PRODUCTS_NAME, rset.getInt(1)));
+                eCollection.getEntities().add(ent);
+            }
+        } catch (SQLException ex) {
+            throw new IllegalArgumentException("検索失敗:" + ex.toString(), ex);
+        }
 
-        final Entity e2 = new Entity() //
-                .addProperty(new Property(null, SimpleEdmProvider.FIELDS[0], ValueType.PRIMITIVE, 2))
-                .addProperty(new Property(null, SimpleEdmProvider.FIELDS[1], ValueType.PRIMITIVE, "MacBookPro E2015"))
-                .addProperty(new Property(null, SimpleEdmProvider.FIELDS[2], ValueType.PRIMITIVE,
-                        "MacBook Pro (Retina, 13-inch, Early 2015)"));
-        e2.setId(createId(SimpleEdmProvider.ES_PRODUCTS_NAME, 2));
-        eCollection.getEntities().add(e2);
-
-        final Entity e3 = new Entity() //
-                .addProperty(new Property(null, SimpleEdmProvider.FIELDS[0], ValueType.PRIMITIVE, 3))
-                .addProperty(new Property(null, SimpleEdmProvider.FIELDS[1], ValueType.PRIMITIVE, "Surface Laptop 2"))
-                .addProperty(new Property(null, SimpleEdmProvider.FIELDS[2], ValueType.PRIMITIVE,
-                        "Surface Laptop 2, 画面:13.5 インチ PixelSense ディスプレイ, インテル Core"));
-        e3.setId(createId(SimpleEdmProvider.ES_PRODUCTS_NAME, 3));
-        eCollection.getEntities().add(e3);
+        try {
+            conn.close();
+        } catch (SQLException ex) {
+            throw new IllegalArgumentException("検索失敗:" + ex.toString(), ex);
+        }
 
         return eCollection;
     }
