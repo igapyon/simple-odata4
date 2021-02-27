@@ -4,6 +4,7 @@ Simple な OData v4 のサンプル
 ```sh
 http://localhost:8080/simple.svc/
 http://localhost:8080/simple.svc/Products
+http://localhost:8080/simple.svc/Products?$orderby=Description
 ```
 
 

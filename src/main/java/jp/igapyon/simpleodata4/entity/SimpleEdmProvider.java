@@ -53,7 +53,7 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
     /**
      * エンティティのフィールド一覧.
      */
-    public static final String[] FIELDS = new String[] { "ID", "Name", "Desc" };
+    public static final String[] FIELDS = new String[] { "ID", "Name", "Description" };
 
     /**
      * 与えられた型名のEntityType(要素型)のCSDLを取得.
