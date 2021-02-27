@@ -112,7 +112,11 @@ public class SimpleEntityDataBuilder {
             throw new IllegalArgumentException(ex);
         }
 
+        // テーブルをセットアップ.
         setupTable(conn);
+
+        // テーブルデータをセットアップ.
+        setupTableData(conn);
 
         return conn;
     }
@@ -142,17 +146,45 @@ public class SimpleEntityDataBuilder {
      */
     public static void setupTable(final Connection conn) {
         System.err.println("TRACE: 作業用データベーステーブルを作成");
-        /**
-         * 主テーブル.
-         */
+
         try (var stmt = conn.prepareStatement("CREATE TABLE IF NOT EXISTS " //
                 + "Products (" //
-                + "ID VARCHAR(80) NOT NULL" //
+                + "ID BIGINT NOT NULL" //
                 + ",Name VARCHAR(80)" //
-                + ",Desc VARCHAR(250)" // 
+                + ",Description VARCHAR(250)" //
                 + ",PRIMARY KEY(ID)" //
                 + ")")) {
             stmt.executeUpdate();
+        } catch (SQLException ex) {
+            throw new IllegalArgumentException("テーブル作成に失敗: " + ex.toString(), ex);
+        }
+    }
+
+    /**
+     * 情報を格納するためのテーブルをセットアップします。
+     * 
+     * @param conn データベース接続。
+     */
+    public static void setupTableData(final Connection conn) {
+        System.err.println("TRACE: 作業用サンプルデータを作成");
+
+        try (var stmt = conn.prepareStatement(
+                "INSERT INTO Products (ID, Name, Description) VALUES (" + getQueryPlaceholderString(3) + ")")) {
+            stmt.setInt(1, 1);
+            stmt.setString(2, "MacBookPro16,2");
+            stmt.setString(3, "MacBook Pro (13-inch, 2020, Thunderbolt 3ポートx 4)");
+            stmt.executeUpdate();
+            stmt.clearParameters();
+            stmt.setInt(1, 2);
+            stmt.setString(2, "MacBookPro E2015");
+            stmt.setString(3, "MacBook Pro (Retina, 13-inch, Early 2015)");
+            stmt.executeUpdate();
+            stmt.clearParameters();
+            stmt.setInt(1, 3);
+            stmt.setString(2, "Surface Laptop 2");
+            stmt.setString(3, "Surface Laptop 2, 画面:13.5 インチ PixelSense ディスプレイ, インテル Core");
+            stmt.executeUpdate();
+            conn.commit();
         } catch (SQLException ex) {
             throw new IllegalArgumentException("テーブル作成に失敗: " + ex.toString(), ex);
         }
