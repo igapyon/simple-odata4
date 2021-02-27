@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
  * EdmProvider と EntityCollectionProcessor を登録.
  */
 @RestController
-public class SimpleServlet extends HttpServlet {
+public class SimpleOdata4Servlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     @Override
