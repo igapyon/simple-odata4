@@ -21,7 +21,7 @@ import org.apache.olingo.server.api.ODataApplicationException;
 import org.apache.olingo.server.api.ODataRequest;
 import org.apache.olingo.server.api.ODataResponse;
 import org.apache.olingo.server.api.ServiceMetadata;
-import org.apache.olingo.server.api.processor.Processor;
+import org.apache.olingo.server.api.processor.EntityCollectionProcessor;
 import org.apache.olingo.server.api.serializer.EntityCollectionSerializerOptions;
 import org.apache.olingo.server.api.serializer.ODataSerializer;
 import org.apache.olingo.server.api.serializer.SerializerException;
@@ -30,7 +30,7 @@ import org.apache.olingo.server.api.uri.UriInfo;
 import org.apache.olingo.server.api.uri.UriResource;
 import org.apache.olingo.server.api.uri.UriResourceEntitySet;
 
-public class DemoEntityCollectionProcessor implements Processor {
+public class DemoEntityCollectionProcessor implements EntityCollectionProcessor {
     private OData odata;
     private ServiceMetadata serviceMetadata;
 
@@ -63,6 +63,7 @@ public class DemoEntityCollectionProcessor implements Processor {
         ContextURL contextUrl = ContextURL.with().entitySet(edmEntitySet).build();
 
         final String id = request.getRawBaseUri() + "/" + edmEntitySet.getName();
+        System.err.println("TRACE:id:" + id);
         EntityCollectionSerializerOptions opts = EntityCollectionSerializerOptions.with().id(id).contextURL(contextUrl)
                 .build();
         SerializerResult serializerResult = serializer.entityCollection(serviceMetadata, edmEntityType, entitySet,

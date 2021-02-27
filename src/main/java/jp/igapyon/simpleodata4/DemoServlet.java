@@ -30,12 +30,16 @@ public class DemoServlet extends HttpServlet {
             ODataHttpHandler handler = odata.createHandler(edm);
             handler.register(new DemoEntityCollectionProcessor());
 
-            handler.process(new HttpServletRequestWrapper(req) {
-                @Override
-                public String getServletPath() {
-                    return "/simple.svc";
-                }
-            }, resp);
+            // handler.process(req, resp);
+            if (true) {
+                handler.process(new HttpServletRequestWrapper(req) {
+                    @Override
+                    public String getServletPath() {
+                        return "/simple.svc";
+                    }
+                }, resp);
+            }
+
         } catch (RuntimeException e) {
             System.err.println("Server Error occurred in ExampleServlet");
             throw new ServletException(e);
