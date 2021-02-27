@@ -16,6 +16,7 @@ import org.apache.olingo.commons.api.data.ValueType;
 import org.apache.olingo.commons.api.edm.EdmEntitySet;
 import org.apache.olingo.commons.api.ex.ODataRuntimeException;
 import org.apache.olingo.server.api.uri.UriInfo;
+import org.apache.olingo.server.api.uri.UriResource;
 import org.apache.olingo.server.api.uri.queryoption.OrderByItem;
 import org.apache.olingo.server.api.uri.queryoption.SelectItem;
 import org.apache.olingo.server.core.uri.queryoption.SelectItemImpl;
@@ -55,13 +56,15 @@ public class SimpleEntityDataBuilder {
         String sql = "SELECT ";
 
         if (uriInfo.getSelectOption() == null) {
-            sql += "ID, Name, Description";
+            sql += "*";
         } else {
             int itemCount = 0;
             for (SelectItem item : uriInfo.getSelectOption().getSelectItems()) {
-                sql += (itemCount++ == 0 ? "" : ",");
-                // TODO ここ実装と上。
-                sql += item.getResourcePath().getUriResourceParts().get(0);
+                // TODO STAR未対応.
+                for (UriResource res : item.getResourcePath().getUriResourceParts()) {
+                    sql += (itemCount++ == 0 ? "" : ",");
+                    sql += ("[" + res.toString() + "]");
+                }
             }
         }
 
