@@ -125,7 +125,7 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
     @Override
     public CsdlEntityContainer getEntityContainer() {
         // 要素セットを作成.
-        List<CsdlEntitySet> entitySets = new ArrayList<CsdlEntitySet>();
+        List<CsdlEntitySet> entitySets = new ArrayList<>();
         entitySets.add(getEntitySet(CONTAINER, ES_PRODUCTS_NAME));
 
         // 要素コンテナを作成.

@@ -25,6 +25,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class SimpleOdata4Servlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
+    /**
+     * サーブレットのエントリポイント.
+     * 
+     * @param req HTTPリクエスト.
+     * @param resp HTTPレスポンス.
+     * @throws ServletException サーブレット例外.
+     * @throws IOException IO例外.
+     */
     @Override
     @RequestMapping("/simple.svc/*")
     protected void service(final HttpServletRequest req, final HttpServletResponse resp)
