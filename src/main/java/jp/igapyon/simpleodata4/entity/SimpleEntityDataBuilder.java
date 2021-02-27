@@ -4,7 +4,9 @@ import java.lang.reflect.Member;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.Connection;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.List;
 
 import org.apache.olingo.commons.api.data.Entity;
@@ -15,6 +17,8 @@ import org.apache.olingo.commons.api.edm.EdmEntitySet;
 import org.apache.olingo.commons.api.ex.ODataRuntimeException;
 import org.apache.olingo.server.api.uri.UriInfo;
 import org.apache.olingo.server.api.uri.queryoption.OrderByItem;
+import org.apache.olingo.server.api.uri.queryoption.SelectItem;
+import org.apache.olingo.server.core.uri.queryoption.SelectItemImpl;
 import org.apache.olingo.server.core.uri.queryoption.expression.MemberImpl;
 
 /**
@@ -48,7 +52,20 @@ public class SimpleEntityDataBuilder {
             return eCollection;
         }
 
-        String sql = "SELECT ID, Name, Description FROM Products";
+        String sql = "SELECT ";
+
+        if (uriInfo.getSelectOption() == null) {
+            sql += "ID, Name, Description";
+        } else {
+            int itemCount = 0;
+            for (SelectItem item : uriInfo.getSelectOption().getSelectItems()) {
+                sql += (itemCount++ == 0 ? "" : ",");
+                // TODO ここ実装と上。
+                sql += item.getResourcePath().getUriResourceParts().get(0);
+            }
+        }
+
+        sql += " FROM Products";
 
         // TODO NOT IMPLEMENTED.
         // if (uriInfo.getCountOption() != null) {
@@ -63,7 +80,7 @@ public class SimpleEntityDataBuilder {
                 } else {
                     sql += ",";
                 }
-                
+
                 // 項目名を SQL Serverクオート付きで指定.
                 // SQL Server 互換モードで h2 を動作させているから可能になる指定方法.
                 sql += ((MemberImpl) orderByItem.getExpression()).toString();
@@ -78,17 +95,25 @@ public class SimpleEntityDataBuilder {
             stmt.executeQuery();
             var rset = stmt.getResultSet();
             for (; rset.next();) {
-                final Entity ent = new Entity() //
-                        .addProperty( //
-                                new Property(null, SimpleEdmProvider.FIELDS[0], ValueType.PRIMITIVE, //
-                                        rset.getInt(1)))
-                        .addProperty( //
-                                new Property(null, SimpleEdmProvider.FIELDS[1], ValueType.PRIMITIVE, //
-                                        rset.getString(2)))
-                        .addProperty( //
-                                new Property(null, SimpleEdmProvider.FIELDS[2], ValueType.PRIMITIVE, //
-                                        rset.getString(3)));
-                ent.setId(createId(SimpleEdmProvider.ES_MYPRODUCTS_NAME, rset.getInt(1)));
+                final Entity ent = new Entity();
+                ResultSetMetaData rsmeta = rset.getMetaData();
+                for (int index = 0; index < rsmeta.getColumnCount(); index++) {
+                    switch (rsmeta.getColumnType(index + 1)) {
+                        case Types.BIGINT:
+                        case Types.INTEGER:
+                        case Types.SMALLINT:
+                            ent.addProperty( //
+                                    new Property(null, rsmeta.getColumnName(index + 1), ValueType.PRIMITIVE, //
+                                            rset.getInt(index + 1)));
+                            break;
+                        default:
+                            ent.addProperty( //
+                                    new Property(null, rsmeta.getColumnName(index + 1), ValueType.PRIMITIVE, //
+                                            rset.getString(index + 1)));
+                            break;
+                    }
+
+                }
                 eCollection.getEntities().add(ent);
             }
         } catch (SQLException ex) {
