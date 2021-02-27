@@ -30,15 +30,20 @@ import org.apache.olingo.server.api.uri.UriInfo;
 import org.apache.olingo.server.api.uri.UriResource;
 import org.apache.olingo.server.api.uri.UriResourceEntitySet;
 
-public class DemoEntityCollectionProcessor implements EntityCollectionProcessor {
+/**
+ * OData 処理結果を処理するクラス.
+ */
+public class SimpleEntityCollectionProcessor implements EntityCollectionProcessor {
     private OData odata;
     private ServiceMetadata serviceMetadata;
 
+    @Override
     public void init(OData odata, ServiceMetadata serviceMetadata) {
         this.odata = odata;
         this.serviceMetadata = serviceMetadata;
     }
 
+    @Override
     public void readEntityCollection(ODataRequest request, ODataResponse response, UriInfo uriInfo,
             ContentType responseFormat) throws ODataApplicationException, SerializerException {
 
@@ -63,7 +68,6 @@ public class DemoEntityCollectionProcessor implements EntityCollectionProcessor 
         ContextURL contextUrl = ContextURL.with().entitySet(edmEntitySet).build();
 
         final String id = request.getRawBaseUri() + "/" + edmEntitySet.getName();
-        System.err.println("TRACE:id:" + id);
         EntityCollectionSerializerOptions opts = EntityCollectionSerializerOptions.with().id(id).contextURL(contextUrl)
                 .build();
         SerializerResult serializerResult = serializer.entityCollection(serviceMetadata, edmEntityType, entitySet,

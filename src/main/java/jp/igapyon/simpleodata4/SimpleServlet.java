@@ -37,7 +37,7 @@ public class SimpleServlet extends HttpServlet {
             ODataHttpHandler handler = odata.createHandler(edm);
 
             // EntityCollectionProcessor を登録.
-            handler.register(new DemoEntityCollectionProcessor());
+            handler.register(new SimpleEntityCollectionProcessor());
 
             // Spring と Servlet の挙動を調整.
             handler.process(new HttpServletRequestWrapper(req) {
