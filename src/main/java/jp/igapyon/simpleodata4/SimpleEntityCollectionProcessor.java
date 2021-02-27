@@ -1,6 +1,5 @@
 package jp.igapyon.simpleodata4;
 
-import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -47,7 +46,7 @@ public class SimpleEntityCollectionProcessor implements EntityCollectionProcesso
     /**
      * 初期化タイミングにて ODataやサービスメタデータの情報を記憶.
      * 
-     * @param odata           OData.
+     * @param odata           ODataインスタンス.
      * @param serviceMetadata サービスメタデータ.
      */
     @Override
@@ -77,32 +76,31 @@ public class SimpleEntityCollectionProcessor implements EntityCollectionProcesso
         EdmEntitySet edmEntitySet = uriResourceEntitySet.getEntitySet();
 
         // 要素セットの指定をもとに要素コレクションを取得.
-        EntityCollection entitySet = getData(edmEntitySet);
+        EntityCollection eCollection = getData(edmEntitySet);
 
-        // 指定のレスポンスフォーマットに合致するように直列化の準備.
+        // 指定のレスポンスフォーマットに合致する直列化を準備.
         ODataSerializer serializer = odata.createSerializer(responseFormat);
 
         // 要素セットから要素型のEDM情報を取得してコンテキストURLをビルド.
         EdmEntityType edmEntityType = edmEntitySet.getEntityType();
-        ContextURL contextUrl = ContextURL.with().entitySet(edmEntitySet).build();
+        ContextURL conUrl = ContextURL.with().entitySet(edmEntitySet).build();
 
         // 要素のIdを作成.
         final String id = request.getRawBaseUri() + "/" + edmEntitySet.getName();
         // 直列化の処理.
         EntityCollectionSerializerOptions opts = EntityCollectionSerializerOptions.with() //
-                .id(id).contextURL(contextUrl).build();
-        SerializerResult serializerResult = serializer.entityCollection( //
-                serviceMetadata, edmEntityType, entitySet, opts);
-        InputStream serializedContent = serializerResult.getContent();
+                .id(id).contextURL(conUrl).build();
+        SerializerResult serResult = serializer.entityCollection( //
+                serviceMetadata, edmEntityType, eCollection, opts);
 
         // OData レスポンスを返却.
-        response.setContent(serializedContent);
+        response.setContent(serResult.getContent());
         response.setStatusCode(HttpStatusCode.OK.getStatusCode());
         response.setHeader(HttpHeader.CONTENT_TYPE, responseFormat.toContentTypeString());
     }
 
     ///////////////////////////////////////////////////
-    // 実際に返却するデータの組み上げ.
+    // 実際に返却するエンティティデータの組み上げ.
 
     /**
      * 指定のEDM要素セットに対応する要素コレクションを取得.
@@ -111,45 +109,45 @@ public class SimpleEntityCollectionProcessor implements EntityCollectionProcesso
      * @return 要素コレクション.
      */
     private EntityCollection getData(EdmEntitySet edmEntitySet) {
-        EntityCollection productsCollection = new EntityCollection();
-        // check for which EdmEntitySet the data is requested
-        if (SimpleEdmProvider.ES_PRODUCTS_NAME.equals(edmEntitySet.getName())) {
-            List<Entity> productList = productsCollection.getEntities();
+        EntityCollection eCollection = new EntityCollection();
 
-            // add some sample product entities
+        if (SimpleEdmProvider.ES_PRODUCTS_NAME.equals(edmEntitySet.getName())) {
+            final List<Entity> eList = eCollection.getEntities();
+
+            // いくつかサンプルデータを作成.
             final Entity e1 = new Entity() //
                     .addProperty(new Property(null, "ID", ValueType.PRIMITIVE, 1))
-                    .addProperty(new Property(null, "Name", ValueType.PRIMITIVE, "Notebook Basic 15"))
+                    .addProperty(new Property(null, "Name", ValueType.PRIMITIVE, "MacBookPro16,2"))
                     .addProperty(new Property(null, "Description", ValueType.PRIMITIVE,
-                            "Notebook Basic, 1.7GHz - 15 XGA - 1024MB DDR2 SDRAM - 40GB"));
+                            "MacBook Pro (13-inch, 2020, Thunderbolt 3ポートx 4)"));
             e1.setId(createId("Products", 1));
-            productList.add(e1);
+            eList.add(e1);
 
             final Entity e2 = new Entity() //
                     .addProperty(new Property(null, "ID", ValueType.PRIMITIVE, 2))
-                    .addProperty(new Property(null, "Name", ValueType.PRIMITIVE, "1UMTS PDA"))
+                    .addProperty(new Property(null, "Name", ValueType.PRIMITIVE, "MacBookPro E2015"))
                     .addProperty(new Property(null, "Description", ValueType.PRIMITIVE,
-                            "Ultrafast 3G UMTS/HSDPA Pocket PC, supports GSM network"));
+                            "MacBook Pro (Retina, 13-inch, Early 2015)"));
             e2.setId(createId("Products", 2));
-            productList.add(e2);
+            eList.add(e2);
 
             final Entity e3 = new Entity() //
                     .addProperty(new Property(null, "ID", ValueType.PRIMITIVE, 3))
-                    .addProperty(new Property(null, "Name", ValueType.PRIMITIVE, "Ergo Screen"))
+                    .addProperty(new Property(null, "Name", ValueType.PRIMITIVE, "Surface Laptop 2"))
                     .addProperty(new Property(null, "Description", ValueType.PRIMITIVE,
-                            "19 Optimum Resolution 1024 x 768 @ 85Hz, resolution 1280 x 960"));
+                            "Surface Laptop 2, 画面:13.5 インチ PixelSense ディスプレイ, インテル Core"));
             e3.setId(createId("Products", 3));
-            productList.add(e3);
+            eList.add(e3);
         }
 
-        return productsCollection;
+        return eCollection;
     }
 
     /**
      * 与えられた情報をもとにURIを作成.
      * 
      * @param entitySetName 要素セット名.
-     * @param id ユニーク性を実現するId.
+     * @param id            ユニーク性を実現するId.
      * @return 要素セット名およびユニーク性を実現するIdをもとにつくられた部分的なURI.
      */
     private URI createId(String entitySetName, Object id) {
@@ -159,4 +157,7 @@ public class SimpleEntityCollectionProcessor implements EntityCollectionProcesso
             throw new ODataRuntimeException("Fail to create ID EntitySet name: " + entitySetName, ex);
         }
     }
+
+    // 実際に返却するエンティティデータの組み上げ.
+    ///////////////////////////////////////////////////
 }
