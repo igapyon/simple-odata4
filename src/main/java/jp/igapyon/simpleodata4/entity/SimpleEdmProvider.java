@@ -1,4 +1,4 @@
-package jp.igapyon.simpleodata4;
+package jp.igapyon.simpleodata4.entity;
 
 import java.util.ArrayList;
 import java.util.Arrays;

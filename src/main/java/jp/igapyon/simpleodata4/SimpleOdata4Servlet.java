@@ -1,10 +1,8 @@
 package jp.igapyon.simpleodata4;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
@@ -16,6 +14,9 @@ import org.apache.olingo.server.api.ServiceMetadata;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import jp.igapyon.simpleodata4.entity.SimpleEdmProvider;
+import jp.igapyon.simpleodata4.entity.SimpleEntityCollectionProcessor;
+
 /**
  * OData を Spring Boot の Servlet として動作.
  *
@@ -26,14 +27,12 @@ public class SimpleOdata4Servlet {
     /**
      * サーブレットのエントリポイント.
      * 
-     * @param req HTTPリクエスト.
+     * @param req  HTTPリクエスト.
      * @param resp HTTPレスポンス.
      * @throws ServletException サーブレット例外.
-     * @throws IOException IO例外.
      */
     @RequestMapping("/simple.svc/*")
-    private void service(final HttpServletRequest req, final HttpServletResponse resp)
-            throws ServletException, IOException {
+    private void service(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException {
         try {
             OData odata = OData.newInstance();
 
