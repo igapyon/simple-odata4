@@ -31,11 +31,13 @@ public class SimpleOdata4Register {
      */
     @RequestMapping("/simple.svc/*")
     private void serv(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException {
-        String uri = null;
-        try {
-            uri = req.getRequestURI() + "?" + URLDecoder.decode(req.getQueryString(), "UTF-8");
-        } catch (UnsupportedEncodingException ex) {
-            throw new IllegalArgumentException("デコード失敗:" + ex.toString(), ex);
+        String uri = req.getRequestURI();
+        if (req.getQueryString() != null) {
+            try {
+                uri += "?" + URLDecoder.decode(req.getQueryString(), "UTF-8");
+            } catch (UnsupportedEncodingException ex) {
+                throw new IllegalArgumentException("デコード失敗:" + ex.toString(), ex);
+            }
         }
         System.err.println("TRACE: OData v4: URI: " + uri);
         try {
