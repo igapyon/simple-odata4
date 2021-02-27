@@ -16,19 +16,38 @@ import org.apache.olingo.commons.api.edm.provider.CsdlProperty;
 import org.apache.olingo.commons.api.edm.provider.CsdlPropertyRef;
 import org.apache.olingo.commons.api.edm.provider.CsdlSchema;
 
+/**
+ * OData Common Schema Definition Language (CSDL) を提供するクラス.
+ */
 public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
-    // Service Namespace
+    /**
+     * サービスの名前空間.
+     */
     public static final String NAMESPACE = "OData.Demo";
 
-    // EDM Container
+    /**
+     * EDMコンテナ名.
+     */
     public static final String CONTAINER_NAME = "Container";
+
+    /**
+     * EDMコンテナ名のFQN(完全修飾名).
+     */
     public static final FullQualifiedName CONTAINER = new FullQualifiedName(NAMESPACE, CONTAINER_NAME);
 
-    // Entity Types Names
+    /**
+     * エンティティ型名.
+     */
     public static final String ET_PRODUCT_NAME = "Product";
+
+    /**
+     * エンティティ型のFQN(完全修飾名).
+     */
     public static final FullQualifiedName ET_PRODUCT_FQN = new FullQualifiedName(NAMESPACE, ET_PRODUCT_NAME);
 
-    // Entity Set Names
+    /**
+     * エンティティ型名の複数形.
+     */
     public static final String ES_PRODUCTS_NAME = "Products";
 
     @Override
