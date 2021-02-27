@@ -43,7 +43,7 @@ public class SimpleEntityDataBuilder {
 
         EntityCollection eCollection = new EntityCollection();
 
-        if (!SimpleEdmProvider.ES_PRODUCTS_NAME.equals(edmEntitySet.getName())) {
+        if (!SimpleEdmProvider.ES_MYPRODUCTS_NAME.equals(edmEntitySet.getName())) {
             // 処理対象外の要素セットです. 処理せずに戻します.
             return eCollection;
         }
@@ -63,9 +63,11 @@ public class SimpleEntityDataBuilder {
                 } else {
                     sql += ",";
                 }
-                MemberImpl member = (MemberImpl) orderByItem.getExpression();
-                // 前後の鉤括弧を除去。
-                sql += member.toString().replace("[", "").replace("]", "");
+                
+                // 項目名を SQL Serverクオート付きで指定.
+                // SQL Server 互換モードで h2 を動作させているから可能になる指定方法.
+                sql += ((MemberImpl) orderByItem.getExpression()).toString();
+
                 if (orderByItem.isDescending()) {
                     sql += " DESC";
                 }
@@ -86,7 +88,7 @@ public class SimpleEntityDataBuilder {
                         .addProperty( //
                                 new Property(null, SimpleEdmProvider.FIELDS[2], ValueType.PRIMITIVE, //
                                         rset.getString(3)));
-                ent.setId(createId(SimpleEdmProvider.ES_PRODUCTS_NAME, rset.getInt(1)));
+                ent.setId(createId(SimpleEdmProvider.ES_MYPRODUCTS_NAME, rset.getInt(1)));
                 eCollection.getEntities().add(ent);
             }
         } catch (SQLException ex) {

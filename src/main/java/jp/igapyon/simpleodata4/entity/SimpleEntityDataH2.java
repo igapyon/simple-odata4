@@ -24,8 +24,9 @@ public class SimpleEntityDataH2 {
             e.printStackTrace();
             throw new IllegalArgumentException(e);
         }
-        final var jdbcConnStr = "jdbc:h2:mem:product;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=FALSE;CASE_INSENSITIVE_IDENTIFIERS=TRUE";
-        System.err.println("[connect jdbc] " + jdbcConnStr);
+        // SQL Server 互換モードで動作させる.
+        final var jdbcConnStr = "jdbc:h2:mem:product;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=FALSE;CASE_INSENSITIVE_IDENTIFIERS=TRUE;MODE=MSSQLServer";
+        System.err.println("TRACE: DEMO: [connect jdbc] " + jdbcConnStr);
         try {
             conn = DriverManager.getConnection(//
                     jdbcConnStr, "sa", "");
@@ -97,24 +98,47 @@ public class SimpleEntityDataH2 {
 
         try (var stmt = conn.prepareStatement(
                 "INSERT INTO Products (ID, Name, Description) VALUES (" + getQueryPlaceholderString(3) + ")")) {
-            stmt.setInt(1, 1);
+            int idCounter = 1;
+            stmt.setInt(1, idCounter++);
             stmt.setString(2, "MacBookPro16,2");
             stmt.setString(3, "MacBook Pro (13-inch, 2020, Thunderbolt 3ポートx 4)");
             stmt.executeUpdate();
 
             stmt.clearParameters();
-            stmt.setInt(1, 2);
+            stmt.setInt(1, idCounter++);
             stmt.setString(2, "MacBookPro E2015");
             stmt.setString(3, "MacBook Pro (Retina, 13-inch, Early 2015)");
             stmt.executeUpdate();
 
             stmt.clearParameters();
-            stmt.setInt(1, 3);
+            stmt.setInt(1, idCounter++);
             stmt.setString(2, "Surface Laptop 2");
             stmt.setString(3, "Surface Laptop 2, 画面:13.5 インチ PixelSense ディスプレイ, インテル Core");
             stmt.executeUpdate();
 
             conn.commit();
+
+            // 増殖カウント. 最終的に 5000を目標にしたい.
+            final int ZOUSYOKU = 10;
+
+            for (int index = 0; index < ZOUSYOKU; index++) {
+                stmt.clearParameters();
+                stmt.setInt(1, idCounter++);
+                stmt.setString(2, "PopTablet" + idCounter);
+                stmt.setString(3, "増殖タブレット" + idCounter);
+                stmt.executeUpdate();
+            }
+            conn.commit();
+
+            for (int index = 0; index < ZOUSYOKU; index++) {
+                stmt.clearParameters();
+                stmt.setInt(1, idCounter++);
+                stmt.setString(2, "DummyPC" + idCounter);
+                stmt.setString(3, "ダミーなPC" + idCounter);
+                stmt.executeUpdate();
+            }
+            conn.commit();
+
         } catch (SQLException ex) {
             throw new IllegalArgumentException("テーブル作成に失敗: " + ex.toString(), ex);
         }
