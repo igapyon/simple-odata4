@@ -1,9 +1,11 @@
 package jp.igapyon.simpleodata4.entity;
 
+import java.lang.reflect.Member;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
 
 import org.apache.olingo.commons.api.data.Entity;
 import org.apache.olingo.commons.api.data.EntityCollection;
@@ -11,6 +13,9 @@ import org.apache.olingo.commons.api.data.Property;
 import org.apache.olingo.commons.api.data.ValueType;
 import org.apache.olingo.commons.api.edm.EdmEntitySet;
 import org.apache.olingo.commons.api.ex.ODataRuntimeException;
+import org.apache.olingo.server.api.uri.UriInfo;
+import org.apache.olingo.server.api.uri.queryoption.OrderByItem;
+import org.apache.olingo.server.core.uri.queryoption.expression.MemberImpl;
 
 /**
  * 実際に返却するデータ本体を組み上げるクラス.
@@ -25,7 +30,7 @@ public class SimpleEntityDataBuilder {
      * @param edmEntitySet EDM要素セット.
      * @return 要素コレクション.
      */
-    public static EntityCollection buildData(EdmEntitySet edmEntitySet) {
+    public static EntityCollection buildData(EdmEntitySet edmEntitySet, UriInfo uriInfo) {
         // インメモリ作業データベースに接続.
         Connection conn = SimpleEntityDataH2.getH2Connection();
 
@@ -43,7 +48,31 @@ public class SimpleEntityDataBuilder {
             return eCollection;
         }
 
-        try (var stmt = conn.prepareStatement("SELECT ID, Name, Description FROM Products ORDER BY ID")) {
+        String sql = "SELECT ID, Name, Description FROM Products";
+
+        // TODO NOT IMPLEMENTED.
+        // if (uriInfo.getCountOption() != null) {
+        // }
+
+        if (uriInfo.getOrderByOption() != null) {
+            List<OrderByItem> orderByItemList = uriInfo.getOrderByOption().getOrders();
+            for (int index = 0; index < orderByItemList.size(); index++) {
+                OrderByItem orderByItem = orderByItemList.get(index);
+                if (index == 0) {
+                    sql += " ORDER BY ";
+                } else {
+                    sql += ",";
+                }
+                MemberImpl member = (MemberImpl) orderByItem.getExpression();
+                // 前後の鉤括弧を除去。
+                sql += member.toString().replace("[", "").replace("]", "");
+                if (orderByItem.isDescending()) {
+                    sql += " DESC";
+                }
+            }
+        }
+        System.err.println("TRACE:sql:" + sql);
+        try (var stmt = conn.prepareStatement(sql)) {
             stmt.executeQuery();
             var rset = stmt.getResultSet();
             for (; rset.next();) {
