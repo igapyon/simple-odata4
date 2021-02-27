@@ -17,10 +17,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * OData を Servlet として動作.
+ * OData を Spring Boot の Servlet として動作.
+ *
+ * EdmProvider と EntityCollectionProcessor を登録.
  */
 @RestController
-public class DemoServlet extends HttpServlet {
+public class SimpleServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     @Override
@@ -29,11 +31,15 @@ public class DemoServlet extends HttpServlet {
             throws ServletException, IOException {
         try {
             OData odata = OData.newInstance();
+
+            // EdmProvider を登録.
             ServiceMetadata edm = odata.createServiceMetadata(new DemoEdmProvider(), new ArrayList<EdmxReference>());
             ODataHttpHandler handler = odata.createHandler(edm);
+
             // EntityCollectionProcessor を登録.
             handler.register(new DemoEntityCollectionProcessor());
-            // Spring と Servlet を調整.
+
+            // Spring と Servlet の挙動を調整.
             handler.process(new HttpServletRequestWrapper(req) {
                 @Override
                 public String getServletPath() {
@@ -41,7 +47,7 @@ public class DemoServlet extends HttpServlet {
                 }
             }, resp);
         } catch (RuntimeException e) {
-            System.err.println("Server Error occurred in ExampleServlet");
+            System.err.println("Server Error: " + e.toString());
             throw new ServletException(e);
         }
     }
