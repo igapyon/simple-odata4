@@ -154,7 +154,7 @@ public class SimpleEntityCollectionProcessor implements EntityCollectionProcesso
      */
     private URI createId(String entitySetName, Object id) {
         try {
-            return new URI(entitySetName + "(" + String.valueOf(id) + ")");
+            return new URI(entitySetName + "-" + String.valueOf(id));
         } catch (URISyntaxException ex) {
             throw new ODataRuntimeException("Fail to create ID EntitySet name: " + entitySetName, ex);
         }
