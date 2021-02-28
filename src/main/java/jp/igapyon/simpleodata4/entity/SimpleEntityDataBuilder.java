@@ -17,10 +17,16 @@ import org.apache.olingo.commons.api.edm.EdmEntitySet;
 import org.apache.olingo.commons.api.ex.ODataRuntimeException;
 import org.apache.olingo.server.api.uri.UriInfo;
 import org.apache.olingo.server.api.uri.UriResource;
+import org.apache.olingo.server.api.uri.queryoption.FilterOption;
 import org.apache.olingo.server.api.uri.queryoption.OrderByItem;
 import org.apache.olingo.server.api.uri.queryoption.SelectItem;
+import org.apache.olingo.server.api.uri.queryoption.expression.Expression;
+import org.apache.olingo.server.core.uri.queryoption.FilterOptionImpl;
 import org.apache.olingo.server.core.uri.queryoption.SelectItemImpl;
+import org.apache.olingo.server.core.uri.queryoption.expression.BinaryImpl;
 import org.apache.olingo.server.core.uri.queryoption.expression.MemberImpl;
+
+import jp.igapyon.simpleodata4.util.ExprSqlUtil;
 
 /**
  * 実際に返却するデータ本体を組み上げるクラス.
@@ -81,6 +87,11 @@ public class SimpleEntityDataBuilder {
         // TODO NOT IMPLEMENTED.
         // if (uriInfo.getCountOption() != null) {
         // }
+
+        if (uriInfo.getFilterOption() != null) {
+            FilterOptionImpl filterOpt = (FilterOptionImpl) uriInfo.getFilterOption();
+            sql += " WHERE " + ExprSqlUtil.expand(filterOpt.getExpression());
+        }
 
         if (uriInfo.getOrderByOption() != null) {
             List<OrderByItem> orderByItemList = uriInfo.getOrderByOption().getOrders();
