@@ -17,7 +17,7 @@ class H2DatabaseTest {
 		// テーブルデータをセットアップ.
 		SimpleEntityDataH2.setupTableData(conn);
 
-		try (var stmt = conn.prepareStatement("SELECT ID, Name, Description FROM Products ORDER BY ID")) {
+		try (var stmt = conn.prepareStatement("SELECT ID, Name, Description FROM MyProducts ORDER BY ID")) {
 			stmt.executeQuery();
 			var rset = stmt.getResultSet();
 			for (; rset.next();) {

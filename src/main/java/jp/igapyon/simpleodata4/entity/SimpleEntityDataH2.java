@@ -68,7 +68,7 @@ public class SimpleEntityDataH2 {
         // System.err.println("TRACE: 作業用データベーステーブルを作成");
 
         try (var stmt = conn.prepareStatement("CREATE TABLE IF NOT EXISTS " //
-                + "Products (" //
+                + "MyProducts (" //
                 + "ID BIGINT NOT NULL" //
                 + ",Name VARCHAR(80)" //
                 + ",Description VARCHAR(250)" //
@@ -86,7 +86,7 @@ public class SimpleEntityDataH2 {
      * @param conn データベース接続。
      */
     public static void setupTableData(final Connection conn) {
-        try (var stmt = conn.prepareStatement("SELECT COUNT(ID) FROM Products")) {
+        try (var stmt = conn.prepareStatement("SELECT COUNT(ID) FROM MyProducts")) {
             stmt.executeQuery();
             var rset = stmt.getResultSet();
             rset.next();
@@ -100,7 +100,7 @@ public class SimpleEntityDataH2 {
         // System.err.println("TRACE: 作業用サンプルデータを作成");
 
         try (var stmt = conn.prepareStatement(
-                "INSERT INTO Products (ID, Name, Description) VALUES (" + getQueryPlaceholderString(3) + ")")) {
+                "INSERT INTO MyProducts (ID, Name, Description) VALUES (" + getQueryPlaceholderString(3) + ")")) {
             int idCounter = 1;
             stmt.setInt(1, idCounter++);
             stmt.setString(2, "MacBookPro16,2");
