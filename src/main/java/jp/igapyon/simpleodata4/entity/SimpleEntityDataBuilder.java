@@ -6,7 +6,6 @@ import java.sql.Connection;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.util.List;
 
 import org.apache.olingo.commons.api.data.Entity;
 import org.apache.olingo.commons.api.data.EntityCollection;
@@ -15,14 +14,8 @@ import org.apache.olingo.commons.api.data.ValueType;
 import org.apache.olingo.commons.api.edm.EdmEntitySet;
 import org.apache.olingo.commons.api.ex.ODataRuntimeException;
 import org.apache.olingo.server.api.uri.UriInfo;
-import org.apache.olingo.server.api.uri.UriResource;
-import org.apache.olingo.server.api.uri.queryoption.OrderByItem;
-import org.apache.olingo.server.api.uri.queryoption.SelectItem;
-import org.apache.olingo.server.core.uri.queryoption.FilterOptionImpl;
 import org.apache.olingo.server.core.uri.queryoption.SearchOptionImpl;
-import org.apache.olingo.server.core.uri.queryoption.expression.MemberImpl;
 
-import jp.igapyon.simpleodata4.util.ExprSqlUtil;
 import jp.igapyon.simpleodata4.util.TinySqlBuilder;
 
 /**
@@ -65,7 +58,7 @@ public class SimpleEntityDataBuilder {
         {
             // 件数をカウントして設定。
             TinySqlBuilder tinySql = new TinySqlBuilder();
-            String sql = tinySql.getSelectCount(uriInfo);
+            final String sql = tinySql.getSelectCountQuery(uriInfo);
 
             System.err.println("TRACE:SQL: " + sql);
             int countWithWhere = 0;
@@ -80,67 +73,8 @@ public class SimpleEntityDataBuilder {
             eCollection.setCount(countWithWhere);
         }
 
-        String sql = "SELECT ";
-
-        if (uriInfo.getSelectOption() == null) {
-            sql += "*";
-        } else {
-            boolean isIDExists = false;
-            int itemCount = 0;
-            for (SelectItem item : uriInfo.getSelectOption().getSelectItems()) {
-                // TODO STAR未対応.
-                for (UriResource res : item.getResourcePath().getUriResourceParts()) {
-                    sql += (itemCount++ == 0 ? "" : ",");
-                    sql += ("[" + res.toString() + "]");
-                    if (res.toString().equals("ID")) {
-                        isIDExists = true;
-                    }
-                }
-            }
-            if (!isIDExists) {
-                sql += (itemCount++ == 0 ? "" : ",");
-                sql += ("[ID]");
-            }
-        }
-
-        sql += " FROM MyProducts";
-
-        // TODO NOT IMPLEMENTED.
-        // if (uriInfo.getCountOption() != null) {
-        // }
-
-        if (uriInfo.getFilterOption() != null) {
-            FilterOptionImpl filterOpt = (FilterOptionImpl) uriInfo.getFilterOption();
-            sql += " WHERE " + ExprSqlUtil.expand(filterOpt.getExpression());
-        }
-
-        if (uriInfo.getOrderByOption() != null) {
-            List<OrderByItem> orderByItemList = uriInfo.getOrderByOption().getOrders();
-            for (int index = 0; index < orderByItemList.size(); index++) {
-                OrderByItem orderByItem = orderByItemList.get(index);
-                if (index == 0) {
-                    sql += " ORDER BY ";
-                } else {
-                    sql += ",";
-                }
-
-                // 項目名を SQL Serverクオート付きで指定.
-                // SQL Server 互換モードで h2 を動作させているから可能になる指定方法.
-                sql += ((MemberImpl) orderByItem.getExpression()).toString();
-
-                if (orderByItem.isDescending()) {
-                    sql += " DESC";
-                }
-            }
-        }
-
-        if (uriInfo.getTopOption() != null) {
-            sql += " LIMIT " + uriInfo.getTopOption().getValue();
-        }
-
-        if (uriInfo.getSkipOption() != null) {
-            sql += " OFFSET " + uriInfo.getSkipOption().getValue();
-        }
+        TinySqlBuilder tinySql = new TinySqlBuilder();
+        final String sql = tinySql.getSelectQuery(uriInfo);
 
         System.err.println("TRACE:SQL: " + sql);
         try (var stmt = conn.prepareStatement(sql)) {
