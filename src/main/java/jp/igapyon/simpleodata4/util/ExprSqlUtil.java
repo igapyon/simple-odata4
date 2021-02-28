@@ -55,6 +55,10 @@ public class ExprSqlUtil {
                 // h2 database の POSITION は 0 オリジンなので 1 を減らしています。
                 return "(POSITION(" + expand(impl.getParameters().get(1)) + "," + expand(impl.getParameters().get(0))
                         + ") - 1)";
+            } else if (impl.getMethod() == MethodKind.STARTSWITH) {
+                // h2 database の POSITION は 0 オリジンなので 1 を減らしています。
+                return "(POSITION(" + expand(impl.getParameters().get(1)) + "," + expand(impl.getParameters().get(0))
+                        + ") = 1)";
             } else {
                 System.err.println("対応しないMethodKind:" + impl.getMethod());
                 System.err.println("filterExpression:" + filterExpression.toString());
