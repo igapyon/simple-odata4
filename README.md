@@ -8,4 +8,7 @@ http://localhost:8080/simple.svc/MyProducts
 http://localhost:8080/simple.svc/MyProducts?$orderby=Description
 ```
 
+## 制限
+
+- 当面 `$search` はサポート外。
 

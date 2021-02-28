@@ -126,10 +126,15 @@ public class ExprSqlUtil {
     private static String expandMethod(MethodImpl impl) {
 
         // CONTAINS
+        if (impl.getMethod() == MethodKind.CONTAINS) {
+            // h2 database の POSITION は 1 オリジンで発見せずが0 なので 1 を減らしています。
+            return "(POSITION(" + expand(impl.getParameters().get(1)) + "," + expand(impl.getParameters().get(0))
+                    + ") > 0)";
+        }
 
         // STARTSWITH
         if (impl.getMethod() == MethodKind.STARTSWITH) {
-            // h2 database の POSITION は 0 オリジンなので 1 を減らしています。
+            // h2 database の POSITION は 1 オリジンで発見せずが0 なので 1 を減らしています。
             return "(POSITION(" + expand(impl.getParameters().get(1)) + "," + expand(impl.getParameters().get(0))
                     + ") = 1)";
         }
@@ -140,7 +145,7 @@ public class ExprSqlUtil {
 
         // INDEXOF
         if (impl.getMethod() == MethodKind.INDEXOF) {
-            // h2 database の POSITION は 0 オリジンなので 1 を減らしています。
+            // h2 database の POSITION は 1 オリジンで発見せずが0 なので 1 を減らしています。
             return "(POSITION(" + expand(impl.getParameters().get(1)) + "," + expand(impl.getParameters().get(0))
                     + ") - 1)";
         }
