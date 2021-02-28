@@ -161,8 +161,14 @@ public class TinySqlExprExpander {
     }
 
     private void expandLiteral(LiteralImpl impl) {
-        // そのままSQLのリテラルとする。
-        sqlInfo.getSqlBuilder().append(impl.toString());
+        // SQLリテラルはパラメータ化
+        sqlInfo.getSqlBuilder().append("?");
+        String value = impl.toString();
+        if (value.startsWith("'") && value.endsWith("'")) {
+            // 文字列リテラルについては前後のオートを除去.
+            value = value.substring(1, value.length() - 1);
+        }
+        sqlInfo.getSqlParamList().add(value);
     }
 
     private void expandMember(MemberImpl impl) {
@@ -194,8 +200,16 @@ public class TinySqlExprExpander {
         }
 
         // ENDSWITH
+        // TODO 未実装
 
         // LENGTH
+        if (impl.getMethod() == MethodKind.LENGTH) {
+            sqlInfo.getSqlBuilder().append("(LENGTH(");
+            expand(impl.getParameters().get(0));
+            sqlInfo.getSqlBuilder().append("))");
+            return;
+        }
+        // $top=20&$filter=(length(Description) gt 3)
 
         // INDEXOF
         if (impl.getMethod() == MethodKind.INDEXOF) {
@@ -209,26 +223,113 @@ public class TinySqlExprExpander {
         }
 
         // SUBSTRING
+        if (impl.getMethod() == MethodKind.SUBSTRING) {
+            sqlInfo.getSqlBuilder().append("(SUBSTRING(");
+            expand(impl.getParameters().get(0));
+            sqlInfo.getSqlBuilder().append(",");
+            expand(impl.getParameters().get(1));
+            if (impl.getParameters().size() > 1) {
+                sqlInfo.getSqlBuilder().append(",");
+                expand(impl.getParameters().get(2));
+            }
+            sqlInfo.getSqlBuilder().append("))");
+            return;
+        }
+        // $top=20&$filter=(substring(Description,1,2) eq '増殖')
 
         // TOLOWER
+        if (impl.getMethod() == MethodKind.TOLOWER) {
+            sqlInfo.getSqlBuilder().append("LOWER(");
+            expand(impl.getParameters().get(0));
+            sqlInfo.getSqlBuilder().append(")");
+            return;
+        }
+        // チェックのパターン.
+        // $top=20&$filter=(substringof(%27poptablet5%27,tolower(Name)))
 
         // TOUPPER
+        if (impl.getMethod() == MethodKind.TOUPPER) {
+            sqlInfo.getSqlBuilder().append("UPPER(");
+            expand(impl.getParameters().get(0));
+            sqlInfo.getSqlBuilder().append(")");
+            return;
+        }
+        // チェックのパターン.
+        // $top=20&$filter=(substringof(%27POPTABLET5%27,toupper(Name)))
 
         // TRIM
+        if (impl.getMethod() == MethodKind.TRIM) {
+            sqlInfo.getSqlBuilder().append("TRIM(");
+            expand(impl.getParameters().get(0));
+            sqlInfo.getSqlBuilder().append(")");
+            return;
+        }
+        // TODO 未テスト.
 
         // CONCAT
+        if (impl.getMethod() == MethodKind.CONCAT) {
+            sqlInfo.getSqlBuilder().append("CONCAT(");
+            expand(impl.getParameters().get(0));
+            sqlInfo.getSqlBuilder().append(",");
+            expand(impl.getParameters().get(1));
+            sqlInfo.getSqlBuilder().append(")");
+            return;
+        }
+        // TODO 未テスト.
 
         // YEAR
+        if (impl.getMethod() == MethodKind.YEAR) {
+            sqlInfo.getSqlBuilder().append("YEAR(");
+            expand(impl.getParameters().get(0));
+            sqlInfo.getSqlBuilder().append(")");
+            return;
+        }
+        // TODO 未テスト.
 
         // MONTH
+        if (impl.getMethod() == MethodKind.MONTH) {
+            sqlInfo.getSqlBuilder().append("MONTH(");
+            expand(impl.getParameters().get(0));
+            sqlInfo.getSqlBuilder().append(")");
+            return;
+        }
+        // TODO 未テスト.
 
         // DAY
+        if (impl.getMethod() == MethodKind.DAY) {
+            sqlInfo.getSqlBuilder().append("DAY_OF_MONTH(");
+            expand(impl.getParameters().get(0));
+            sqlInfo.getSqlBuilder().append(")");
+            return;
+        }
+        // TODO 未テスト.
 
         // HOUR
+        if (impl.getMethod() == MethodKind.HOUR) {
+            sqlInfo.getSqlBuilder().append("HOUR(");
+            expand(impl.getParameters().get(0));
+            sqlInfo.getSqlBuilder().append(")");
+            return;
+        }
+        // TODO 未テスト.
 
         // MINUTE
+        if (impl.getMethod() == MethodKind.MINUTE) {
+            sqlInfo.getSqlBuilder().append("MINUTE(");
+            expand(impl.getParameters().get(0));
+            sqlInfo.getSqlBuilder().append(")");
+            return;
+        }
+        // TODO 未テスト.
 
         // SECOND
+        if (impl.getMethod() == MethodKind.SECOND) {
+            sqlInfo.getSqlBuilder().append("SECOND(");
+            expand(impl.getParameters().get(0));
+            sqlInfo.getSqlBuilder().append(")");
+            return;
+        }
+        // TODO 未テスト.
 
         // FRACTIONALSECONDS
 
@@ -247,10 +348,31 @@ public class TinySqlExprExpander {
         // NOW
 
         // ROUND
+        if (impl.getMethod() == MethodKind.ROUND) {
+            sqlInfo.getSqlBuilder().append("ROUND(");
+            expand(impl.getParameters().get(0));
+            sqlInfo.getSqlBuilder().append(")");
+            return;
+        }
+        // TODO 未テスト.
 
         // FLOOR
+        if (impl.getMethod() == MethodKind.FLOOR) {
+            sqlInfo.getSqlBuilder().append("FLOOR(");
+            expand(impl.getParameters().get(0));
+            sqlInfo.getSqlBuilder().append(")");
+            return;
+        }
+        // TODO 未テスト.
 
         // CEILING
+        if (impl.getMethod() == MethodKind.CEILING) {
+            sqlInfo.getSqlBuilder().append("CEILING(");
+            expand(impl.getParameters().get(0));
+            sqlInfo.getSqlBuilder().append(")");
+            return;
+        }
+        // TODO 未テスト.
 
         // GEODISTANCE
 
@@ -263,6 +385,14 @@ public class TinySqlExprExpander {
         // ISOF
 
         // SUBSTRINGOF
+        if (impl.getMethod() == MethodKind.SUBSTRINGOF) {
+            sqlInfo.getSqlBuilder().append("(POSITION(");
+            expand(impl.getParameters().get(0));
+            sqlInfo.getSqlBuilder().append(",");
+            expand(impl.getParameters().get(1));
+            sqlInfo.getSqlBuilder().append(") > 0)");
+            return;
+        }
 
         final String message = "Unexpected Case: NOT SUPPORTED MethodKind:" + impl.getMethod() + "," + impl.toString()
                 + "]";

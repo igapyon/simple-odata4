@@ -7,6 +7,11 @@ http://localhost:8080/simple.svc/$metadata
 http://localhost:8080/simple.svc/MyProducts?$orderby=ID&$top=20
 ```
 
+## 参考 OData 2
+
+- https://www.odata.org/documentation/odata-version-2-0/uri-conventions/
+- http://www.h2database.com/html/functions.html
+
 ## TODO
 
 - TODO 検索条件をパラメータクエリに変更すること. (インジェクション対策)

@@ -12,30 +12,30 @@ import org.apache.olingo.server.core.uri.queryoption.expression.MemberImpl;
 public class TinySqlBuilder {
     private final TinySqlInfo sqlInfo = new TinySqlInfo();
 
+    public TinySqlInfo getSqlInfo() {
+        return sqlInfo;
+    }
+
     /**
      * 件数カウント用のSQLを生成.
      * 
      * @param uriInfo URI情報.
-     * @return SQL文.
      */
-    public String getSelectCountQuery(UriInfo uriInfo) {
+    public void getSelectCountQuery(UriInfo uriInfo) {
         sqlInfo.getSqlBuilder().append("SELECT COUNT(*) FROM MyProducts");
         if (uriInfo.getFilterOption() != null) {
             FilterOptionImpl filterOpt = (FilterOptionImpl) uriInfo.getFilterOption();
             sqlInfo.getSqlBuilder().append(" WHERE ");
             new TinySqlExprExpander(sqlInfo).expand(filterOpt.getExpression());
         }
-
-        return sqlInfo.getSqlBuilder().toString();
     }
 
     /**
      * 検索用のSQLを生成.
      * 
      * @param uriInfo URI情報.
-     * @return SQL文.
      */
-    public String getSelectQuery(UriInfo uriInfo) {
+    public void getSelectQuery(UriInfo uriInfo) {
         sqlInfo.getSqlBuilder().append("SELECT ");
 
         if (uriInfo.getSelectOption() == null) {
@@ -102,7 +102,5 @@ public class TinySqlBuilder {
             sqlInfo.getSqlBuilder().append(" OFFSET ");
             sqlInfo.getSqlBuilder().append(uriInfo.getSkipOption().getValue());
         }
-
-        return sqlInfo.getSqlBuilder().toString();
     }
 }
