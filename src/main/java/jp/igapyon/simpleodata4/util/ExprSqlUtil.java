@@ -1,6 +1,5 @@
 package jp.igapyon.simpleodata4.util;
 
-import org.apache.olingo.server.api.uri.queryoption.apply.BottomTop.Method;
 import org.apache.olingo.server.api.uri.queryoption.expression.BinaryOperatorKind;
 import org.apache.olingo.server.api.uri.queryoption.expression.Expression;
 import org.apache.olingo.server.api.uri.queryoption.expression.MethodKind;
@@ -29,25 +28,57 @@ public class ExprSqlUtil {
         } else if (filterExpression instanceof BinaryImpl) {
             BinaryImpl impl = (BinaryImpl) filterExpression;
             BinaryOperatorKind opKind = impl.getOperator();
-            if (opKind == BinaryOperatorKind.AND) {
-                return "(" + expand(impl.getLeftOperand()) + " AND " + expand(impl.getRightOperand()) + ")";
-            } else if (opKind == BinaryOperatorKind.OR) {
-                return "(" + expand(impl.getLeftOperand()) + " OR " + expand(impl.getRightOperand()) + ")";
-            } else if (opKind == BinaryOperatorKind.NE) {
-                return "(" + expand(impl.getLeftOperand()) + " <> " + expand(impl.getRightOperand()) + ")";
-            } else if (opKind == BinaryOperatorKind.EQ) {
-                return "(" + expand(impl.getLeftOperand()) + " = " + expand(impl.getRightOperand()) + ")";
-            } else if (opKind == BinaryOperatorKind.LT) {
-                return "(" + expand(impl.getLeftOperand()) + " < " + expand(impl.getRightOperand()) + ")";
-            } else if (opKind == BinaryOperatorKind.LE) {
-                return "(" + expand(impl.getLeftOperand()) + " <= " + expand(impl.getRightOperand()) + ")";
+
+            if (opKind == BinaryOperatorKind.HAS) {
+                // HAS
+                throw new IllegalArgumentException("NOT IMPLEMENTED:" + opKind);
+            } else if (opKind == BinaryOperatorKind.IN) {
+                // IN
+                throw new IllegalArgumentException("NOT IMPLEMENTED:" + opKind);
+            } else if (opKind == BinaryOperatorKind.MUL) {
+                // MUL
+                throw new IllegalArgumentException("NOT IMPLEMENTED:" + opKind);
+            } else if (opKind == BinaryOperatorKind.DIV) {
+                // DIV
+                throw new IllegalArgumentException("NOT IMPLEMENTED:" + opKind);
+            } else if (opKind == BinaryOperatorKind.MOD) {
+                // MOD
+                throw new IllegalArgumentException("NOT IMPLEMENTED:" + opKind);
+            } else if (opKind == BinaryOperatorKind.ADD) {
+                // ADD
+                throw new IllegalArgumentException("NOT IMPLEMENTED:" + opKind);
+            } else if (opKind == BinaryOperatorKind.SUB) {
+                // SUB
+                throw new IllegalArgumentException("NOT IMPLEMENTED:" + opKind);
             } else if (opKind == BinaryOperatorKind.GT) {
+                // GT
                 return "(" + expand(impl.getLeftOperand()) + " > " + expand(impl.getRightOperand()) + ")";
             } else if (opKind == BinaryOperatorKind.GE) {
+                // GE
                 return "(" + expand(impl.getLeftOperand()) + " >= " + expand(impl.getRightOperand()) + ")";
+
+            } else if (opKind == BinaryOperatorKind.LT) {
+                // LT
+                return "(" + expand(impl.getLeftOperand()) + " < " + expand(impl.getRightOperand()) + ")";
+            } else if (opKind == BinaryOperatorKind.LE) {
+                // LE
+                return "(" + expand(impl.getLeftOperand()) + " <= " + expand(impl.getRightOperand()) + ")";
+            } else if (opKind == BinaryOperatorKind.EQ) {
+                // EQ
+                return "(" + expand(impl.getLeftOperand()) + " = " + expand(impl.getRightOperand()) + ")";
+            } else if (opKind == BinaryOperatorKind.NE) {
+                // NE
+                return "(" + expand(impl.getLeftOperand()) + " <> " + expand(impl.getRightOperand()) + ")";
+            } else if (opKind == BinaryOperatorKind.AND) {
+                // AND
+                return "(" + expand(impl.getLeftOperand()) + " AND " + expand(impl.getRightOperand()) + ")";
+            } else if (opKind == BinaryOperatorKind.OR) {
+                // OR
+                return "(" + expand(impl.getLeftOperand()) + " OR " + expand(impl.getRightOperand()) + ")";
             } else {
-                System.err.println("対応しないOperator:" + opKind);
-                return "[unsupported Operator:" + opKind + "," + impl.toString() + "]";
+                final String message = "Unexpected Case: Unsupported operator:" + opKind + "," + impl.toString() + "]";
+                System.err.println(message);
+                throw new IllegalArgumentException(message);
             }
         } else if (filterExpression instanceof MethodImpl) {
             MethodImpl impl = (MethodImpl) filterExpression;
