@@ -1,10 +1,15 @@
 package jp.igapyon.simpleodata4.util;
 
+import org.apache.olingo.server.api.uri.queryoption.apply.BottomTop.Method;
 import org.apache.olingo.server.api.uri.queryoption.expression.BinaryOperatorKind;
 import org.apache.olingo.server.api.uri.queryoption.expression.Expression;
+import org.apache.olingo.server.api.uri.queryoption.expression.MethodKind;
+import org.apache.olingo.server.api.uri.queryoption.expression.UnaryOperatorKind;
 import org.apache.olingo.server.core.uri.queryoption.expression.BinaryImpl;
 import org.apache.olingo.server.core.uri.queryoption.expression.LiteralImpl;
 import org.apache.olingo.server.core.uri.queryoption.expression.MemberImpl;
+import org.apache.olingo.server.core.uri.queryoption.expression.MethodImpl;
+import org.apache.olingo.server.core.uri.queryoption.expression.UnaryImpl;
 
 public class ExprSqlUtil {
     private ExprSqlUtil() {
@@ -32,9 +37,41 @@ public class ExprSqlUtil {
                 return "(" + expand(impl.getLeftOperand()) + " <> " + expand(impl.getRightOperand()) + ")";
             } else if (opKind == BinaryOperatorKind.EQ) {
                 return "(" + expand(impl.getLeftOperand()) + " = " + expand(impl.getRightOperand()) + ")";
+            } else if (opKind == BinaryOperatorKind.LT) {
+                return "(" + expand(impl.getLeftOperand()) + " < " + expand(impl.getRightOperand()) + ")";
+            } else if (opKind == BinaryOperatorKind.LE) {
+                return "(" + expand(impl.getLeftOperand()) + " <= " + expand(impl.getRightOperand()) + ")";
+            } else if (opKind == BinaryOperatorKind.GT) {
+                return "(" + expand(impl.getLeftOperand()) + " > " + expand(impl.getRightOperand()) + ")";
+            } else if (opKind == BinaryOperatorKind.GE) {
+                return "(" + expand(impl.getLeftOperand()) + " >= " + expand(impl.getRightOperand()) + ")";
             } else {
                 System.err.println("対応しないOperator:" + opKind);
                 return "[unsupported Operator:" + opKind + "," + impl.toString() + "]";
+            }
+        } else if (filterExpression instanceof MethodImpl) {
+            MethodImpl impl = (MethodImpl) filterExpression;
+            if (impl.getMethod() == MethodKind.INDEXOF) {
+                // h2 database の POSITION は 0 オリジンなので 1 を減らしています。
+                return "(POSITION(" + expand(impl.getParameters().get(1)) + "," + expand(impl.getParameters().get(0))
+                        + ") - 1)";
+            } else if (impl.getMethod() == MethodKind.STARTSWITH) {
+                // h2 database の POSITION は 0 オリジンなので 1 を減らしています。
+                return "(POSITION(" + expand(impl.getParameters().get(1)) + "," + expand(impl.getParameters().get(0))
+                        + ") = 1)";
+            } else {
+                System.err.println("対応しないMethodKind:" + impl.getMethod());
+                System.err.println("filterExpression:" + filterExpression.toString());
+            }
+        } else if (filterExpression instanceof UnaryImpl) {
+            UnaryImpl impl = (UnaryImpl) filterExpression;
+            if (impl.getOperator() == UnaryOperatorKind.NOT) {
+                return "(NOT (" + expand(impl.getOperand()) + "))";
+            } else if (impl.getOperator() == UnaryOperatorKind.MINUS) {
+                return "(-(" + expand(impl.getOperand()) + "))";
+            } else {
+                System.err.println("対応しないUnaryOperatorKind:" + impl.getOperator());
+                System.err.println("filterExpression:" + filterExpression.toString());
             }
         } else {
             System.err.println("対応しないクラス:" + filterExpression.getClass().getName());

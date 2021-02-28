@@ -59,6 +59,27 @@ public class SimpleEntityDataBuilder {
             return eCollection;
         }
 
+        {
+            // 件数をカウントして設定。
+            int countWithWhere = 0;
+            String sql = "SELECT COUNT(*) FROM MyProducts";
+            if (uriInfo.getFilterOption() != null) {
+                FilterOptionImpl filterOpt = (FilterOptionImpl) uriInfo.getFilterOption();
+                sql += " WHERE " + ExprSqlUtil.expand(filterOpt.getExpression());
+            }
+
+            System.err.println("TRACE:SQL: " + sql);
+            try (var stmt = conn.prepareStatement(sql)) {
+                stmt.executeQuery();
+                var rset = stmt.getResultSet();
+                rset.next();
+                countWithWhere = rset.getInt(1);
+            } catch (SQLException ex) {
+                throw new IllegalArgumentException("検索失敗:" + ex.toString(), ex);
+            }
+            eCollection.setCount(countWithWhere);
+        }
+
         String sql = "SELECT ";
 
         if (uriInfo.getSelectOption() == null) {
@@ -82,7 +103,7 @@ public class SimpleEntityDataBuilder {
             }
         }
 
-        sql += " FROM Products";
+        sql += " FROM MyProducts";
 
         // TODO NOT IMPLEMENTED.
         // if (uriInfo.getCountOption() != null) {
@@ -121,7 +142,7 @@ public class SimpleEntityDataBuilder {
             sql += " OFFSET " + uriInfo.getSkipOption().getValue();
         }
 
-        System.err.println("TRACE:sql:" + sql);
+        System.err.println("TRACE:SQL: " + sql);
         try (var stmt = conn.prepareStatement(sql)) {
             stmt.executeQuery();
             var rset = stmt.getResultSet();

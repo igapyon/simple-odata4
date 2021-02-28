@@ -89,8 +89,6 @@ public class SimpleEntityCollectionProcessor implements EntityCollectionProcesso
         ;
         final CountOptionImpl copt = new CountOptionImpl();
         copt.setValue(true);
-        // TODO 考慮不足。件数ではなくて別途COUNTすべき。
-        eCollection.setCount(eCollection.getEntities().size());
         // 直列化の処理.
         EntityCollectionSerializerOptions opts = EntityCollectionSerializerOptions.with() //
                 .id(id).count(copt).contextURL(conUrl).build();
