@@ -53,9 +53,8 @@ public class ExprSqlUtil {
             MethodImpl impl = (MethodImpl) filterExpression;
             if (impl.getMethod() == MethodKind.INDEXOF) {
                 // h2 database の POSITION は 0 オリジンなので 1 を減らしています。
-                // FIXME get(0)とかでなくってパースしなきゃ。
-                return "(POSITION(" + impl.getParameters().get(1).toString() + ","
-                        + impl.getParameters().get(0).toString() + ") - 1)";
+                return "(POSITION(" + expand(impl.getParameters().get(1)) + "," + expand(impl.getParameters().get(0))
+                        + ") - 1)";
             } else {
                 System.err.println("対応しないMethodKind:" + impl.getMethod());
                 System.err.println("filterExpression:" + filterExpression.toString());
