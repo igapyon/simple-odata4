@@ -26,6 +26,8 @@ import org.apache.olingo.server.core.uri.queryoption.SelectItemImpl;
 import org.apache.olingo.server.core.uri.queryoption.expression.BinaryImpl;
 import org.apache.olingo.server.core.uri.queryoption.expression.MemberImpl;
 
+import jp.igapyon.simpleodata4.util.ExprSqlUtil;
+
 /**
  * 実際に返却するデータ本体を組み上げるクラス.
  */
@@ -88,17 +90,7 @@ public class SimpleEntityDataBuilder {
 
         if (uriInfo.getFilterOption() != null) {
             FilterOptionImpl filterOpt = (FilterOptionImpl) uriInfo.getFilterOption();
-            System.err.println("class:" + filterOpt.getClass().getName());
-            System.err.println("getText:" + filterOpt.getText());
-            System.err.println("getExpression:" + filterOpt.getExpression());
-            System.err.println("getExpression:class:" + filterOpt.getExpression().getClass().getName());
-            BinaryImpl impl = (BinaryImpl) filterOpt.getExpression();
-            System.err.println("exp:left" + impl.getLeftOperand());
-            System.err.println("exp:op" + impl.getOperator());
-            System.err.println("exp:right" + impl.getRightOperand());
-            // for (Expression exp : impl.getExpressions()) {
-            // System.err.println("exp:"+exp.toString());
-            // }
+            sql += " WHERE " + ExprSqlUtil.expand(filterOpt.getExpression());
         }
 
         if (uriInfo.getOrderByOption() != null) {
