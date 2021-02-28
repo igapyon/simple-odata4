@@ -166,7 +166,7 @@ public class TinySqlExprExpander {
         sqlInfo.getSqlBuilder().append("?");
         String value = impl.toString();
         if (value.startsWith("'") && value.endsWith("'")) {
-            // 文字列リテラルについては全獄オートを除去.
+            // 文字列リテラルについては前後のオートを除去.
             value = value.substring(1, value.length() - 1);
         }
         sqlInfo.getSqlParamList().add(value);
