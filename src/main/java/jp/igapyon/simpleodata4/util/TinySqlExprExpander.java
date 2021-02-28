@@ -215,7 +215,19 @@ public class TinySqlExprExpander {
         }
 
         // SUBSTRING
-
+        if (impl.getMethod() == MethodKind.SUBSTRING) {
+            sqlInfo.getSqlBuilder().append("(SUBSTRING(");
+            expand(impl.getParameters().get(0));
+            sqlInfo.getSqlBuilder().append(",");
+            expand(impl.getParameters().get(1));
+            if (impl.getParameters().size() > 1) {
+                sqlInfo.getSqlBuilder().append(",");
+                expand(impl.getParameters().get(2));
+            }
+            sqlInfo.getSqlBuilder().append("))");
+            return;
+        }
+        // $top=20&$filter=(substring(Description,1,2) eq '増殖')
 
         // TOLOWER
         if (impl.getMethod() == MethodKind.TOLOWER) {
