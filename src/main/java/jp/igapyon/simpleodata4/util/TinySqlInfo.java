@@ -5,13 +5,13 @@ import java.util.List;
 
 public class TinySqlInfo {
     private final StringBuilder sqlBuilder = new StringBuilder();
-    private final List<?> sqlParamList = new ArrayList<>();
+    private final List<Object> sqlParamList = new ArrayList<>();
 
     public StringBuilder getSqlBuilder() {
         return sqlBuilder;
     }
 
-    public List<?> getSqlParamList() {
+    public List<Object> getSqlParamList() {
         return sqlParamList;
     }
 }

@@ -163,6 +163,7 @@ public class TinySqlExprExpander {
     private void expandLiteral(LiteralImpl impl) {
         // そのままSQLのリテラルとする。
         sqlInfo.getSqlBuilder().append(impl.toString());
+        sqlInfo.getSqlParamList().add(impl.toString());
     }
 
     private void expandMember(MemberImpl impl) {
