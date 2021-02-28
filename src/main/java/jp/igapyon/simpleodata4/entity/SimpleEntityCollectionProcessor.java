@@ -22,6 +22,9 @@ import org.apache.olingo.server.api.serializer.SerializerResult;
 import org.apache.olingo.server.api.uri.UriInfo;
 import org.apache.olingo.server.api.uri.UriResource;
 import org.apache.olingo.server.api.uri.UriResourceEntitySet;
+import org.apache.olingo.server.api.uri.queryoption.CountOption;
+import org.apache.olingo.server.api.uri.queryoption.SystemQueryOptionKind;
+import org.apache.olingo.server.core.uri.queryoption.CountOptionImpl;
 
 /**
  * OData 要素コレクションを処理するクラス.
@@ -65,13 +68,14 @@ public class SimpleEntityCollectionProcessor implements EntityCollectionProcesso
         // URI情報からURIリソースの指定を取得.
         List<UriResource> resourcePaths = uriInfo.getUriResourceParts();
         // URIリソースの最初のものを要素セット指定とみなす.
+        // TODO FIXME いまは1番目の項目のみ処理.
         UriResourceEntitySet uriResourceEntitySet = (UriResourceEntitySet) resourcePaths.get(0);
         // 要素セットの指定からEDM要素セットを取得.
         EdmEntitySet edmEntitySet = uriResourceEntitySet.getEntitySet();
 
         // 要素セットの指定をもとに要素コレクションを取得.
         // これがデータ本体に該当.
-        EntityCollection eCollection = SimpleEntityDataBuilder.buildData(edmEntitySet);
+        final EntityCollection eCollection = SimpleEntityDataBuilder.buildData(edmEntitySet, uriInfo);
 
         // 指定のレスポンスフォーマットに合致する直列化を準備.
         ODataSerializer serializer = odata.createSerializer(responseFormat);
@@ -82,9 +86,12 @@ public class SimpleEntityCollectionProcessor implements EntityCollectionProcesso
 
         // 要素のIdを作成.
         final String id = request.getRawBaseUri() + "/" + edmEntitySet.getName();
+        ;
+        final CountOptionImpl copt = new CountOptionImpl();
+        copt.setValue(true);
         // 直列化の処理.
         EntityCollectionSerializerOptions opts = EntityCollectionSerializerOptions.with() //
-                .id(id).contextURL(conUrl).build();
+                .id(id).count(copt).contextURL(conUrl).build();
         SerializerResult serResult = serializer.entityCollection( //
                 serviceMetadata, edmEntityType, eCollection, opts);
 

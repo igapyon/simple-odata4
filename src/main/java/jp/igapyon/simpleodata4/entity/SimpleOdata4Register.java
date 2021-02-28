@@ -1,5 +1,7 @@
 package jp.igapyon.simpleodata4.entity;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 
 import javax.servlet.ServletException;
@@ -29,6 +31,15 @@ public class SimpleOdata4Register {
      */
     @RequestMapping("/simple.svc/*")
     private void serv(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException {
+        String uri = req.getRequestURI();
+        if (req.getQueryString() != null) {
+            try {
+                uri += "?" + URLDecoder.decode(req.getQueryString(), "UTF-8");
+            } catch (UnsupportedEncodingException ex) {
+                throw new IllegalArgumentException("デコード失敗:" + ex.toString(), ex);
+            }
+        }
+        System.err.println("TRACE: OData v4: URI: " + uri);
         try {
             OData odata = OData.newInstance();
 

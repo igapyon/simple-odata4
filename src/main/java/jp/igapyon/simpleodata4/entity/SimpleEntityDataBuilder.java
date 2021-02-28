@@ -1,7 +1,12 @@
 package jp.igapyon.simpleodata4.entity;
 
+import java.lang.reflect.Member;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.sql.Connection;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Types;
 import java.util.List;
 
 import org.apache.olingo.commons.api.data.Entity;
@@ -10,6 +15,18 @@ import org.apache.olingo.commons.api.data.Property;
 import org.apache.olingo.commons.api.data.ValueType;
 import org.apache.olingo.commons.api.edm.EdmEntitySet;
 import org.apache.olingo.commons.api.ex.ODataRuntimeException;
+import org.apache.olingo.server.api.uri.UriInfo;
+import org.apache.olingo.server.api.uri.UriResource;
+import org.apache.olingo.server.api.uri.queryoption.FilterOption;
+import org.apache.olingo.server.api.uri.queryoption.OrderByItem;
+import org.apache.olingo.server.api.uri.queryoption.SelectItem;
+import org.apache.olingo.server.api.uri.queryoption.expression.Expression;
+import org.apache.olingo.server.core.uri.queryoption.FilterOptionImpl;
+import org.apache.olingo.server.core.uri.queryoption.SelectItemImpl;
+import org.apache.olingo.server.core.uri.queryoption.expression.BinaryImpl;
+import org.apache.olingo.server.core.uri.queryoption.expression.MemberImpl;
+
+import jp.igapyon.simpleodata4.util.ExprSqlUtil;
 
 /**
  * 実際に返却するデータ本体を組み上げるクラス.
@@ -24,38 +41,142 @@ public class SimpleEntityDataBuilder {
      * @param edmEntitySet EDM要素セット.
      * @return 要素コレクション.
      */
-    public static EntityCollection buildData(EdmEntitySet edmEntitySet) {
+    public static EntityCollection buildData(EdmEntitySet edmEntitySet, UriInfo uriInfo) {
+        // インメモリ作業データベースに接続.
+        Connection conn = SimpleEntityDataH2.getH2Connection();
+
+        // テーブルをセットアップ.
+        SimpleEntityDataH2.setupTable(conn);
+
+        // テーブルデータをセットアップ.
+        // サンプルデータ.
+        SimpleEntityDataH2.setupTableData(conn);
+
         EntityCollection eCollection = new EntityCollection();
 
-        if (!SimpleEdmProvider.ES_PRODUCTS_NAME.equals(edmEntitySet.getName())) {
+        if (!SimpleEdmProvider.ES_MYPRODUCTS_NAME.equals(edmEntitySet.getName())) {
             // 処理対象外の要素セットです. 処理せずに戻します.
             return eCollection;
         }
 
-        // いくつかサンプルデータを作成.
-        final Entity e1 = new Entity() //
-                .addProperty(new Property(null, SimpleEdmProvider.FIELDS[0], ValueType.PRIMITIVE, 1))
-                .addProperty(new Property(null, SimpleEdmProvider.FIELDS[1], ValueType.PRIMITIVE, "MacBookPro16,2"))
-                .addProperty(new Property(null, SimpleEdmProvider.FIELDS[2], ValueType.PRIMITIVE,
-                        "MacBook Pro (13-inch, 2020, Thunderbolt 3ポートx 4)"));
-        e1.setId(createId(SimpleEdmProvider.ES_PRODUCTS_NAME, 1));
-        eCollection.getEntities().add(e1);
+        {
+            // 件数をカウントして設定。
+            int countWithWhere = 0;
+            String sql = "SELECT COUNT(*) FROM MyProducts";
+            if (uriInfo.getFilterOption() != null) {
+                FilterOptionImpl filterOpt = (FilterOptionImpl) uriInfo.getFilterOption();
+                sql += " WHERE " + ExprSqlUtil.expand(filterOpt.getExpression());
+            }
 
-        final Entity e2 = new Entity() //
-                .addProperty(new Property(null, SimpleEdmProvider.FIELDS[0], ValueType.PRIMITIVE, 2))
-                .addProperty(new Property(null, SimpleEdmProvider.FIELDS[1], ValueType.PRIMITIVE, "MacBookPro E2015"))
-                .addProperty(new Property(null, SimpleEdmProvider.FIELDS[2], ValueType.PRIMITIVE,
-                        "MacBook Pro (Retina, 13-inch, Early 2015)"));
-        e2.setId(createId(SimpleEdmProvider.ES_PRODUCTS_NAME, 2));
-        eCollection.getEntities().add(e2);
+            System.err.println("TRACE:SQL: " + sql);
+            try (var stmt = conn.prepareStatement(sql)) {
+                stmt.executeQuery();
+                var rset = stmt.getResultSet();
+                rset.next();
+                countWithWhere = rset.getInt(1);
+            } catch (SQLException ex) {
+                throw new IllegalArgumentException("検索失敗:" + ex.toString(), ex);
+            }
+            eCollection.setCount(countWithWhere);
+        }
 
-        final Entity e3 = new Entity() //
-                .addProperty(new Property(null, SimpleEdmProvider.FIELDS[0], ValueType.PRIMITIVE, 3))
-                .addProperty(new Property(null, SimpleEdmProvider.FIELDS[1], ValueType.PRIMITIVE, "Surface Laptop 2"))
-                .addProperty(new Property(null, SimpleEdmProvider.FIELDS[2], ValueType.PRIMITIVE,
-                        "Surface Laptop 2, 画面:13.5 インチ PixelSense ディスプレイ, インテル Core"));
-        e3.setId(createId(SimpleEdmProvider.ES_PRODUCTS_NAME, 3));
-        eCollection.getEntities().add(e3);
+        String sql = "SELECT ";
+
+        if (uriInfo.getSelectOption() == null) {
+            sql += "*";
+        } else {
+            boolean isIDExists = false;
+            int itemCount = 0;
+            for (SelectItem item : uriInfo.getSelectOption().getSelectItems()) {
+                // TODO STAR未対応.
+                for (UriResource res : item.getResourcePath().getUriResourceParts()) {
+                    sql += (itemCount++ == 0 ? "" : ",");
+                    sql += ("[" + res.toString() + "]");
+                    if (res.toString().equals("ID")) {
+                        isIDExists = true;
+                    }
+                }
+            }
+            if (!isIDExists) {
+                sql += (itemCount++ == 0 ? "" : ",");
+                sql += ("[ID]");
+            }
+        }
+
+        sql += " FROM MyProducts";
+
+        // TODO NOT IMPLEMENTED.
+        // if (uriInfo.getCountOption() != null) {
+        // }
+
+        if (uriInfo.getFilterOption() != null) {
+            FilterOptionImpl filterOpt = (FilterOptionImpl) uriInfo.getFilterOption();
+            sql += " WHERE " + ExprSqlUtil.expand(filterOpt.getExpression());
+        }
+
+        if (uriInfo.getOrderByOption() != null) {
+            List<OrderByItem> orderByItemList = uriInfo.getOrderByOption().getOrders();
+            for (int index = 0; index < orderByItemList.size(); index++) {
+                OrderByItem orderByItem = orderByItemList.get(index);
+                if (index == 0) {
+                    sql += " ORDER BY ";
+                } else {
+                    sql += ",";
+                }
+
+                // 項目名を SQL Serverクオート付きで指定.
+                // SQL Server 互換モードで h2 を動作させているから可能になる指定方法.
+                sql += ((MemberImpl) orderByItem.getExpression()).toString();
+
+                if (orderByItem.isDescending()) {
+                    sql += " DESC";
+                }
+            }
+        }
+
+        if (uriInfo.getTopOption() != null) {
+            sql += " LIMIT " + uriInfo.getTopOption().getValue();
+        }
+
+        if (uriInfo.getSkipOption() != null) {
+            sql += " OFFSET " + uriInfo.getSkipOption().getValue();
+        }
+
+        System.err.println("TRACE:SQL: " + sql);
+        try (var stmt = conn.prepareStatement(sql)) {
+            stmt.executeQuery();
+            var rset = stmt.getResultSet();
+            for (; rset.next();) {
+                final Entity ent = new Entity();
+                ResultSetMetaData rsmeta = rset.getMetaData();
+                for (int index = 0; index < rsmeta.getColumnCount(); index++) {
+                    switch (rsmeta.getColumnType(index + 1)) {
+                        case Types.BIGINT:
+                        case Types.INTEGER:
+                        case Types.SMALLINT:
+                            ent.addProperty( //
+                                    new Property(null, rsmeta.getColumnName(index + 1), ValueType.PRIMITIVE, //
+                                            rset.getInt(index + 1)));
+                            break;
+                        default:
+                            ent.addProperty( //
+                                    new Property(null, rsmeta.getColumnName(index + 1), ValueType.PRIMITIVE, //
+                                            rset.getString(index + 1)));
+                            break;
+                    }
+                }
+                ent.setId(createId(SimpleEdmProvider.ES_MYPRODUCTS_NAME, rset.getInt("ID")));
+                eCollection.getEntities().add(ent);
+            }
+        } catch (SQLException ex) {
+            throw new IllegalArgumentException("検索失敗:" + ex.toString(), ex);
+        }
+
+        try {
+            conn.close();
+        } catch (SQLException ex) {
+            throw new IllegalArgumentException("検索失敗:" + ex.toString(), ex);
+        }
 
         return eCollection;
     }
@@ -69,7 +190,7 @@ public class SimpleEntityDataBuilder {
      */
     public static URI createId(String entitySetName, Object id) {
         try {
-            return new URI(entitySetName + "-" + String.valueOf(id));
+            return new URI(entitySetName + "(" + String.valueOf(id) + ")");
         } catch (URISyntaxException ex) {
             throw new ODataRuntimeException("Fail to create ID EntitySet name: " + entitySetName, ex);
         }
