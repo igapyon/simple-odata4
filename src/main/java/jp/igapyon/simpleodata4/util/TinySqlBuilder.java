@@ -19,13 +19,14 @@ public class TinySqlBuilder {
      * @return SQL文.
      */
     public String getSelectCountQuery(UriInfo uriInfo) {
-        String sql = "SELECT COUNT(*) FROM MyProducts";
+        sqlInfo.getSqlBuilder().append("SELECT COUNT(*) FROM MyProducts");
         if (uriInfo.getFilterOption() != null) {
             FilterOptionImpl filterOpt = (FilterOptionImpl) uriInfo.getFilterOption();
-            sql += " WHERE " + new TinySqlExprExpander(sqlInfo).expand(filterOpt.getExpression());
+            sqlInfo.getSqlBuilder().append(" WHERE ");
+            new TinySqlExprExpander(sqlInfo).expand(filterOpt.getExpression());
         }
 
-        return sql;
+        return sqlInfo.getSqlBuilder().toString();
     }
 
     /**
@@ -35,18 +36,18 @@ public class TinySqlBuilder {
      * @return SQL文.
      */
     public String getSelectQuery(UriInfo uriInfo) {
-        String sql = "SELECT ";
+        sqlInfo.getSqlBuilder().append("SELECT ");
 
         if (uriInfo.getSelectOption() == null) {
-            sql += "*";
+            sqlInfo.getSqlBuilder().append("*");
         } else {
             boolean isIDExists = false;
             int itemCount = 0;
             for (SelectItem item : uriInfo.getSelectOption().getSelectItems()) {
                 // TODO STAR未対応.
                 for (UriResource res : item.getResourcePath().getUriResourceParts()) {
-                    sql += (itemCount++ == 0 ? "" : ",");
-                    sql += ("[" + res.toString() + "]");
+                    sqlInfo.getSqlBuilder().append(itemCount++ == 0 ? "" : ",");
+                    sqlInfo.getSqlBuilder().append("[" + res.toString() + "]");
                     if (res.toString().equals("ID")) {
                         isIDExists = true;
                     }
@@ -54,13 +55,13 @@ public class TinySqlBuilder {
             }
             if (!isIDExists) {
                 // レコードを一位に表すID項目が必須。検索対象にない場合は追加.
-                sql += (itemCount++ == 0 ? "" : ",");
-                sql += ("[ID]");
+                sqlInfo.getSqlBuilder().append(itemCount++ == 0 ? "" : ",");
+                sqlInfo.getSqlBuilder().append("[ID]");
             }
         }
 
         // 取得元のテーブル.
-        sql += " FROM MyProducts";
+        sqlInfo.getSqlBuilder().append(" FROM MyProducts");
 
         // uriInfo.getCountOption は明示的には記載しない.
         // 現状の実装では指定があろうがなかろうが件数はカウントする実装となっている.
@@ -68,7 +69,8 @@ public class TinySqlBuilder {
         if (uriInfo.getFilterOption() != null) {
             FilterOptionImpl filterOpt = (FilterOptionImpl) uriInfo.getFilterOption();
             // TODO WHERE部分についてはパラメータクエリ化が望ましい.
-            sql += " WHERE " + new TinySqlExprExpander(sqlInfo).expand(filterOpt.getExpression());
+            sqlInfo.getSqlBuilder().append(" WHERE ");
+            new TinySqlExprExpander(sqlInfo).expand(filterOpt.getExpression());
         }
 
         if (uriInfo.getOrderByOption() != null) {
@@ -76,29 +78,31 @@ public class TinySqlBuilder {
             for (int index = 0; index < orderByItemList.size(); index++) {
                 OrderByItem orderByItem = orderByItemList.get(index);
                 if (index == 0) {
-                    sql += " ORDER BY ";
+                    sqlInfo.getSqlBuilder().append(" ORDER BY ");
                 } else {
-                    sql += ",";
+                    sqlInfo.getSqlBuilder().append(",");
                 }
 
                 // 項目名を SQL Serverクオート付きで指定.
                 // SQL Server 互換モードで h2 を動作させているから可能になる指定方法.
-                sql += ((MemberImpl) orderByItem.getExpression()).toString();
+                sqlInfo.getSqlBuilder().append((MemberImpl) orderByItem.getExpression()).toString();
 
                 if (orderByItem.isDescending()) {
-                    sql += " DESC";
+                    sqlInfo.getSqlBuilder().append(" DESC");
                 }
             }
         }
 
         if (uriInfo.getTopOption() != null) {
-            sql += " LIMIT " + uriInfo.getTopOption().getValue();
+            sqlInfo.getSqlBuilder().append(" LIMIT ");
+            sqlInfo.getSqlBuilder().append(uriInfo.getTopOption().getValue());
         }
 
         if (uriInfo.getSkipOption() != null) {
-            sql += " OFFSET " + uriInfo.getSkipOption().getValue();
+            sqlInfo.getSqlBuilder().append(" OFFSET ");
+            sqlInfo.getSqlBuilder().append(uriInfo.getSkipOption().getValue());
         }
 
-        return sql;
+        return sqlInfo.getSqlBuilder().toString();
     }
 }
