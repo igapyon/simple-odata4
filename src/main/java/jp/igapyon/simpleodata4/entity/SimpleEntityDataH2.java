@@ -8,6 +8,9 @@ import java.sql.SQLException;
  * 実際に返却するデータ本体を組み上げるクラス.
  */
 public class SimpleEntityDataH2 {
+    // 増殖カウント. 最終的に 5000を目標にしたい.
+    private static final int ZOUSYOKU = 5000;
+
     private SimpleEntityDataH2() {
     }
 
@@ -117,9 +120,6 @@ public class SimpleEntityDataH2 {
             stmt.executeUpdate();
 
             conn.commit();
-
-            // 増殖カウント. 最終的に 5000を目標にしたい.
-            final int ZOUSYOKU = 10;
 
             for (int index = 0; index < ZOUSYOKU; index++) {
                 stmt.clearParameters();
