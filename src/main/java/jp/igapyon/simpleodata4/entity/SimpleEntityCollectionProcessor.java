@@ -24,6 +24,7 @@ import org.apache.olingo.server.api.uri.UriResource;
 import org.apache.olingo.server.api.uri.UriResourceEntitySet;
 import org.apache.olingo.server.api.uri.queryoption.CountOption;
 import org.apache.olingo.server.api.uri.queryoption.SystemQueryOptionKind;
+import org.apache.olingo.server.core.uri.queryoption.CountOptionImpl;
 
 /**
  * OData 要素コレクションを処理するクラス.
@@ -85,29 +86,9 @@ public class SimpleEntityCollectionProcessor implements EntityCollectionProcesso
 
         // 要素のIdを作成.
         final String id = request.getRawBaseUri() + "/" + edmEntitySet.getName();
-        final CountOption copt = new CountOption() {
-            @Override
-            public SystemQueryOptionKind getKind() {
-                return SystemQueryOptionKind.COUNT;
-            }
-
-            @Override
-            public String getName() {
-                // TODO Auto-generated method stub
-                return "COUNT";
-            }
-
-            @Override
-            public String getText() {
-                return "" + eCollection.getEntities().size();
-            }
-
-            @Override
-            public boolean getValue() {
-                // TODO Auto-generated method stub
-                return true;
-            }
-        };
+        ;
+        final CountOptionImpl copt = new CountOptionImpl();
+        copt.setValue(true);
         // TODO 考慮不足。件数ではなくて別途COUNTすべき。
         eCollection.setCount(eCollection.getEntities().size());
         // 直列化の処理.

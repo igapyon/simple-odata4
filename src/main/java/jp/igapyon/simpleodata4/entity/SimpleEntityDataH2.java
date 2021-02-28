@@ -26,7 +26,7 @@ public class SimpleEntityDataH2 {
         }
         // SQL Server 互換モードで動作させる.
         final var jdbcConnStr = "jdbc:h2:mem:product;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=FALSE;CASE_INSENSITIVE_IDENTIFIERS=TRUE;MODE=MSSQLServer";
-        System.err.println("TRACE: DEMO: [connect jdbc] " + jdbcConnStr);
+        // System.err.println("TRACE: DEMO: [connect jdbc] " + jdbcConnStr);
         try {
             conn = DriverManager.getConnection(//
                     jdbcConnStr, "sa", "");
@@ -62,7 +62,7 @@ public class SimpleEntityDataH2 {
      * @param conn データベース接続。
      */
     public static void setupTable(final Connection conn) {
-        System.err.println("TRACE: 作業用データベーステーブルを作成");
+        // System.err.println("TRACE: 作業用データベーステーブルを作成");
 
         try (var stmt = conn.prepareStatement("CREATE TABLE IF NOT EXISTS " //
                 + "Products (" //
@@ -94,7 +94,7 @@ public class SimpleEntityDataH2 {
             throw new IllegalArgumentException("検索失敗:" + ex.toString(), ex);
         }
 
-        System.err.println("TRACE: 作業用サンプルデータを作成");
+        // System.err.println("TRACE: 作業用サンプルデータを作成");
 
         try (var stmt = conn.prepareStatement(
                 "INSERT INTO Products (ID, Name, Description) VALUES (" + getQueryPlaceholderString(3) + ")")) {
