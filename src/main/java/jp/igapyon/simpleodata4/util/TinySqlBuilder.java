@@ -20,7 +20,7 @@ public class TinySqlBuilder {
         String sql = "SELECT COUNT(*) FROM MyProducts";
         if (uriInfo.getFilterOption() != null) {
             FilterOptionImpl filterOpt = (FilterOptionImpl) uriInfo.getFilterOption();
-            sql += " WHERE " + ExprSqlUtil.expand(filterOpt.getExpression());
+            sql += " WHERE " + TinySqlExprExpandUtil.expand(filterOpt.getExpression());
         }
 
         return sql;
@@ -66,7 +66,7 @@ public class TinySqlBuilder {
         if (uriInfo.getFilterOption() != null) {
             FilterOptionImpl filterOpt = (FilterOptionImpl) uriInfo.getFilterOption();
             // TODO WHERE部分についてはパラメータクエリ化が望ましい.
-            sql += " WHERE " + ExprSqlUtil.expand(filterOpt.getExpression());
+            sql += " WHERE " + TinySqlExprExpandUtil.expand(filterOpt.getExpression());
         }
 
         if (uriInfo.getOrderByOption() != null) {

@@ -17,8 +17,8 @@ import org.apache.olingo.server.core.uri.queryoption.expression.UnaryImpl;
 /**
  * Expression を SQLに変換。
  */
-public class ExprSqlUtil {
-    private ExprSqlUtil() {
+public class TinySqlExprExpandUtil {
+    private TinySqlExprExpandUtil() {
     }
 
     /**
