@@ -1,17 +1,14 @@
 package jp.igapyon.simpleodata4.entity;
 
-import java.sql.Connection;
 import java.util.ArrayList;
 
 import org.apache.olingo.server.api.OData;
 import org.apache.olingo.server.api.ServiceMetadata;
 import org.apache.olingo.server.api.uri.UriInfo;
 import org.apache.olingo.server.core.uri.parser.Parser;
-import org.apache.olingo.server.core.uri.parser.UriTokenizer;
-import org.apache.olingo.server.core.uri.parser.UriTokenizer.TokenKind;
 import org.junit.jupiter.api.Test;
 
-class ParserTest {
+class UriInfoTest {
 
 	@Test
 	void test01() throws Exception {
