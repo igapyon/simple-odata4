@@ -3,9 +3,8 @@ package jp.igapyon.simpleodata4.entity;
 import java.sql.Connection;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
+// @SpringBootTest
 class H2DatabaseTest {
 
 	@Test

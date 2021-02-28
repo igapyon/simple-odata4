@@ -17,9 +17,13 @@ import org.apache.olingo.commons.api.edm.EdmEntitySet;
 import org.apache.olingo.commons.api.ex.ODataRuntimeException;
 import org.apache.olingo.server.api.uri.UriInfo;
 import org.apache.olingo.server.api.uri.UriResource;
+import org.apache.olingo.server.api.uri.queryoption.FilterOption;
 import org.apache.olingo.server.api.uri.queryoption.OrderByItem;
 import org.apache.olingo.server.api.uri.queryoption.SelectItem;
+import org.apache.olingo.server.api.uri.queryoption.expression.Expression;
+import org.apache.olingo.server.core.uri.queryoption.FilterOptionImpl;
 import org.apache.olingo.server.core.uri.queryoption.SelectItemImpl;
+import org.apache.olingo.server.core.uri.queryoption.expression.BinaryImpl;
 import org.apache.olingo.server.core.uri.queryoption.expression.MemberImpl;
 
 /**
@@ -81,6 +85,21 @@ public class SimpleEntityDataBuilder {
         // TODO NOT IMPLEMENTED.
         // if (uriInfo.getCountOption() != null) {
         // }
+
+        if (uriInfo.getFilterOption() != null) {
+            FilterOptionImpl filterOpt = (FilterOptionImpl) uriInfo.getFilterOption();
+            System.err.println("class:" + filterOpt.getClass().getName());
+            System.err.println("getText:" + filterOpt.getText());
+            System.err.println("getExpression:" + filterOpt.getExpression());
+            System.err.println("getExpression:class:" + filterOpt.getExpression().getClass().getName());
+            BinaryImpl impl = (BinaryImpl) filterOpt.getExpression();
+            System.err.println("exp:left" + impl.getLeftOperand());
+            System.err.println("exp:op" + impl.getOperator());
+            System.err.println("exp:right" + impl.getRightOperand());
+            // for (Expression exp : impl.getExpressions()) {
+            // System.err.println("exp:"+exp.toString());
+            // }
+        }
 
         if (uriInfo.getOrderByOption() != null) {
             List<OrderByItem> orderByItemList = uriInfo.getOrderByOption().getOrders();
