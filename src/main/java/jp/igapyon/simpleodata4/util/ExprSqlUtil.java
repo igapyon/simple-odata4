@@ -1,10 +1,13 @@
 package jp.igapyon.simpleodata4.util;
 
+import org.apache.olingo.server.api.uri.queryoption.apply.BottomTop.Method;
 import org.apache.olingo.server.api.uri.queryoption.expression.BinaryOperatorKind;
 import org.apache.olingo.server.api.uri.queryoption.expression.Expression;
+import org.apache.olingo.server.api.uri.queryoption.expression.MethodKind;
 import org.apache.olingo.server.core.uri.queryoption.expression.BinaryImpl;
 import org.apache.olingo.server.core.uri.queryoption.expression.LiteralImpl;
 import org.apache.olingo.server.core.uri.queryoption.expression.MemberImpl;
+import org.apache.olingo.server.core.uri.queryoption.expression.MethodImpl;
 
 public class ExprSqlUtil {
     private ExprSqlUtil() {
@@ -43,6 +46,16 @@ public class ExprSqlUtil {
             } else {
                 System.err.println("対応しないOperator:" + opKind);
                 return "[unsupported Operator:" + opKind + "," + impl.toString() + "]";
+            }
+        } else if (filterExpression instanceof MethodImpl) {
+            MethodImpl impl = (MethodImpl) filterExpression;
+            if (impl.getMethod() == MethodKind.INDEXOF) {
+                // h2 database の POSITION は 0 オリジンなので 1 を減らしています。
+                return "(POSITION(" + impl.getParameters().get(1).toString() + ","
+                        + impl.getParameters().get(0).toString() + ") - 1)";
+            } else {
+                System.err.println("対応しないMethodKind:" + impl.getMethod());
+                System.err.println("filterExpression:" + filterExpression.toString());
             }
         } else {
             System.err.println("対応しないクラス:" + filterExpression.getClass().getName());
