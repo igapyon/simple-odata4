@@ -62,25 +62,25 @@ public class ExprSqlUtil {
         BinaryOperatorKind opKind = impl.getOperator();
         if (opKind == BinaryOperatorKind.HAS) {
             // HAS
-            throw new IllegalArgumentException("NOT IMPLEMENTED:" + opKind);
+            throw new IllegalArgumentException("NOT SUPPORTED:BinaryOperatorKind:" + opKind);
         } else if (opKind == BinaryOperatorKind.IN) {
             // IN
-            throw new IllegalArgumentException("NOT IMPLEMENTED:" + opKind);
+            throw new IllegalArgumentException("NOT SUPPORTED:BinaryOperatorKind:" + opKind);
         } else if (opKind == BinaryOperatorKind.MUL) {
             // MUL
-            throw new IllegalArgumentException("NOT IMPLEMENTED:" + opKind);
+            throw new IllegalArgumentException("NOT SUPPORTED:BinaryOperatorKind:" + opKind);
         } else if (opKind == BinaryOperatorKind.DIV) {
             // DIV
-            throw new IllegalArgumentException("NOT IMPLEMENTED:" + opKind);
+            throw new IllegalArgumentException("NOT SUPPORTED:BinaryOperatorKind:" + opKind);
         } else if (opKind == BinaryOperatorKind.MOD) {
             // MOD
-            throw new IllegalArgumentException("NOT IMPLEMENTED:" + opKind);
+            throw new IllegalArgumentException("NOT SUPPORTED:BinaryOperatorKind:" + opKind);
         } else if (opKind == BinaryOperatorKind.ADD) {
             // ADD
-            throw new IllegalArgumentException("NOT IMPLEMENTED:" + opKind);
+            throw new IllegalArgumentException("NOT SUPPORTED:BinaryOperatorKind:" + opKind);
         } else if (opKind == BinaryOperatorKind.SUB) {
             // SUB
-            throw new IllegalArgumentException("NOT IMPLEMENTED:" + opKind);
+            throw new IllegalArgumentException("NOT SUPPORTED:BinaryOperatorKind:" + opKind);
         } else if (opKind == BinaryOperatorKind.GT) {
             // GT
             return "(" + expand(impl.getLeftOperand()) + " > " + expand(impl.getRightOperand()) + ")";
@@ -124,17 +124,84 @@ public class ExprSqlUtil {
     }
 
     private static String expandMethod(MethodImpl impl) {
-        if (impl.getMethod() == MethodKind.INDEXOF) {
-            // h2 database の POSITION は 0 オリジンなので 1 を減らしています。
-            return "(POSITION(" + expand(impl.getParameters().get(1)) + "," + expand(impl.getParameters().get(0))
-                    + ") - 1)";
-        } else if (impl.getMethod() == MethodKind.STARTSWITH) {
+
+        // CONTAINS
+
+        // STARTSWITH
+        if (impl.getMethod() == MethodKind.STARTSWITH) {
             // h2 database の POSITION は 0 オリジンなので 1 を減らしています。
             return "(POSITION(" + expand(impl.getParameters().get(1)) + "," + expand(impl.getParameters().get(0))
                     + ") = 1)";
         }
 
-        final String message = "Unexpected Case: Unsupported MethodKind:" + impl.getMethod() + "," + impl.toString()
+        // ENDSWITH
+
+        // LENGTH
+
+        // INDEXOF
+        if (impl.getMethod() == MethodKind.INDEXOF) {
+            // h2 database の POSITION は 0 オリジンなので 1 を減らしています。
+            return "(POSITION(" + expand(impl.getParameters().get(1)) + "," + expand(impl.getParameters().get(0))
+                    + ") - 1)";
+        }
+
+        // SUBSTRING
+
+        // TOLOWER
+
+        // TOUPPER
+
+        // TRIM
+
+        // CONCAT
+
+        // YEAR
+
+        // MONTH
+
+        // DAY
+
+        // HOUR
+
+        // MINUTE
+
+        // SECOND
+
+        // FRACTIONALSECONDS
+
+        // TOTALSECONDS
+
+        // DATE
+
+        // TIME
+
+        // TOTALOFFSETMINUTES
+
+        // MINDATETIME
+
+        // MAXDATETIME
+
+        // NOW
+
+        // ROUND
+
+        // FLOOR
+
+        // CEILING
+
+        // GEODISTANCE
+
+        // GEOLENGTH
+
+        // GEOINTERSECTS
+
+        // CAST
+
+        // ISOF
+
+        // SUBSTRINGOF
+
+        final String message = "Unexpected Case: NOT SUPPORTED MethodKind:" + impl.getMethod() + "," + impl.toString()
                 + "]";
         System.err.println(message);
         throw new IllegalArgumentException(message);
