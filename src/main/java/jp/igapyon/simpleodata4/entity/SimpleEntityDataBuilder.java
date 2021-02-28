@@ -23,6 +23,7 @@ import org.apache.olingo.server.core.uri.queryoption.SearchOptionImpl;
 import org.apache.olingo.server.core.uri.queryoption.expression.MemberImpl;
 
 import jp.igapyon.simpleodata4.util.ExprSqlUtil;
+import jp.igapyon.simpleodata4.util.TinySqlBuilder;
 
 /**
  * 実際に返却するデータ本体を組み上げるクラス.
@@ -63,14 +64,11 @@ public class SimpleEntityDataBuilder {
 
         {
             // 件数をカウントして設定。
-            int countWithWhere = 0;
-            String sql = "SELECT COUNT(*) FROM MyProducts";
-            if (uriInfo.getFilterOption() != null) {
-                FilterOptionImpl filterOpt = (FilterOptionImpl) uriInfo.getFilterOption();
-                sql += " WHERE " + ExprSqlUtil.expand(filterOpt.getExpression());
-            }
+            TinySqlBuilder tinySql = new TinySqlBuilder();
+            String sql = tinySql.getSelectCount(uriInfo);
 
             System.err.println("TRACE:SQL: " + sql);
+            int countWithWhere = 0;
             try (var stmt = conn.prepareStatement(sql)) {
                 stmt.executeQuery();
                 var rset = stmt.getResultSet();
