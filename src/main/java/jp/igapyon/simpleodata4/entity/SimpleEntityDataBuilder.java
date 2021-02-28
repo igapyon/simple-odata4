@@ -58,11 +58,16 @@ public class SimpleEntityDataBuilder {
         {
             // 件数をカウントして設定。
             TinySqlBuilder tinySql = new TinySqlBuilder();
-            final String sql = tinySql.getSelectCountQuery(uriInfo);
+            tinySql.getSelectCountQuery(uriInfo);
+            final String sql = tinySql.getSqlInfo().getSqlBuilder().toString();
 
             System.err.println("TRACE:SQL: " + sql);
             int countWithWhere = 0;
             try (var stmt = conn.prepareStatement(sql)) {
+                for (Object look : tinySql.getSqlInfo().getSqlParamList()) {
+                    System.err.println("DEBUG:param:" + look);
+                }
+    
                 stmt.executeQuery();
                 var rset = stmt.getResultSet();
                 rset.next();
@@ -74,10 +79,15 @@ public class SimpleEntityDataBuilder {
         }
 
         TinySqlBuilder tinySql = new TinySqlBuilder();
-        final String sql = tinySql.getSelectQuery(uriInfo);
+        tinySql.getSelectQuery(uriInfo);
+        final String sql = tinySql.getSqlInfo().getSqlBuilder().toString();
 
         System.err.println("TRACE:SQL: " + sql);
         try (var stmt = conn.prepareStatement(sql)) {
+            for (Object look : tinySql.getSqlInfo().getSqlParamList()) {
+                System.err.println("DEBUG:param:" + look);
+            }
+
             stmt.executeQuery();
             var rset = stmt.getResultSet();
             for (; rset.next();) {
