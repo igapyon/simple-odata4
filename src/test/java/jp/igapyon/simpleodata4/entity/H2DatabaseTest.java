@@ -21,7 +21,7 @@ class H2DatabaseTest {
 			stmt.executeQuery();
 			var rset = stmt.getResultSet();
 			for (; rset.next();) {
-				System.err.println(rset.getString(1) + ":" + rset.getString(2) + ":" + rset.getString(3));
+				// System.err.println(rset.getString(1) + ":" + rset.getString(2) + ":" + rset.getString(3));
 			}
 		}
 

@@ -32,6 +32,14 @@ public class ExprSqlUtil {
                 return "(" + expand(impl.getLeftOperand()) + " <> " + expand(impl.getRightOperand()) + ")";
             } else if (opKind == BinaryOperatorKind.EQ) {
                 return "(" + expand(impl.getLeftOperand()) + " = " + expand(impl.getRightOperand()) + ")";
+            } else if (opKind == BinaryOperatorKind.LT) {
+                return "(" + expand(impl.getLeftOperand()) + " < " + expand(impl.getRightOperand()) + ")";
+            } else if (opKind == BinaryOperatorKind.LE) {
+                return "(" + expand(impl.getLeftOperand()) + " <= " + expand(impl.getRightOperand()) + ")";
+            } else if (opKind == BinaryOperatorKind.GT) {
+                return "(" + expand(impl.getLeftOperand()) + " > " + expand(impl.getRightOperand()) + ")";
+            } else if (opKind == BinaryOperatorKind.GE) {
+                return "(" + expand(impl.getLeftOperand()) + " >= " + expand(impl.getRightOperand()) + ")";
             } else {
                 System.err.println("対応しないOperator:" + opKind);
                 return "[unsupported Operator:" + opKind + "," + impl.toString() + "]";
