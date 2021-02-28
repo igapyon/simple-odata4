@@ -26,6 +26,12 @@ public class TinySqlBuilder {
         return sql;
     }
 
+    /**
+     * 検索用のSQLを生成.
+     * 
+     * @param uriInfo URI情報.
+     * @return SQL文.
+     */
     public String getSelectQuery(UriInfo uriInfo) {
         String sql = "SELECT ";
 
@@ -45,19 +51,21 @@ public class TinySqlBuilder {
                 }
             }
             if (!isIDExists) {
+                // レコードを一位に表すID項目が必須。検索対象にない場合は追加.
                 sql += (itemCount++ == 0 ? "" : ",");
                 sql += ("[ID]");
             }
         }
 
+        // 取得元のテーブル.
         sql += " FROM MyProducts";
 
-        // TODO NOT IMPLEMENTED.
-        // if (uriInfo.getCountOption() != null) {
-        // }
+        // uriInfo.getCountOption は明示的には記載しない.
+        // 現状の実装では指定があろうがなかろうが件数はカウントする実装となっている.
 
         if (uriInfo.getFilterOption() != null) {
             FilterOptionImpl filterOpt = (FilterOptionImpl) uriInfo.getFilterOption();
+            // TODO WHERE部分についてはパラメータクエリ化が望ましい.
             sql += " WHERE " + ExprSqlUtil.expand(filterOpt.getExpression());
         }
 
