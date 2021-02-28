@@ -1,5 +1,6 @@
 package jp.igapyon.simpleodata4.util;
 
+import org.apache.olingo.commons.api.edm.constants.EdmTypeKind;
 import org.apache.olingo.server.api.uri.queryoption.expression.BinaryOperatorKind;
 import org.apache.olingo.server.api.uri.queryoption.expression.Expression;
 import org.apache.olingo.server.api.uri.queryoption.expression.MethodKind;
@@ -23,7 +24,6 @@ public class TinySqlExprExpander {
     public TinySqlExprExpander(TinySqlInfo sqlInfo) {
         this.sqlInfo = sqlInfo;
     }
-
 
     /**
      * フィルタを展開。WHEREになる。
@@ -162,9 +162,14 @@ public class TinySqlExprExpander {
     }
 
     private void expandLiteral(LiteralImpl impl) {
-        // そのままSQLのリテラルとする。
-        sqlInfo.getSqlBuilder().append(impl.toString());
-        sqlInfo.getSqlParamList().add(impl.toString());
+        // SQLリテラルはパラメータ化
+        sqlInfo.getSqlBuilder().append("?");
+        String value = impl.toString();
+        if (value.startsWith("'") && value.endsWith("'")) {
+            // 文字列リテラルについては全獄オートを除去.
+            value = value.substring(1, value.length() - 1);
+        }
+        sqlInfo.getSqlParamList().add(value);
     }
 
     private void expandMember(MemberImpl impl) {

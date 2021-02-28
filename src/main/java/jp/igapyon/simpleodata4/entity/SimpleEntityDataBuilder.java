@@ -64,10 +64,16 @@ public class SimpleEntityDataBuilder {
             System.err.println("TRACE:SQL: " + sql);
             int countWithWhere = 0;
             try (var stmt = conn.prepareStatement(sql)) {
+                int idxColumn = 1;
                 for (Object look : tinySql.getSqlInfo().getSqlParamList()) {
                     System.err.println("DEBUG:param:" + look);
+                    if (look instanceof Integer) {
+                        stmt.setInt(idxColumn++, (Integer) look);
+                    } else {
+                        stmt.setString(idxColumn++, (String) look);
+                    }
                 }
-    
+
                 stmt.executeQuery();
                 var rset = stmt.getResultSet();
                 rset.next();
@@ -84,8 +90,14 @@ public class SimpleEntityDataBuilder {
 
         System.err.println("TRACE:SQL: " + sql);
         try (var stmt = conn.prepareStatement(sql)) {
+            int idxColumn = 1;
             for (Object look : tinySql.getSqlInfo().getSqlParamList()) {
                 System.err.println("DEBUG:param:" + look);
+                if (look instanceof Integer) {
+                    stmt.setInt(idxColumn++, (Integer) look);
+                } else {
+                    stmt.setString(idxColumn++, (String) look);
+                }
             }
 
             stmt.executeQuery();
