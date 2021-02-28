@@ -1,6 +1,5 @@
 package jp.igapyon.simpleodata4.entity;
 
-import java.lang.reflect.Member;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.Connection;
@@ -17,13 +16,10 @@ import org.apache.olingo.commons.api.edm.EdmEntitySet;
 import org.apache.olingo.commons.api.ex.ODataRuntimeException;
 import org.apache.olingo.server.api.uri.UriInfo;
 import org.apache.olingo.server.api.uri.UriResource;
-import org.apache.olingo.server.api.uri.queryoption.FilterOption;
 import org.apache.olingo.server.api.uri.queryoption.OrderByItem;
 import org.apache.olingo.server.api.uri.queryoption.SelectItem;
-import org.apache.olingo.server.api.uri.queryoption.expression.Expression;
 import org.apache.olingo.server.core.uri.queryoption.FilterOptionImpl;
-import org.apache.olingo.server.core.uri.queryoption.SelectItemImpl;
-import org.apache.olingo.server.core.uri.queryoption.expression.BinaryImpl;
+import org.apache.olingo.server.core.uri.queryoption.SearchOptionImpl;
 import org.apache.olingo.server.core.uri.queryoption.expression.MemberImpl;
 
 import jp.igapyon.simpleodata4.util.ExprSqlUtil;
@@ -57,6 +53,12 @@ public class SimpleEntityDataBuilder {
         if (!SimpleEdmProvider.ES_MYPRODUCTS_NAME.equals(edmEntitySet.getName())) {
             // 処理対象外の要素セットです. 処理せずに戻します.
             return eCollection;
+        }
+
+        if (uriInfo.getSearchOption() != null) {
+            // $search はサポート外.
+            SearchOptionImpl searchOpt = (SearchOptionImpl) uriInfo.getSearchOption();
+            throw new ODataRuntimeException("NOT SUPPORTED:$search:" + searchOpt.toString());
         }
 
         {
