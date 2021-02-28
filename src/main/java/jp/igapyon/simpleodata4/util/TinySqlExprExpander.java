@@ -200,8 +200,16 @@ public class TinySqlExprExpander {
         }
 
         // ENDSWITH
+        // TODO 未実装
 
         // LENGTH
+        if (impl.getMethod() == MethodKind.LENGTH) {
+            sqlInfo.getSqlBuilder().append("(LENGTH(");
+            expand(impl.getParameters().get(0));
+            sqlInfo.getSqlBuilder().append("))");
+            return;
+        }
+        // $top=20&$filter=(length(Description) gt 3)
 
         // INDEXOF
         if (impl.getMethod() == MethodKind.INDEXOF) {
@@ -250,20 +258,78 @@ public class TinySqlExprExpander {
         // $top=20&$filter=(substringof(%27POPTABLET5%27,toupper(Name)))
 
         // TRIM
+        if (impl.getMethod() == MethodKind.TRIM) {
+            sqlInfo.getSqlBuilder().append("TRIM(");
+            expand(impl.getParameters().get(0));
+            sqlInfo.getSqlBuilder().append(")");
+            return;
+        }
+        // TODO 未テスト.
 
         // CONCAT
+        if (impl.getMethod() == MethodKind.CONCAT) {
+            sqlInfo.getSqlBuilder().append("CONCAT(");
+            expand(impl.getParameters().get(0));
+            sqlInfo.getSqlBuilder().append(",");
+            expand(impl.getParameters().get(1));
+            sqlInfo.getSqlBuilder().append(")");
+            return;
+        }
+        // TODO 未テスト.
 
         // YEAR
+        if (impl.getMethod() == MethodKind.YEAR) {
+            sqlInfo.getSqlBuilder().append("YEAR(");
+            expand(impl.getParameters().get(0));
+            sqlInfo.getSqlBuilder().append(")");
+            return;
+        }
+        // TODO 未テスト.
 
         // MONTH
+        if (impl.getMethod() == MethodKind.MONTH) {
+            sqlInfo.getSqlBuilder().append("MONTH(");
+            expand(impl.getParameters().get(0));
+            sqlInfo.getSqlBuilder().append(")");
+            return;
+        }
+        // TODO 未テスト.
 
         // DAY
+        if (impl.getMethod() == MethodKind.DAY) {
+            sqlInfo.getSqlBuilder().append("DAY_OF_MONTH(");
+            expand(impl.getParameters().get(0));
+            sqlInfo.getSqlBuilder().append(")");
+            return;
+        }
+        // TODO 未テスト.
 
         // HOUR
+        if (impl.getMethod() == MethodKind.HOUR) {
+            sqlInfo.getSqlBuilder().append("HOUR(");
+            expand(impl.getParameters().get(0));
+            sqlInfo.getSqlBuilder().append(")");
+            return;
+        }
+        // TODO 未テスト.
 
         // MINUTE
+        if (impl.getMethod() == MethodKind.MINUTE) {
+            sqlInfo.getSqlBuilder().append("MINUTE(");
+            expand(impl.getParameters().get(0));
+            sqlInfo.getSqlBuilder().append(")");
+            return;
+        }
+        // TODO 未テスト.
 
         // SECOND
+        if (impl.getMethod() == MethodKind.SECOND) {
+            sqlInfo.getSqlBuilder().append("SECOND(");
+            expand(impl.getParameters().get(0));
+            sqlInfo.getSqlBuilder().append(")");
+            return;
+        }
+        // TODO 未テスト.
 
         // FRACTIONALSECONDS
 
@@ -282,10 +348,31 @@ public class TinySqlExprExpander {
         // NOW
 
         // ROUND
+        if (impl.getMethod() == MethodKind.ROUND) {
+            sqlInfo.getSqlBuilder().append("ROUND(");
+            expand(impl.getParameters().get(0));
+            sqlInfo.getSqlBuilder().append(")");
+            return;
+        }
+        // TODO 未テスト.
 
         // FLOOR
+        if (impl.getMethod() == MethodKind.FLOOR) {
+            sqlInfo.getSqlBuilder().append("FLOOR(");
+            expand(impl.getParameters().get(0));
+            sqlInfo.getSqlBuilder().append(")");
+            return;
+        }
+        // TODO 未テスト.
 
         // CEILING
+        if (impl.getMethod() == MethodKind.CEILING) {
+            sqlInfo.getSqlBuilder().append("CEILING(");
+            expand(impl.getParameters().get(0));
+            sqlInfo.getSqlBuilder().append(")");
+            return;
+        }
+        // TODO 未テスト.
 
         // GEODISTANCE
 
