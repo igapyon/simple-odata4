@@ -10,6 +10,8 @@ import org.apache.olingo.server.core.uri.queryoption.FilterOptionImpl;
 import org.apache.olingo.server.core.uri.queryoption.expression.MemberImpl;
 
 public class TinySqlBuilder {
+    private final TinySqlInfo sqlInfo = new TinySqlInfo();
+
     /**
      * 件数カウント用のSQLを生成.
      * 
@@ -20,7 +22,7 @@ public class TinySqlBuilder {
         String sql = "SELECT COUNT(*) FROM MyProducts";
         if (uriInfo.getFilterOption() != null) {
             FilterOptionImpl filterOpt = (FilterOptionImpl) uriInfo.getFilterOption();
-            sql += " WHERE " + TinySqlExprExpandUtil.expand(filterOpt.getExpression());
+            sql += " WHERE " + new TinySqlExprExpander(sqlInfo).expand(filterOpt.getExpression());
         }
 
         return sql;
@@ -66,7 +68,7 @@ public class TinySqlBuilder {
         if (uriInfo.getFilterOption() != null) {
             FilterOptionImpl filterOpt = (FilterOptionImpl) uriInfo.getFilterOption();
             // TODO WHERE部分についてはパラメータクエリ化が望ましい.
-            sql += " WHERE " + TinySqlExprExpandUtil.expand(filterOpt.getExpression());
+            sql += " WHERE " + new TinySqlExprExpander(sqlInfo).expand(filterOpt.getExpression());
         }
 
         if (uriInfo.getOrderByOption() != null) {
@@ -96,7 +98,7 @@ public class TinySqlBuilder {
         if (uriInfo.getSkipOption() != null) {
             sql += " OFFSET " + uriInfo.getSkipOption().getValue();
         }
-        
+
         return sql;
     }
 }
