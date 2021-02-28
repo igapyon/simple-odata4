@@ -216,9 +216,26 @@ public class TinySqlExprExpander {
 
         // SUBSTRING
 
+
         // TOLOWER
+        if (impl.getMethod() == MethodKind.TOLOWER) {
+            sqlInfo.getSqlBuilder().append("LOWER(");
+            expand(impl.getParameters().get(0));
+            sqlInfo.getSqlBuilder().append(")");
+            return;
+        }
+        // チェックのパターン.
+        // $top=20&$filter=(substringof(%27poptablet5%27,tolower(Name)))
 
         // TOUPPER
+        if (impl.getMethod() == MethodKind.TOUPPER) {
+            sqlInfo.getSqlBuilder().append("UPPER(");
+            expand(impl.getParameters().get(0));
+            sqlInfo.getSqlBuilder().append(")");
+            return;
+        }
+        // チェックのパターン.
+        // $top=20&$filter=(substringof(%27POPTABLET5%27,toupper(Name)))
 
         // TRIM
 
@@ -269,6 +286,14 @@ public class TinySqlExprExpander {
         // ISOF
 
         // SUBSTRINGOF
+        if (impl.getMethod() == MethodKind.SUBSTRINGOF) {
+            sqlInfo.getSqlBuilder().append("(POSITION(");
+            expand(impl.getParameters().get(0));
+            sqlInfo.getSqlBuilder().append(",");
+            expand(impl.getParameters().get(1));
+            sqlInfo.getSqlBuilder().append(") > 0)");
+            return;
+        }
 
         final String message = "Unexpected Case: NOT SUPPORTED MethodKind:" + impl.getMethod() + "," + impl.toString()
                 + "]";
