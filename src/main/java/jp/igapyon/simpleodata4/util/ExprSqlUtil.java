@@ -4,10 +4,14 @@ import org.apache.olingo.server.api.uri.queryoption.expression.BinaryOperatorKin
 import org.apache.olingo.server.api.uri.queryoption.expression.Expression;
 import org.apache.olingo.server.api.uri.queryoption.expression.MethodKind;
 import org.apache.olingo.server.api.uri.queryoption.expression.UnaryOperatorKind;
+import org.apache.olingo.server.core.uri.queryoption.expression.AliasImpl;
 import org.apache.olingo.server.core.uri.queryoption.expression.BinaryImpl;
+import org.apache.olingo.server.core.uri.queryoption.expression.EnumerationImpl;
+import org.apache.olingo.server.core.uri.queryoption.expression.LambdaRefImpl;
 import org.apache.olingo.server.core.uri.queryoption.expression.LiteralImpl;
 import org.apache.olingo.server.core.uri.queryoption.expression.MemberImpl;
 import org.apache.olingo.server.core.uri.queryoption.expression.MethodImpl;
+import org.apache.olingo.server.core.uri.queryoption.expression.TypeLiteralImpl;
 import org.apache.olingo.server.core.uri.queryoption.expression.UnaryImpl;
 
 /**
@@ -24,16 +28,24 @@ public class ExprSqlUtil {
      * @return 展開後SQL.
      */
     public static String expand(Expression filterExpression) {
-        if (filterExpression instanceof MemberImpl) {
-            return ((MemberImpl) filterExpression).toString();
-        } else if (filterExpression instanceof LiteralImpl) {
-            return ((LiteralImpl) filterExpression).toString();
+        if (filterExpression instanceof AliasImpl) {
+            throw new IllegalArgumentException("NOT IMPLEMENTED:AliasImpl");
         } else if (filterExpression instanceof BinaryImpl) {
             BinaryImpl impl = (BinaryImpl) filterExpression;
             return expandBinary(impl);
+        } else if (filterExpression instanceof EnumerationImpl) {
+            throw new IllegalArgumentException("NOT IMPLEMENTED:EnumerationImpl");
+        } else if (filterExpression instanceof LambdaRefImpl) {
+            throw new IllegalArgumentException("NOT IMPLEMENTED:LambdaRefImpl");
+        } else if (filterExpression instanceof LiteralImpl) {
+            return ((LiteralImpl) filterExpression).toString();
+        } else if (filterExpression instanceof MemberImpl) {
+            return ((MemberImpl) filterExpression).toString();
         } else if (filterExpression instanceof MethodImpl) {
             MethodImpl impl = (MethodImpl) filterExpression;
             return expandMethod(impl);
+        } else if (filterExpression instanceof TypeLiteralImpl) {
+            throw new IllegalArgumentException("NOT IMPLEMENTED:TypeLiteralImpl");
         } else if (filterExpression instanceof UnaryImpl) {
             UnaryImpl impl = (UnaryImpl) filterExpression;
             return expandUnary(impl);
