@@ -112,6 +112,11 @@ public class SimpleEntityDataBuilder {
                 }
             }
         }
+
+        if (uriInfo.getTopOption() != null) {
+            sql += " LIMIT " + uriInfo.getTopOption().getValue();
+        }
+
         System.err.println("TRACE:sql:" + sql);
         try (var stmt = conn.prepareStatement(sql)) {
             stmt.executeQuery();
