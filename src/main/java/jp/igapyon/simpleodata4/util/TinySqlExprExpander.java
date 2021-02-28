@@ -17,8 +17,11 @@ import org.apache.olingo.server.core.uri.queryoption.expression.UnaryImpl;
 /**
  * Expression を SQLに変換。
  */
-public class ExprSqlUtil {
-    private ExprSqlUtil() {
+public class TinySqlExprExpander {
+    private TinySqlInfo sqlInfo = null;
+
+    public TinySqlExprExpander(TinySqlInfo sqlInfo) {
+        this.sqlInfo = sqlInfo;
     }
 
     /**
@@ -27,26 +30,31 @@ public class ExprSqlUtil {
      * @param filterExpression フィルタ表現.
      * @return 展開後SQL.
      */
-    public static String expand(Expression filterExpression) {
+    public void expand(Expression filterExpression) {
         if (filterExpression instanceof AliasImpl) {
             throw new IllegalArgumentException("NOT SUPPORTED:Expression:AliasImpl");
         } else if (filterExpression instanceof BinaryImpl) {
-            return expandBinary((BinaryImpl) filterExpression);
+            expandBinary((BinaryImpl) filterExpression);
+            return;
         } else if (filterExpression instanceof EnumerationImpl) {
             throw new IllegalArgumentException("NOT SUPPORTED:Expression:EnumerationImpl");
         } else if (filterExpression instanceof LambdaRefImpl) {
             throw new IllegalArgumentException("NOT SUPPORTED:Expression:LambdaRefImpl");
         } else if (filterExpression instanceof LiteralImpl) {
-            return expandLiteral((LiteralImpl) filterExpression);
+            expandLiteral((LiteralImpl) filterExpression);
+            return;
         } else if (filterExpression instanceof MemberImpl) {
-            return expandMember((MemberImpl) filterExpression);
+            expandMember((MemberImpl) filterExpression);
+            return;
         } else if (filterExpression instanceof MethodImpl) {
-            return expandMethod((MethodImpl) filterExpression);
+            expandMethod((MethodImpl) filterExpression);
+            return;
         } else if (filterExpression instanceof TypeLiteralImpl) {
             throw new IllegalArgumentException("NOT SUPPORTED:Expression:TypeLiteralImpl");
         } else if (filterExpression instanceof UnaryImpl) {
             UnaryImpl impl = (UnaryImpl) filterExpression;
-            return expandUnary(impl);
+            expandUnary(impl);
+            return;
         }
 
         final String message = "Unexpected Case: Unsupported expression:" + filterExpression.getClass().getName() + ","
@@ -58,7 +66,7 @@ public class ExprSqlUtil {
     ///////////////////////////////////////////////////////////////
     // 内部の実際処理.
 
-    private static String expandBinary(BinaryImpl impl) {
+    private void expandBinary(BinaryImpl impl) {
         BinaryOperatorKind opKind = impl.getOperator();
         if (opKind == BinaryOperatorKind.HAS) {
             // HAS
@@ -83,29 +91,68 @@ public class ExprSqlUtil {
             throw new IllegalArgumentException("NOT SUPPORTED:BinaryOperatorKind:" + opKind);
         } else if (opKind == BinaryOperatorKind.GT) {
             // GT
-            return "(" + expand(impl.getLeftOperand()) + " > " + expand(impl.getRightOperand()) + ")";
+            sqlInfo.getSqlBuilder().append("(");
+            expand(impl.getLeftOperand());
+            sqlInfo.getSqlBuilder().append(" > ");
+            expand(impl.getRightOperand());
+            sqlInfo.getSqlBuilder().append(")");
+            return;
         } else if (opKind == BinaryOperatorKind.GE) {
             // GE
-            return "(" + expand(impl.getLeftOperand()) + " >= " + expand(impl.getRightOperand()) + ")";
-
+            sqlInfo.getSqlBuilder().append("(");
+            expand(impl.getLeftOperand());
+            sqlInfo.getSqlBuilder().append(" >= ");
+            expand(impl.getRightOperand());
+            sqlInfo.getSqlBuilder().append(")");
+            return;
         } else if (opKind == BinaryOperatorKind.LT) {
             // LT
-            return "(" + expand(impl.getLeftOperand()) + " < " + expand(impl.getRightOperand()) + ")";
+            sqlInfo.getSqlBuilder().append("(");
+            expand(impl.getLeftOperand());
+            sqlInfo.getSqlBuilder().append(" < ");
+            expand(impl.getRightOperand());
+            sqlInfo.getSqlBuilder().append(")");
+            return;
         } else if (opKind == BinaryOperatorKind.LE) {
             // LE
-            return "(" + expand(impl.getLeftOperand()) + " <= " + expand(impl.getRightOperand()) + ")";
+            sqlInfo.getSqlBuilder().append("(");
+            expand(impl.getLeftOperand());
+            sqlInfo.getSqlBuilder().append(" <= ");
+            expand(impl.getRightOperand());
+            sqlInfo.getSqlBuilder().append(")");
+            return;
         } else if (opKind == BinaryOperatorKind.EQ) {
             // EQ
-            return "(" + expand(impl.getLeftOperand()) + " = " + expand(impl.getRightOperand()) + ")";
+            sqlInfo.getSqlBuilder().append("(");
+            expand(impl.getLeftOperand());
+            sqlInfo.getSqlBuilder().append(" = ");
+            expand(impl.getRightOperand());
+            sqlInfo.getSqlBuilder().append(")");
+            return;
         } else if (opKind == BinaryOperatorKind.NE) {
             // NE
-            return "(" + expand(impl.getLeftOperand()) + " <> " + expand(impl.getRightOperand()) + ")";
+            sqlInfo.getSqlBuilder().append("(");
+            expand(impl.getLeftOperand());
+            sqlInfo.getSqlBuilder().append(" <> ");
+            expand(impl.getRightOperand());
+            sqlInfo.getSqlBuilder().append(")");
+            return;
         } else if (opKind == BinaryOperatorKind.AND) {
             // AND
-            return "(" + expand(impl.getLeftOperand()) + " AND " + expand(impl.getRightOperand()) + ")";
+            sqlInfo.getSqlBuilder().append("(");
+            expand(impl.getLeftOperand());
+            sqlInfo.getSqlBuilder().append(" AND ");
+            expand(impl.getRightOperand());
+            sqlInfo.getSqlBuilder().append(")");
+            return;
         } else if (opKind == BinaryOperatorKind.OR) {
             // OR
-            return "(" + expand(impl.getLeftOperand()) + " OR " + expand(impl.getRightOperand()) + ")";
+            sqlInfo.getSqlBuilder().append("(");
+            expand(impl.getLeftOperand());
+            sqlInfo.getSqlBuilder().append(" OR ");
+            expand(impl.getRightOperand());
+            sqlInfo.getSqlBuilder().append(")");
+            return;
         }
 
         final String message = "Unexpected Case: Unsupported binary operator:" + opKind + "," + impl.toString() + "]";
@@ -113,30 +160,37 @@ public class ExprSqlUtil {
         throw new IllegalArgumentException(message);
     }
 
-    private static String expandLiteral(LiteralImpl impl) {
+    private void expandLiteral(LiteralImpl impl) {
         // そのままSQLのリテラルとする。
-        return impl.toString();
+        sqlInfo.getSqlBuilder().append(impl.toString());
     }
 
-    private static String expandMember(MemberImpl impl) {
+    private void expandMember(MemberImpl impl) {
         // そのままSQLのメンバーとする。
-        return impl.toString();
+        sqlInfo.getSqlBuilder().append(impl.toString());
     }
 
-    private static String expandMethod(MethodImpl impl) {
-
+    private void expandMethod(MethodImpl impl) {
         // CONTAINS
         if (impl.getMethod() == MethodKind.CONTAINS) {
             // h2 database の POSITION は 1 オリジンで発見せずが0 なので 1 を減らしています。
-            return "(POSITION(" + expand(impl.getParameters().get(1)) + "," + expand(impl.getParameters().get(0))
-                    + ") > 0)";
+            sqlInfo.getSqlBuilder().append("(POSITION(");
+            expand(impl.getParameters().get(1));
+            sqlInfo.getSqlBuilder().append(",");
+            expand(impl.getParameters().get(0));
+            sqlInfo.getSqlBuilder().append(") > 0)");
+            return;
         }
 
         // STARTSWITH
         if (impl.getMethod() == MethodKind.STARTSWITH) {
             // h2 database の POSITION は 1 オリジンで発見せずが0 なので 1 を減らしています。
-            return "(POSITION(" + expand(impl.getParameters().get(1)) + "," + expand(impl.getParameters().get(0))
-                    + ") = 1)";
+            sqlInfo.getSqlBuilder().append("(POSITION(");
+            expand(impl.getParameters().get(1));
+            sqlInfo.getSqlBuilder().append(",");
+            expand(impl.getParameters().get(0));
+            sqlInfo.getSqlBuilder().append(") = 1)");
+            return;
         }
 
         // ENDSWITH
@@ -146,8 +200,12 @@ public class ExprSqlUtil {
         // INDEXOF
         if (impl.getMethod() == MethodKind.INDEXOF) {
             // h2 database の POSITION は 1 オリジンで発見せずが0 なので 1 を減らしています。
-            return "(POSITION(" + expand(impl.getParameters().get(1)) + "," + expand(impl.getParameters().get(0))
-                    + ") - 1)";
+            sqlInfo.getSqlBuilder().append("(POSITION(");
+            expand(impl.getParameters().get(1));
+            sqlInfo.getSqlBuilder().append(",");
+            expand(impl.getParameters().get(0));
+            sqlInfo.getSqlBuilder().append(") - 1)");
+            return;
         }
 
         // SUBSTRING
@@ -212,11 +270,17 @@ public class ExprSqlUtil {
         throw new IllegalArgumentException(message);
     }
 
-    private static String expandUnary(UnaryImpl impl) {
+    private void expandUnary(UnaryImpl impl) {
         if (impl.getOperator() == UnaryOperatorKind.NOT) {
-            return "(NOT (" + expand(impl.getOperand()) + "))";
+            sqlInfo.getSqlBuilder().append("(NOT (");
+            expand(impl.getOperand());
+            sqlInfo.getSqlBuilder().append("))");
+            return;
         } else if (impl.getOperator() == UnaryOperatorKind.MINUS) {
-            return "(-(" + expand(impl.getOperand()) + "))";
+            sqlInfo.getSqlBuilder().append("(-(");
+            expand(impl.getOperand());
+            sqlInfo.getSqlBuilder().append("))");
+            return;
         }
 
         final String message = "Unexpected Case: Unsupported UnaryOperatorKind:" + impl.getOperator() + ","
