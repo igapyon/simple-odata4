@@ -29,23 +29,21 @@ public class ExprSqlUtil {
      */
     public static String expand(Expression filterExpression) {
         if (filterExpression instanceof AliasImpl) {
-            throw new IllegalArgumentException("NOT IMPLEMENTED:AliasImpl");
+            throw new IllegalArgumentException("NOT SUPPORTED:Expression:AliasImpl");
         } else if (filterExpression instanceof BinaryImpl) {
-            BinaryImpl impl = (BinaryImpl) filterExpression;
-            return expandBinary(impl);
+            return expandBinary((BinaryImpl) filterExpression);
         } else if (filterExpression instanceof EnumerationImpl) {
-            throw new IllegalArgumentException("NOT IMPLEMENTED:EnumerationImpl");
+            throw new IllegalArgumentException("NOT SUPPORTED:Expression:EnumerationImpl");
         } else if (filterExpression instanceof LambdaRefImpl) {
-            throw new IllegalArgumentException("NOT IMPLEMENTED:LambdaRefImpl");
+            throw new IllegalArgumentException("NOT SUPPORTED:Expression:LambdaRefImpl");
         } else if (filterExpression instanceof LiteralImpl) {
-            return ((LiteralImpl) filterExpression).toString();
+            return expandLiteral((LiteralImpl) filterExpression);
         } else if (filterExpression instanceof MemberImpl) {
-            return ((MemberImpl) filterExpression).toString();
+            return expandMember((MemberImpl) filterExpression);
         } else if (filterExpression instanceof MethodImpl) {
-            MethodImpl impl = (MethodImpl) filterExpression;
-            return expandMethod(impl);
+            return expandMethod((MethodImpl) filterExpression);
         } else if (filterExpression instanceof TypeLiteralImpl) {
-            throw new IllegalArgumentException("NOT IMPLEMENTED:TypeLiteralImpl");
+            throw new IllegalArgumentException("NOT SUPPORTED:Expression:TypeLiteralImpl");
         } else if (filterExpression instanceof UnaryImpl) {
             UnaryImpl impl = (UnaryImpl) filterExpression;
             return expandUnary(impl);
@@ -113,6 +111,16 @@ public class ExprSqlUtil {
         final String message = "Unexpected Case: Unsupported binary operator:" + opKind + "," + impl.toString() + "]";
         System.err.println(message);
         throw new IllegalArgumentException(message);
+    }
+
+    private static String expandLiteral(LiteralImpl impl) {
+        // そのままSQLのリテラルとする。
+        return impl.toString();
+    }
+
+    private static String expandMember(MemberImpl impl) {
+        // そのままSQLのメンバーとする。
+        return impl.toString();
     }
 
     private static String expandMethod(MethodImpl impl) {
