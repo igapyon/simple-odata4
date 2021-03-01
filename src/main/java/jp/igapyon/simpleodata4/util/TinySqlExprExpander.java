@@ -1,5 +1,7 @@
 package jp.igapyon.simpleodata4.util;
 
+import java.text.DecimalFormat;
+
 import org.apache.olingo.server.api.uri.queryoption.expression.BinaryOperatorKind;
 import org.apache.olingo.server.api.uri.queryoption.expression.Expression;
 import org.apache.olingo.server.api.uri.queryoption.expression.MethodKind;
@@ -161,14 +163,19 @@ public class TinySqlExprExpander {
     }
 
     private void expandLiteral(LiteralImpl impl) {
-        // SQLリテラルはパラメータ化
-        sqlInfo.getSqlBuilder().append("?");
         String value = impl.toString();
         if (value.startsWith("'") && value.endsWith("'")) {
-            // 文字列リテラルについては前後のオートを除去.
+            // 文字列リテラルについては前後のクオートを除去して記憶.
             value = value.substring(1, value.length() - 1);
+            // 文字列リテラルとしてパラメータ化クエリで扱う.
+            sqlInfo.getSqlBuilder().append("?");
+            sqlInfo.getSqlParamList().add(value);
+            return;
         }
-        sqlInfo.getSqlParamList().add(value);
+
+        // パラメータクエリ化は断念.
+        // 単に value をそのままSQL文に追加。
+        sqlInfo.getSqlBuilder().append(value);
     }
 
     private void expandMember(MemberImpl impl) {

@@ -25,7 +25,7 @@ class UriInfoTest {
 				"https://localhost//simple.svc/");
 		TinySqlInfo sqlInfo = new TinySqlInfo();
 		new TinySqlExprExpander(sqlInfo).expand(uriInfo.getFilterOption().getExpression());
-		assertEquals("([ID] = ?)", sqlInfo.getSqlBuilder().toString());
+		assertEquals("([ID] = 1.0)", sqlInfo.getSqlBuilder().toString());
 	}
 
 	@Test
@@ -38,7 +38,7 @@ class UriInfoTest {
 				"https://localhost//simple.svc/");
 		TinySqlInfo sqlInfo = new TinySqlInfo();
 		new TinySqlExprExpander(sqlInfo).expand(uriInfo.getFilterOption().getExpression());
-		assertEquals("(([Description] = ?) AND ([ID] = ?))", sqlInfo.getSqlBuilder().toString());
+		assertEquals("(([Description] = ?) AND ([ID] = 2.0))", sqlInfo.getSqlBuilder().toString());
 	}
 
 	@Test
@@ -52,6 +52,6 @@ class UriInfoTest {
 				"", "https://localhost//simple.svc/");
 		TinySqlInfo sqlInfo = new TinySqlInfo();
 		new TinySqlExprExpander(sqlInfo).expand(uriInfo.getFilterOption().getExpression());
-		assertEquals("((POSITION(?,[Description]) - 1) <> ?)", sqlInfo.getSqlBuilder().toString());
+		assertEquals("((POSITION(?,[Description]) - 1) <> -1)", sqlInfo.getSqlBuilder().toString());
 	}
 }
