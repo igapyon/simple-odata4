@@ -6,6 +6,8 @@ import java.sql.SQLException;
 
 /**
  * 実際に返却するデータ本体を組み上げるクラス.
+ * 
+ * このクラスには、テスト用データを構築する処理も含む.
  */
 public class SimpleEntityDataH2 {
     // 増殖カウント. 最終的に 5000を目標にしたい.

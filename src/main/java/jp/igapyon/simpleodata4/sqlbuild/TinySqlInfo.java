@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * SQL構築のデータ構造. SQL文を追加時に並行してパラメータを追加すること。
+ * SQL文を構築するための簡易クラスの、SQL構築のデータ構造.
  * 
- * 当初は、SQL文とパラメータを蓄える。
+ * このクラスの利用時には、SQL文を追加時に同時に併せてパラメータを追加すること。
+ * 
+ * 当面は、このクラスはSQL文とパラメータを蓄える。
  */
 public class TinySqlInfo {
     private final StringBuilder sqlBuilder = new StringBuilder();

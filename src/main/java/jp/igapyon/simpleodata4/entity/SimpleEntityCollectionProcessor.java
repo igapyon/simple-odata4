@@ -26,6 +26,8 @@ import org.apache.olingo.server.core.uri.queryoption.CountOptionImpl;
 
 /**
  * OData 要素コレクションを処理するクラス.
+ * 
+ * コードの多くは olingo のための基礎的な記述に該当.
  */
 public class SimpleEntityCollectionProcessor implements EntityCollectionProcessor {
     /**
@@ -84,7 +86,6 @@ public class SimpleEntityCollectionProcessor implements EntityCollectionProcesso
 
         // 要素のIdを作成.
         final String id = request.getRawBaseUri() + "/" + edmEntitySet.getName();
-        ;
         final CountOptionImpl copt = new CountOptionImpl();
         copt.setValue(true);
         // 直列化の処理.

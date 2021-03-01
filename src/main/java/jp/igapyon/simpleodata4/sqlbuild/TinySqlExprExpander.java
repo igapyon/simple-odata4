@@ -15,7 +15,7 @@ import org.apache.olingo.server.core.uri.queryoption.expression.TypeLiteralImpl;
 import org.apache.olingo.server.core.uri.queryoption.expression.UnaryImpl;
 
 /**
- * Expression を SQLに変換。
+ * SQL文を構築するための簡易クラスの、Expression を SQLに変換する処理.
  */
 public class TinySqlExprExpander {
     /**
