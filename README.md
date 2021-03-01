@@ -15,4 +15,6 @@ http://localhost:8080/simple.svc/MyProducts?$orderby=ID&$top=20
 ## TODO
 
 - TODO 実行時エラーを調整すること。現在 IllegalArgumentExceptionでそのまま500になったうえにエラー内容が見えてしまう。
+- 日時型、日付型の対応実装。
+- 認証の実験。
 - 当面 `$search` はサポートしない。ただしサポートは魅力的ではある。サポートすることにより効果的な全文検索が実現できる。
