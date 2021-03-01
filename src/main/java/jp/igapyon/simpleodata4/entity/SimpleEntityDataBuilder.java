@@ -16,10 +16,12 @@ import org.apache.olingo.commons.api.ex.ODataRuntimeException;
 import org.apache.olingo.server.api.uri.UriInfo;
 import org.apache.olingo.server.core.uri.queryoption.SearchOptionImpl;
 
-import jp.igapyon.simpleodata4.util.TinySqlBuilder;
+import jp.igapyon.simpleodata4.sqlbuild.TinySqlBuilder;
 
 /**
  * 実際に返却するデータ本体を組み上げるクラス.
+ * 
+ * EDM要素セットを入力に実際のデータを組み上げ.
  */
 public class SimpleEntityDataBuilder {
     private SimpleEntityDataBuilder() {
@@ -29,6 +31,7 @@ public class SimpleEntityDataBuilder {
      * 指定のEDM要素セットに対応する要素コレクションを作成.
      * 
      * @param edmEntitySet EDM要素セット.
+     * @param uriInfo SQL構築のデータ構造.
      * @return 要素コレクション.
      */
     public static EntityCollection buildData(EdmEntitySet edmEntitySet, UriInfo uriInfo) {

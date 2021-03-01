@@ -18,6 +18,8 @@ import org.apache.olingo.commons.api.edm.provider.CsdlSchema;
 
 /**
  * OData Common Schema Definition Language (CSDL) を提供するクラス.
+ * 
+ * コードの多くは olingo のための基礎的な記述に該当.
  */
 public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
     /**
