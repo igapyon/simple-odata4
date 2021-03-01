@@ -1,4 +1,4 @@
-package jp.igapyon.simpleodata4.util;
+package jp.igapyon.simpleodata4.sqlbuild;
 
 import java.util.List;
 
@@ -10,8 +10,16 @@ import org.apache.olingo.server.core.uri.queryoption.FilterOptionImpl;
 import org.apache.olingo.server.core.uri.queryoption.expression.MemberImpl;
 
 public class TinySqlBuilder {
+    /**
+     * SQL構築のデータ構造.
+     */
     private final TinySqlInfo sqlInfo = new TinySqlInfo();
 
+    /**
+     * SQL構築のデータ構造を取得.
+     * 
+     * @return SQL構築のデータ構造.
+     */
     public TinySqlInfo getSqlInfo() {
         return sqlInfo;
     }

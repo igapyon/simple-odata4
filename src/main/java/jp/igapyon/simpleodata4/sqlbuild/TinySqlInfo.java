@@ -1,4 +1,4 @@
-package jp.igapyon.simpleodata4.util;
+package jp.igapyon.simpleodata4.sqlbuild;
 
 import java.util.ArrayList;
 import java.util.List;

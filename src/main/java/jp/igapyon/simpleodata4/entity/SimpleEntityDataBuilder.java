@@ -16,7 +16,7 @@ import org.apache.olingo.commons.api.ex.ODataRuntimeException;
 import org.apache.olingo.server.api.uri.UriInfo;
 import org.apache.olingo.server.core.uri.queryoption.SearchOptionImpl;
 
-import jp.igapyon.simpleodata4.util.TinySqlBuilder;
+import jp.igapyon.simpleodata4.sqlbuild.TinySqlBuilder;
 
 /**
  * 実際に返却するデータ本体を組み上げるクラス.

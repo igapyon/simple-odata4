@@ -10,8 +10,8 @@ import org.apache.olingo.server.api.uri.UriInfo;
 import org.apache.olingo.server.core.uri.parser.Parser;
 import org.junit.jupiter.api.Test;
 
-import jp.igapyon.simpleodata4.util.TinySqlExprExpander;
-import jp.igapyon.simpleodata4.util.TinySqlInfo;
+import jp.igapyon.simpleodata4.sqlbuild.TinySqlExprExpander;
+import jp.igapyon.simpleodata4.sqlbuild.TinySqlInfo;
 
 class UriInfoTest {
 

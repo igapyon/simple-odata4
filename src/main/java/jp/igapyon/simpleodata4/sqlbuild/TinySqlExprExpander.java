@@ -1,6 +1,4 @@
-package jp.igapyon.simpleodata4.util;
-
-import java.text.DecimalFormat;
+package jp.igapyon.simpleodata4.sqlbuild;
 
 import org.apache.olingo.server.api.uri.queryoption.expression.BinaryOperatorKind;
 import org.apache.olingo.server.api.uri.queryoption.expression.Expression;
@@ -20,8 +18,16 @@ import org.apache.olingo.server.core.uri.queryoption.expression.UnaryImpl;
  * Expression を SQLに変換。
  */
 public class TinySqlExprExpander {
+    /**
+     * SQL構築のデータ構造.
+     */
     private TinySqlInfo sqlInfo = null;
 
+    /**
+     * コンストラクタ.
+     * 
+     * @param sqlInfo SQL構築のデータ構造.
+     */
     public TinySqlExprExpander(TinySqlInfo sqlInfo) {
         this.sqlInfo = sqlInfo;
     }
@@ -30,7 +36,6 @@ public class TinySqlExprExpander {
      * フィルタを展開。WHEREになる。
      * 
      * @param filterExpression フィルタ表現.
-     * @return 展開後SQL.
      */
     public void expand(Expression filterExpression) {
         if (filterExpression instanceof AliasImpl) {
