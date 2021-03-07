@@ -31,7 +31,7 @@ public class SimpleEntityDataBuilder {
      * 指定のEDM要素セットに対応する要素コレクションを作成.
      * 
      * @param edmEntitySet EDM要素セット.
-     * @param uriInfo SQL構築のデータ構造.
+     * @param uriInfo      SQL構築のデータ構造.
      * @return 要素コレクション.
      */
     public static EntityCollection buildData(EdmEntitySet edmEntitySet, UriInfo uriInfo) {
@@ -110,18 +110,18 @@ public class SimpleEntityDataBuilder {
                 ResultSetMetaData rsmeta = rset.getMetaData();
                 for (int index = 0; index < rsmeta.getColumnCount(); index++) {
                     switch (rsmeta.getColumnType(index + 1)) {
-                        case Types.BIGINT:
-                        case Types.INTEGER:
-                        case Types.SMALLINT:
-                            ent.addProperty( //
-                                    new Property(null, rsmeta.getColumnName(index + 1), ValueType.PRIMITIVE, //
-                                            rset.getInt(index + 1)));
-                            break;
-                        default:
-                            ent.addProperty( //
-                                    new Property(null, rsmeta.getColumnName(index + 1), ValueType.PRIMITIVE, //
-                                            rset.getString(index + 1)));
-                            break;
+                    case Types.BIGINT:
+                    case Types.INTEGER:
+                    case Types.SMALLINT:
+                        ent.addProperty( //
+                                new Property(null, rsmeta.getColumnName(index + 1), ValueType.PRIMITIVE, //
+                                        rset.getInt(index + 1)));
+                        break;
+                    default:
+                        ent.addProperty( //
+                                new Property(null, rsmeta.getColumnName(index + 1), ValueType.PRIMITIVE, //
+                                        rset.getString(index + 1)));
+                        break;
                     }
                 }
                 ent.setId(createId(SimpleEdmProvider.ES_MYPRODUCTS_NAME, rset.getInt("ID")));
