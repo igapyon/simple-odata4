@@ -53,9 +53,11 @@ public class SimpleEntityDataBuilder {
         }
 
         if (uriInfo.getSearchOption() != null) {
-            // $search はサポート外.
+            // $search.
             SearchOptionImpl searchOpt = (SearchOptionImpl) uriInfo.getSearchOption();
-            throw new ODataRuntimeException("NOT SUPPORTED:$search:" + searchOpt.toString());
+            System.err.println("Trying:$search:" + searchOpt.toString());
+            new TrialFullTextSearch().process(conn, edmEntitySet, uriInfo, eCollection);
+            return eCollection;
         }
 
         {
