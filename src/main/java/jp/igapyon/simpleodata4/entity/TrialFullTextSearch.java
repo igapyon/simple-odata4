@@ -18,13 +18,10 @@ public class TrialFullTextSearch {
     public void process(Connection conn, EdmEntitySet edmEntitySet, UriInfo uriInfo, EntityCollection eCollection) {
         try {
             SearchOptionImpl searchOpt = (SearchOptionImpl) uriInfo.getSearchOption();
-            System.err.println("Trying:$search:" + searchOpt.toString());
 
             // 想定: $top=6&$search=増産&$count=true&$select=ID
             // http://localhost:8080/simple.svc/MyProducts?$search=PixelSense&$count=true&$select=ID
             // ただしh2は日本語ダメかも。
-
-            System.err.println("search:[" + searchOpt.getText() + "]");
 
             int topValue = 100;
             if (uriInfo.getTopOption() != null) {
@@ -35,39 +32,32 @@ public class TrialFullTextSearch {
                 offsetValue = uriInfo.getSkipOption().getValue();
             }
 
-            if (false) {
-                // だめだ。java.lang.NoClassDefFoundError:
-                // org/apache/lucene/index/IndexFormatTooOldException] with root cause
-                ResultSet rset = org.h2.fulltext.FullTextLucene.search(conn, searchOpt.getText(), topValue,
-                        offsetValue);
-                ResultSetMetaData rsmeta = rset.getMetaData();
-                for (; rset.next();) {
-                    for (int idxColumn = 1; idxColumn <= rsmeta.getColumnCount(); idxColumn++) {
-                        System.err.println(rset.getString(idxColumn));
-                    }
-                }
-            }
-
             try (PreparedStatement stmt = conn
                     .prepareStatement("SELECT QUERY,SCORE FROM FT_SEARCH(?, " + topValue + ", " + offsetValue + ")")) {
-                System.err.println("TRACE: FT_SEARCH(?," + topValue + "," + offsetValue + ")");
+                System.err.println("TRACE: FT_SEARCH(?," + topValue + "," + offsetValue + "): " + searchOpt.getText());
+
                 stmt.setString(1, searchOpt.getText());
                 ResultSet rset = stmt.executeQuery();
-                ResultSetMetaData rsmeta = rset.getMetaData();
                 for (; rset.next();) {
+                    String valQuery = rset.getString(1);
+                    // System.err.println("QUERY:" + valQuery);
+                    if (valQuery.contains("MyProducts") == false) {
+                        continue;
+                    }
+
                     final Entity ent = new Entity();
 
-// TODO たぶんこれだとだめ。検索結果のIDから、selectで指定の項目を取る必要あり。
+                    // TODO たぶんこれだとだめ。検索結果のIDから、select から与えられた指定の項目を取る必要あり。
+                    try (PreparedStatement stmt2 = conn.prepareStatement("SELECT ID FROM " + valQuery)) {
+                        ResultSet rset2 = stmt2.executeQuery();
+                        // TODO 戻り値チェック.
+                        rset2.next();
 
-                    String valQuery = rset.getString(1);
-                    System.err.println("QUERY:" + valQuery);
-                    String[] queryParts = valQuery.split("=");
-                    System.err.println("val:" + queryParts[1]);
-                    ent.addProperty( //
-                            new Property(null, "ID", ValueType.PRIMITIVE, //
-                                    Integer.parseInt(queryParts[1])));
-                    eCollection.getEntities().add(ent);
-
+                        ent.addProperty( //
+                                new Property(null, "ID", ValueType.PRIMITIVE, //
+                                        rset2.getInt(1)));
+                        eCollection.getEntities().add(ent);
+                    }
                 }
             }
         } catch (SQLException ex) {

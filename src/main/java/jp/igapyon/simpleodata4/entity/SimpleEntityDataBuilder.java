@@ -54,8 +54,6 @@ public class SimpleEntityDataBuilder {
 
         if (uriInfo.getSearchOption() != null) {
             // $search.
-            SearchOptionImpl searchOpt = (SearchOptionImpl) uriInfo.getSearchOption();
-            System.err.println("Trying:$search:" + searchOpt.toString());
             new TrialFullTextSearch().process(conn, edmEntitySet, uriInfo, eCollection);
             return eCollection;
         }
