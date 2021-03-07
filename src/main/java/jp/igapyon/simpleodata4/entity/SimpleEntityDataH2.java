@@ -2,6 +2,7 @@ package jp.igapyon.simpleodata4.entity;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 /**
@@ -30,7 +31,7 @@ public class SimpleEntityDataH2 {
             throw new IllegalArgumentException(e);
         }
         // SQL Server 互換モードで動作させる.
-        final var jdbcConnStr = "jdbc:h2:mem:product;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=FALSE;CASE_INSENSITIVE_IDENTIFIERS=TRUE;MODE=MSSQLServer";
+        final var jdbcConnStr = "jdbc:h2:mem:myproducts;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=FALSE;CASE_INSENSITIVE_IDENTIFIERS=TRUE;MODE=MSSQLServer";
         // System.err.println("TRACE: DEMO: [connect jdbc] " + jdbcConnStr);
         try {
             conn = DriverManager.getConnection(//
@@ -101,6 +102,19 @@ public class SimpleEntityDataH2 {
 
         // System.err.println("TRACE: 作業用サンプルデータを作成");
 
+        // 全文検索関連の準備.
+        try {
+            try (PreparedStatement stmt = conn
+                    .prepareStatement("CREATE ALIAS IF NOT EXISTS FT_INIT FOR \"org.h2.fulltext.FullText.init\"")) {
+                stmt.executeUpdate();
+            }
+            try (PreparedStatement stmt = conn.prepareStatement("CALL FT_INIT()")) {
+                stmt.executeUpdate();
+            }
+        } catch (SQLException ex) {
+            throw new IllegalArgumentException("全文検索の初期設定に失敗: " + ex.toString(), ex);
+        }
+
         try (var stmt = conn.prepareStatement(
                 "INSERT INTO MyProducts (ID, Name, Description) VALUES (" + getQueryPlaceholderString(3) + ")")) {
             int idCounter = 1;
@@ -127,7 +141,7 @@ public class SimpleEntityDataH2 {
                 stmt.clearParameters();
                 stmt.setInt(1, idCounter++);
                 stmt.setString(2, "PopTablet" + idCounter);
-                stmt.setString(3, "増殖タブレット" + idCounter);
+                stmt.setString(3, "増殖タブレット Laptop Intel Core" + idCounter);
                 stmt.executeUpdate();
             }
             conn.commit();
@@ -143,6 +157,17 @@ public class SimpleEntityDataH2 {
 
         } catch (SQLException ex) {
             throw new IllegalArgumentException("テーブル作成に失敗: " + ex.toString(), ex);
+        }
+
+        try {
+            try (PreparedStatement stmt = conn.prepareStatement("CALL FT_CREATE_INDEX('PUBLIC', 'MyProducts', NULL)")) {
+                stmt.executeUpdate();
+            }
+            try (PreparedStatement stmt = conn.prepareStatement("CALL FT_REINDEX()")) {
+                stmt.executeUpdate();
+            }
+        } catch (SQLException ex) {
+            throw new IllegalArgumentException("全文検索の初期設定に失敗: " + ex.toString(), ex);
         }
     }
 }
