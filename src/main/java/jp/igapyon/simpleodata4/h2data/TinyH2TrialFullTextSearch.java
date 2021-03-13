@@ -31,9 +31,9 @@ public class TinyH2TrialFullTextSearch {
                 offsetValue = uriInfo.getSkipOption().getValue();
             }
 
-            try (PreparedStatement stmt = conn
-                    .prepareStatement("SELECT QUERY,SCORE FROM FT_SEARCH(?, " + topValue + ", " + offsetValue + ")")) {
-                System.err.println("TRACE: FT_SEARCH(?," + topValue + "," + offsetValue + "): " + searchOpt.getText());
+            String sql = "SELECT QUERY,SCORE FROM FT_SEARCH(?, " + topValue + ", " + offsetValue + ")";
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                System.err.println("OData v4: TRACE: $search: SQL: " + sql);
 
                 stmt.setString(1, searchOpt.getText());
                 ResultSet rset = stmt.executeQuery();

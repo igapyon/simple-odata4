@@ -16,14 +16,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * OData を Spring Boot の Servlet として動作.
+ * OData v4 server を Spring Boot の Servlet として動作させるクラス.
  *
  * EdmProvider と EntityCollectionProcessor を OData に結びつけてパスに登録.
  */
 @RestController
 public class SimpleOdata4Register {
     /**
-     * サーブレットのエントリポイント.
+     * OData v4 server を Spring Boot の Servlet として動作させるエントリポイント.
      * 
      * @param req  HTTPリクエスト.
      * @param resp HTTPレスポンス.
@@ -34,13 +34,15 @@ public class SimpleOdata4Register {
         String uri = req.getRequestURI();
         if (req.getQueryString() != null) {
             try {
+                // Query String を uri に追加.
                 // TODO URLDecoder より頑丈な URI デコードの実装を探して置き換えたい.
                 uri += "?" + URLDecoder.decode(req.getQueryString(), "UTF-8");
             } catch (UnsupportedEncodingException ex) {
                 throw new IllegalArgumentException("デコード失敗:" + ex.toString(), ex);
             }
         }
-        System.err.println("TRACE: OData v4: URI: " + uri);
+
+        System.err.println("OData v4: URI: " + uri);
         try {
             OData odata = OData.newInstance();
 
@@ -59,7 +61,7 @@ public class SimpleOdata4Register {
                 }
             }, resp);
         } catch (RuntimeException ex) {
-            System.err.println("Server Error: " + ex.toString());
+            System.err.println("OData v4: Unexpected Server Error: " + ex.toString());
             throw new ServletException(ex);
         }
     }
