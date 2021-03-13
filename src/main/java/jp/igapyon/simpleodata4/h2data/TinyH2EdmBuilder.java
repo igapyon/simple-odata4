@@ -10,7 +10,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.olingo.commons.api.edm.EdmPrimitiveTypeKind;
-import org.apache.olingo.commons.api.edm.FullQualifiedName;
 import org.apache.olingo.commons.api.edm.provider.CsdlEntityType;
 import org.apache.olingo.commons.api.edm.provider.CsdlProperty;
 import org.apache.olingo.commons.api.edm.provider.CsdlPropertyRef;
@@ -42,13 +41,14 @@ public class TinyH2EdmBuilder {
 
         // バッファ的な h2 データベースから該当情報を取得.
         final List<CsdlProperty> propertyList = new ArrayList<>();
+        // SELECT * について、この箇所のみ記述を許容したい。
         try (PreparedStatement stmt = conn.prepareStatement("SELECT * FROM " + esTargetsName)) {
             ResultSetMetaData rsmeta = stmt.getMetaData();
             final int columnCount = rsmeta.getColumnCount();
-            for (int idxColumn = 1; idxColumn <= columnCount; idxColumn++) {
-                final CsdlProperty prop = new CsdlProperty().setName(rsmeta.getColumnName(idxColumn));
+            for (int column = 1; column <= columnCount; column++) {
+                final CsdlProperty prop = new CsdlProperty().setName(rsmeta.getColumnName(column));
                 propertyList.add(prop);
-                switch (rsmeta.getColumnType(idxColumn)) {
+                switch (rsmeta.getColumnType(column)) {
                 case Types.TINYINT:
                     prop.setType(EdmPrimitiveTypeKind.SByte.getFullQualifiedName());
                     break;
@@ -63,8 +63,8 @@ public class TinyH2EdmBuilder {
                     break;
                 case Types.DECIMAL:
                     prop.setType(EdmPrimitiveTypeKind.Decimal.getFullQualifiedName());
-                    prop.setScale(rsmeta.getScale(idxColumn));
-                    prop.setPrecision(rsmeta.getPrecision(idxColumn));
+                    prop.setScale(rsmeta.getScale(column));
+                    prop.setPrecision(rsmeta.getPrecision(column));
                     break;
                 case Types.BOOLEAN:
                     prop.setType(EdmPrimitiveTypeKind.Boolean.getFullQualifiedName());
@@ -78,11 +78,29 @@ public class TinyH2EdmBuilder {
                 case Types.CHAR:
                 case Types.VARCHAR:
                     prop.setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
+                    prop.setMaxLength(rsmeta.getColumnDisplaySize(column));
                     // TODO 桁数の取得方法不明.
                     break;
                 default:
+                    // TODO なにか手当が必要。あるいは、この場合はログ吐いたうえで処理対象から外すのが無難かも。
                     prop.setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
                     break;
+                }
+
+                if (false) {
+                    // TODO FIXME いまここを有効にすると、なんとエラーが出てしまう。
+                    // NULL許容かどうか。不明な場合は設定しない。
+                    switch (rsmeta.isNullable(column)) {
+                    case ResultSetMetaData.columnNullable:
+                        prop.setNullable(true);
+                        break;
+                    case ResultSetMetaData.columnNoNulls:
+                        prop.setNullable(false);
+                        break;
+                    default:
+                        // なにもしない.
+                        break;
+                    }
                 }
 
                 // TODO デフォルト値の取得???

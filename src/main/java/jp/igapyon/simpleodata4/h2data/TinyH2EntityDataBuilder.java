@@ -66,12 +66,12 @@ public class TinyH2EntityDataBuilder {
             System.err.println("OData v4: TRACE: SQL: " + sql);
             int countWithWhere = 0;
             try (var stmt = conn.prepareStatement(sql)) {
-                int idxColumn = 1;
+                int column = 1;
                 for (Object look : tinySql.getSqlInfo().getSqlParamList()) {
                     if (look instanceof Integer) {
-                        stmt.setInt(idxColumn++, (Integer) look);
+                        stmt.setInt(column++, (Integer) look);
                     } else {
-                        stmt.setString(idxColumn++, (String) look);
+                        stmt.setString(column++, (String) look);
                     }
                     // TODO 他の型への対応.
                 }

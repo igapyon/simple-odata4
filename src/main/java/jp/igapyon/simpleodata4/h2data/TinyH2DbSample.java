@@ -26,8 +26,8 @@ public class TinyH2DbSample {
 
         try (var stmt = conn.prepareStatement("CREATE TABLE IF NOT EXISTS " //
                 + "MyProducts (" //
-                + "ID BIGINT NOT NULL" // primary key.
-                + ",Name VARCHAR(80)" //
+                + "ID INT NOT NULL" // primary key.
+                + ",Name VARCHAR(80) NOT NULL" //
                 + ",Description VARCHAR(250)" //
 
                 // テスト実験するためのフィールド.
@@ -58,16 +58,16 @@ public class TinyH2DbSample {
                 // H2の全文検索の対象外: Binary, h2:BINARY
 
                 // Boolean, h2:BOOLEAN
-                + ",Boolean1 BOOLEAN DEFAULT FALSE" //
+                + ",Boolean1 BOOLEAN DEFAULT FALSE NOT NULL" //
 
                 // TODO とりあえずパス: Single, h2:REAL
                 // TODO とりあえずパス: Double, h2:DOUBLE
 
                 // Date, h2:DATE
-                + ",Date1 DATE DEFAULT CURRENT_DATE()" //
+                + ",Date1 DATE DEFAULT CURRENT_DATE() NOT NULL" //
 
                 // DateTimeOffset, h2:TIMESTAMP
-                + ",DateTimeOffset1 TIMESTAMP DEFAULT CURRENT_TIMESTAMP()" //
+                + ",DateTimeOffset1 TIMESTAMP DEFAULT CURRENT_TIMESTAMP() NOT NULL" //
 
                 // TODO とりあえずパス: TimeOfDay, h2:TIME(?)
 
