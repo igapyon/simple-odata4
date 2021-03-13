@@ -26,9 +26,43 @@ public class TinyH2DbSample {
 
         try (var stmt = conn.prepareStatement("CREATE TABLE IF NOT EXISTS " //
                 + "MyProducts (" //
-                + "ID BIGINT NOT NULL" //
+                + "ID BIGINT NOT NULL" // primary key.
                 + ",Name VARCHAR(80)" //
                 + ",Description VARCHAR(250)" //
+
+                // SByte, h2:TINYINT(?)
+                + ",Sbyte1 TINYINT DEFAULT 3" //
+
+                // Int16, h2:SMALLINT
+                + ",Int16a SMALLINT DEFAULT 30" //
+
+                // Int32, h2:INT
+                + ",Int32a INT DEFAULT 300" //
+
+                // Int64, h2:BIGINT
+                + ",Int64a BIGINT DEFAULT 3000" //
+
+                // Decimal, h2:DECIMAL
+                + ",Decimal1 DECIMAL DEFAULT 30.5" //
+
+                // String, h2:VARCHAR, h2:CHAR
+                + ",String1 CHAR(2) DEFAULT 'C1'" //
+                + ",String2 VARCHAR(255) DEFAULT 'VARCHAR1'" //
+
+                // H2の全文検索の対象外: Binary, h2:BINARY
+
+                // Boolean, h2:BOOLEAN
+                + ",Boolean1 BOOLEAN DEFAULT FALSE" //
+
+                // TODO とりあえずパス: Single, h2:REAL
+                // TODO とりあえずパス: Double, h2:DOUBLE
+
+                // Date, h2:DATE(?) h2:TIMESTAMP(?)
+                + ",Date1 DATE DEFAULT CURRENT_DATE()" //
+                + ",Date2 TIMESTAMP DEFAULT CURRENT_TIMESTAMP()" //
+
+                // TODO とりあえずパス: TimeOfDay, h2:TIME(?)
+
                 + ",PRIMARY KEY(ID)" //
                 + ")")) {
             stmt.executeUpdate();
@@ -69,8 +103,8 @@ public class TinyH2DbSample {
             throw new IllegalArgumentException("全文検索の初期設定に失敗: " + ex.toString(), ex);
         }
 
-        try (var stmt = conn.prepareStatement(
-                "INSERT INTO MyProducts (ID, Name, Description) VALUES (" + TinyH2Util.getQueryPlaceholderString(3) + ")")) {
+        try (var stmt = conn.prepareStatement("INSERT INTO MyProducts (ID, Name, Description) VALUES ("
+                + TinyH2Util.getQueryPlaceholderString(3) + ")")) {
             int idCounter = 1;
             stmt.setInt(1, idCounter++);
             stmt.setString(2, "MacBookPro16,2");
