@@ -95,8 +95,16 @@ public class SimpleEntityCollectionProcessor implements EntityCollectionProcesso
         copt.setValue(true);
 
         // 直列化の処理.
-        EntityCollectionSerializerOptions opts = EntityCollectionSerializerOptions.with() //
-                .id(id).count(copt).contextURL(conUrl).build();
+        EntityCollectionSerializerOptions opts = null;
+        if (uriInfo.getSelectOption() == null) {
+            opts = EntityCollectionSerializerOptions.with() //
+                    .id(id).count(copt).contextURL(conUrl).build();
+        } else {
+            // $select
+            opts = EntityCollectionSerializerOptions.with() //
+                    .id(id).count(copt).contextURL(conUrl).select(uriInfo.getSelectOption()).build();
+        }
+
         SerializerResult serResult = serializer.entityCollection( //
                 serviceMetadata, edmEntityType, eCollection, opts);
 
