@@ -42,14 +42,17 @@ public class TinyH2DbSample {
                 + ",Int32a INT DEFAULT 2147483647" //
 
                 // Int64, h2:BIGINT
-                + ",Int64a BIGINT DEFAULT 9223372036854775807" //
+                + ",Int64a BIGINT DEFAULT 2147483647" //
+                + ",Int64b BIGINT DEFAULT 99999999999" //
+                + ",Int64max BIGINT DEFAULT 9223372036854775807" //
 
                 // Decimal, h2:DECIMAL
                 + ",Decimal1 DECIMAL(6,2) DEFAULT 1234.56" //
 
                 // String, h2:VARCHAR, h2:CHAR
-                + ",String1 CHAR(2) DEFAULT 'C1'" //
-                + ",String2 VARCHAR(255) DEFAULT 'VARCHAR1'" //
+                + ",StringChar2 CHAR(2) DEFAULT 'C2'" //
+                + ",StringVar255 VARCHAR(255) DEFAULT 'VARCHAR255'" //
+                + ",StringVar65535 VARCHAR(65535) DEFAULT 'VARCHAR65535'" //
 
                 // H2の全文検索の対象外: Binary, h2:BINARY
 
@@ -59,9 +62,11 @@ public class TinyH2DbSample {
                 // TODO とりあえずパス: Single, h2:REAL
                 // TODO とりあえずパス: Double, h2:DOUBLE
 
-                // Date, h2:DATE(?) h2:TIMESTAMP(?)
+                // Date, h2:DATE
                 + ",Date1 DATE DEFAULT CURRENT_DATE()" //
-                + ",Date2 TIMESTAMP DEFAULT CURRENT_TIMESTAMP()" //
+
+                // DateTimeOffset, h2:TIMESTAMP
+                + ",DateTimeOffset1 TIMESTAMP DEFAULT CURRENT_TIMESTAMP()" //
 
                 // TODO とりあえずパス: TimeOfDay, h2:TIME(?)
 
