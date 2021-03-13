@@ -60,8 +60,11 @@ public class TinyH2DbSample {
                 // Boolean, h2:BOOLEAN
                 + ",Boolean1 BOOLEAN DEFAULT FALSE NOT NULL" //
 
-                // TODO とりあえずパス: Single, h2:REAL
-                // TODO とりあえずパス: Double, h2:DOUBLE
+                // Single, h2:REAL
+                + ",Single1 REAL DEFAULT 123.456789" //
+
+                // Double, h2:DOUBLE
+                + ",Double1 DOUBLE DEFAULT 123.4567890123" //
 
                 // Date, h2:DATE
                 + ",Date1 DATE DEFAULT CURRENT_DATE() NOT NULL" //
