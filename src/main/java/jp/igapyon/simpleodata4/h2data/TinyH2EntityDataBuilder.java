@@ -36,14 +36,14 @@ public class TinyH2EntityDataBuilder {
      */
     public static EntityCollection buildData(EdmEntitySet edmEntitySet, UriInfo uriInfo) {
         // インメモリ作業データベースに接続.
-        Connection conn = SimpleEntityDataH2.getH2Connection();
+        Connection conn = TinyH2Util.getH2Connection();
 
         // テーブルをセットアップ.
-        SimpleEntityDataH2.setupTable(conn);
+        TinyH2DbSample.createTable(conn);
 
         // テーブルデータをセットアップ.
         // サンプルデータ.
-        SimpleEntityDataH2.setupTableData(conn);
+        TinyH2DbSample.setupTableData(conn);
 
         EntityCollection eCollection = new EntityCollection();
 
