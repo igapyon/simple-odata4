@@ -1,4 +1,4 @@
-package jp.igapyon.simpleodata4.sqlbuild;
+package jp.igapyon.simpleodata4.h2data.sqlbuild;
 
 import java.util.List;
 
@@ -12,18 +12,18 @@ import org.apache.olingo.server.core.uri.queryoption.expression.MemberImpl;
 /**
  * SQL文を構築するための簡易クラス.
  */
-public class TinySqlBuilder {
+public class TinyH2SqlBuilder {
     /**
      * SQL構築のデータ構造.
      */
-    private final TinySqlInfo sqlInfo = new TinySqlInfo();
+    private final TinySqlBuildInfo sqlInfo = new TinySqlBuildInfo();
 
     /**
      * SQL構築のデータ構造を取得.
      * 
      * @return SQL構築のデータ構造.
      */
-    public TinySqlInfo getSqlInfo() {
+    public TinySqlBuildInfo getSqlInfo() {
         return sqlInfo;
     }
 
@@ -37,7 +37,7 @@ public class TinySqlBuilder {
         if (uriInfo.getFilterOption() != null) {
             FilterOptionImpl filterOpt = (FilterOptionImpl) uriInfo.getFilterOption();
             sqlInfo.getSqlBuilder().append(" WHERE ");
-            new TinySqlExprExpander(sqlInfo).expand(filterOpt.getExpression());
+            new TinyH2SqlExprExpander(sqlInfo).expand(filterOpt.getExpression());
         }
     }
 
@@ -81,7 +81,7 @@ public class TinySqlBuilder {
             FilterOptionImpl filterOpt = (FilterOptionImpl) uriInfo.getFilterOption();
             // TODO WHERE部分についてはパラメータクエリ化が望ましい.
             sqlInfo.getSqlBuilder().append(" WHERE ");
-            new TinySqlExprExpander(sqlInfo).expand(filterOpt.getExpression());
+            new TinyH2SqlExprExpander(sqlInfo).expand(filterOpt.getExpression());
         }
 
         if (uriInfo.getOrderByOption() != null) {

@@ -1,4 +1,4 @@
-package jp.igapyon.simpleodata4.sqlbuild;
+package jp.igapyon.simpleodata4.h2data.sqlbuild;
 
 import org.apache.olingo.server.api.uri.queryoption.expression.BinaryOperatorKind;
 import org.apache.olingo.server.api.uri.queryoption.expression.Expression;
@@ -17,18 +17,18 @@ import org.apache.olingo.server.core.uri.queryoption.expression.UnaryImpl;
 /**
  * SQL文を構築するための簡易クラスの、Expression を SQLに変換する処理.
  */
-public class TinySqlExprExpander {
+public class TinyH2SqlExprExpander {
     /**
      * SQL構築のデータ構造.
      */
-    private TinySqlInfo sqlInfo = null;
+    private TinySqlBuildInfo sqlInfo = null;
 
     /**
      * コンストラクタ.
      * 
      * @param sqlInfo SQL構築のデータ構造.
      */
-    public TinySqlExprExpander(TinySqlInfo sqlInfo) {
+    public TinyH2SqlExprExpander(TinySqlBuildInfo sqlInfo) {
         this.sqlInfo = sqlInfo;
     }
 

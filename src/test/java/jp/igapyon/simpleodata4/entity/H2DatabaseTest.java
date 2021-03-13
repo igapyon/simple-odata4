@@ -4,6 +4,8 @@ import java.sql.Connection;
 
 import org.junit.jupiter.api.Test;
 
+import jp.igapyon.simpleodata4.h2data.SimpleEntityDataH2;
+
 // @SpringBootTest
 class H2DatabaseTest {
 

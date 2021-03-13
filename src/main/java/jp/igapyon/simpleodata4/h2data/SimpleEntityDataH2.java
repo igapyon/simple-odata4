@@ -1,4 +1,4 @@
-package jp.igapyon.simpleodata4.entity;
+package jp.igapyon.simpleodata4.h2data;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

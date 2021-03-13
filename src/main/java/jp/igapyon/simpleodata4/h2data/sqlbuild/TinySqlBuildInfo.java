@@ -1,4 +1,4 @@
-package jp.igapyon.simpleodata4.sqlbuild;
+package jp.igapyon.simpleodata4.h2data.sqlbuild;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +10,7 @@ import java.util.List;
  * 
  * 当面は、このクラスはSQL文とパラメータを蓄える。
  */
-public class TinySqlInfo {
+public class TinySqlBuildInfo {
     private final StringBuilder sqlBuilder = new StringBuilder();
     private final List<Object> sqlParamList = new ArrayList<>();
 

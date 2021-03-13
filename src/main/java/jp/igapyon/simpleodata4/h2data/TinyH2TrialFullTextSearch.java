@@ -1,9 +1,8 @@
-package jp.igapyon.simpleodata4.entity;
+package jp.igapyon.simpleodata4.h2data;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
 import org.apache.olingo.commons.api.data.Entity;
@@ -14,7 +13,7 @@ import org.apache.olingo.commons.api.edm.EdmEntitySet;
 import org.apache.olingo.server.api.uri.UriInfo;
 import org.apache.olingo.server.core.uri.queryoption.SearchOptionImpl;
 
-public class TrialFullTextSearch {
+public class TinyH2TrialFullTextSearch {
     public void process(Connection conn, EdmEntitySet edmEntitySet, UriInfo uriInfo, EntityCollection eCollection) {
         try {
             SearchOptionImpl searchOpt = (SearchOptionImpl) uriInfo.getSearchOption();

@@ -1,4 +1,4 @@
 /**
  * JDBC用のSQL文を構築するためのクラス群.
  */
-package jp.igapyon.simpleodata4.sqlbuild;
+package jp.igapyon.simpleodata4.h2data.sqlbuild;
