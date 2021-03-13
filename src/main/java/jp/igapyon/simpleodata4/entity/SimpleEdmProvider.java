@@ -82,60 +82,51 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
 
             // この一覧を可変に対応できるようにしたい。
 
-                // インメモリ作業データベースに接続.
-                Connection conn = TinyH2Util.getH2Connection();
+            // インメモリ作業データベースに接続.
+            Connection conn = TinyH2Util.getH2Connection();
 
-                // テーブルをセットアップ.
-                TinyH2DbSample.createTable(conn);
+            // テーブルをセットアップ.
+            TinyH2DbSample.createTable(conn);
 
-               final List<CsdlProperty> propertyList=new ArrayList<>();
-                try (PreparedStatement stmt = conn.prepareStatement("SELECT * FROM MyProducts")) {
-                    ResultSetMetaData rsmeta = stmt.getMetaData();
-                    final int columnCount = rsmeta.getColumnCount();
-                    for (int idxColumn = 1; idxColumn <= columnCount; idxColumn++) {
-                        final CsdlProperty prop = new CsdlProperty().setName(rsmeta.getColumnName(idxColumn));
-                        propertyList.add(prop);
-                        switch (rsmeta.getColumnType(idxColumn)) {
-                        case Types.TINYINT:
-                            prop.setType(EdmPrimitiveTypeKind.SByte.getFullQualifiedName());
-                            break;
-                        case Types.SMALLINT:
-                            prop.setType(EdmPrimitiveTypeKind.Int16.getFullQualifiedName());
-                            break;
-                        case Types.INTEGER: /*INT*/
-                            prop.setType(EdmPrimitiveTypeKind.Int32.getFullQualifiedName());
-                            break;
-                        case Types.BIGINT:
-                            prop.setType(EdmPrimitiveTypeKind.Int64.getFullQualifiedName());
-                            break;
-                        case Types.CHAR:
-                        case Types.VARCHAR:
-                        default:
-                            prop.setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
-                            break;
+            // バッファ的な h2 データベースから該当情報を取得.
+            final List<CsdlProperty> propertyList = new ArrayList<>();
+            try (PreparedStatement stmt = conn.prepareStatement("SELECT * FROM " + ES_MYPRODUCTS_NAME)) {
+                ResultSetMetaData rsmeta = stmt.getMetaData();
+                final int columnCount = rsmeta.getColumnCount();
+                for (int idxColumn = 1; idxColumn <= columnCount; idxColumn++) {
+                    final CsdlProperty prop = new CsdlProperty().setName(rsmeta.getColumnName(idxColumn));
+                    propertyList.add(prop);
+                    switch (rsmeta.getColumnType(idxColumn)) {
+                    case Types.TINYINT:
+                        prop.setType(EdmPrimitiveTypeKind.SByte.getFullQualifiedName());
+                        break;
+                    case Types.SMALLINT:
+                        prop.setType(EdmPrimitiveTypeKind.Int16.getFullQualifiedName());
+                        break;
+                    case Types.INTEGER: /* INT */
+                        prop.setType(EdmPrimitiveTypeKind.Int32.getFullQualifiedName());
+                        break;
+                    case Types.BIGINT:
+                        prop.setType(EdmPrimitiveTypeKind.Int64.getFullQualifiedName());
+                        break;
+                    case Types.CHAR:
+                    case Types.VARCHAR:
+                    default:
+                        prop.setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
+                        break;
 
-                        // Decimal, h2:DECIMAL
+                    // Decimal, h2:DECIMAL
 
-                        // Boolean, h2:BOOLEAN
+                    // Boolean, h2:BOOLEAN
 
-                        // Date, h2:DATE(?) h2:TIMESTAMP(?)
+                    // Date, h2:DATE(?) h2:TIMESTAMP(?)
 
-                        }
                     }
-
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                    throw new IllegalArgumentException("DB meta 取得失敗:" + ex.toString(), ex);
                 }
 
-            if (false) {
-                // 要素の情報をプロパティとして組み上げ.
-                CsdlProperty id = new CsdlProperty().setName(FIELDS[0])
-                        .setType(EdmPrimitiveTypeKind.Int32.getFullQualifiedName());
-                CsdlProperty name = new CsdlProperty().setName(FIELDS[1])
-                        .setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
-                CsdlProperty description = new CsdlProperty().setName(FIELDS[2])
-                        .setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+                throw new IllegalArgumentException("DB meta 取得失敗:" + ex.toString(), ex);
             }
 
             // キー要素を CsdlPropertyRef として設定.

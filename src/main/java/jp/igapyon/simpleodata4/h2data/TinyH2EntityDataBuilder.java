@@ -109,13 +109,28 @@ public class TinyH2EntityDataBuilder {
                 ResultSetMetaData rsmeta = rset.getMetaData();
                 for (int index = 0; index < rsmeta.getColumnCount(); index++) {
                     switch (rsmeta.getColumnType(index + 1)) {
-                    case Types.BIGINT:
-                    case Types.INTEGER:
+                    case Types.TINYINT:
+                        ent.addProperty( //
+                                new Property(null, rsmeta.getColumnName(index + 1), ValueType.PRIMITIVE, //
+                                        rset.getByte(index + 1)));
+                        break;
                     case Types.SMALLINT:
+                        ent.addProperty( //
+                                new Property(null, rsmeta.getColumnName(index + 1), ValueType.PRIMITIVE, //
+                                        rset.getShort(index + 1)));
+                        break;
+                    case Types.INTEGER:
                         ent.addProperty( //
                                 new Property(null, rsmeta.getColumnName(index + 1), ValueType.PRIMITIVE, //
                                         rset.getInt(index + 1)));
                         break;
+                    case Types.BIGINT:
+                        ent.addProperty( //
+                                new Property(null, rsmeta.getColumnName(index + 1), ValueType.PRIMITIVE, //
+                                        rset.getLong(index + 1)));
+                        break;
+                    case Types.CHAR:
+                    case Types.VARCHAR:
                     default:
                         ent.addProperty( //
                                 new Property(null, rsmeta.getColumnName(index + 1), ValueType.PRIMITIVE, //
@@ -123,6 +138,7 @@ public class TinyH2EntityDataBuilder {
                         break;
                     }
                 }
+                // TODO ハードコードで修正必要箇所.
                 ent.setId(createId(SimpleEdmProvider.ES_MYPRODUCTS_NAME, rset.getInt("ID")));
                 eCollection.getEntities().add(ent);
             }
