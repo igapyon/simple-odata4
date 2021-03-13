@@ -72,7 +72,8 @@ public class TinyH2DbSample {
                 // DateTimeOffset, h2:TIMESTAMP
                 + ",DateTimeOffset1 TIMESTAMP DEFAULT CURRENT_TIMESTAMP() NOT NULL" //
 
-                // TODO とりあえずパス: TimeOfDay, h2:TIME(?)
+                // TimeOfDay, h2:TIME
+                + ",TimeOfDay1 TIME DEFAULT CURRENT_TIME()" //
 
                 + ",PRIMARY KEY(ID)" //
                 + ")")) {

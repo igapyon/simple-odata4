@@ -141,6 +141,9 @@ public class TinyH2EntityDataBuilder {
                     case Types.TIMESTAMP:
                         prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getTimestamp(column));
                         break;
+                    case Types.TIME:
+                        prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getTime(column));
+                        break;
                     case Types.CHAR:
                     case Types.VARCHAR:
                     default:

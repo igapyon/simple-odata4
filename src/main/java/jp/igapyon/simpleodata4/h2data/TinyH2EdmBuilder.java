@@ -81,6 +81,9 @@ public class TinyH2EdmBuilder {
                 case Types.TIMESTAMP:
                     prop.setType(EdmPrimitiveTypeKind.DateTimeOffset.getFullQualifiedName());
                     break;
+                case Types.TIME:
+                    prop.setType(EdmPrimitiveTypeKind.TimeOfDay.getFullQualifiedName());
+                    break;
                 case Types.CHAR:
                 case Types.VARCHAR:
                     prop.setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
