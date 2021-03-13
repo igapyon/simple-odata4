@@ -129,11 +129,20 @@ public class TinyH2EntityDataBuilder {
                     case Types.BOOLEAN:
                         prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getBoolean(column));
                         break;
+                    case Types.REAL:
+                        prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getFloat(column));
+                        break;
+                    case Types.DOUBLE:
+                        prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getDouble(column));
+                        break;
                     case Types.DATE:
                         prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getDate(column));
                         break;
                     case Types.TIMESTAMP:
                         prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getTimestamp(column));
+                        break;
+                    case Types.TIME:
+                        prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getTime(column));
                         break;
                     case Types.CHAR:
                     case Types.VARCHAR:

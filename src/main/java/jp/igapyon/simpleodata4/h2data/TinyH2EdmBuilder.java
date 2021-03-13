@@ -69,11 +69,20 @@ public class TinyH2EdmBuilder {
                 case Types.BOOLEAN:
                     prop.setType(EdmPrimitiveTypeKind.Boolean.getFullQualifiedName());
                     break;
+                case Types.REAL:
+                    prop.setType(EdmPrimitiveTypeKind.Single.getFullQualifiedName());
+                    break;
+                case Types.DOUBLE:
+                    prop.setType(EdmPrimitiveTypeKind.Double.getFullQualifiedName());
+                    break;
                 case Types.DATE:
                     prop.setType(EdmPrimitiveTypeKind.Date.getFullQualifiedName());
                     break;
                 case Types.TIMESTAMP:
                     prop.setType(EdmPrimitiveTypeKind.DateTimeOffset.getFullQualifiedName());
+                    break;
+                case Types.TIME:
+                    prop.setType(EdmPrimitiveTypeKind.TimeOfDay.getFullQualifiedName());
                     break;
                 case Types.CHAR:
                 case Types.VARCHAR:
