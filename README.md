@@ -15,6 +15,10 @@ http://localhost:8080/simple.svc/MyProducts?$orderby=ID&$top=20
 
 # Refs
 
+## 最も大切なチュートリアル
+
+- https://olingo.apache.org/doc/odata4/index.html
+
 ## 参考 OData 2ベース機能 + h2 機能
 
 - https://www.odata.org/documentation/odata-version-2-0/uri-conventions/
@@ -25,5 +29,5 @@ http://localhost:8080/simple.svc/MyProducts?$orderby=ID&$top=20
 - TODO 実行時エラーを調整すること。現在 IllegalArgumentExceptionでそのまま500になったうえにエラー内容が見えてしまう。
 - 日時型、日付型の対応実装。
 - 認証の実験。
-- 実験的に全文検索である `$search` をサポートしたものの、もう少し詳しいところが調べられていない。
+- 実験的に全文検索である `$search` をサポートしたものの、もう少し詳しいところが調べられていない。また全文検索で有効なのはアルファベットのみ。
 
