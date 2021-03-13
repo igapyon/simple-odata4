@@ -3,6 +3,7 @@ package jp.igapyon.simpleodata4.h2data;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Types;
@@ -109,7 +110,7 @@ public class TinyH2EntityDataBuilder {
 
         TinyH2SqlBuilder tinySql = new TinyH2SqlBuilder();
         tinySql.getSqlInfo().setEntityName(targetEntityName);
-        
+
         tinySql.getSelectQuery(uriInfo);
         final String sql = tinySql.getSqlInfo().getSqlBuilder().toString();
 
@@ -127,52 +128,14 @@ public class TinyH2EntityDataBuilder {
 
             stmt.executeQuery();
             var rset = stmt.getResultSet();
+            ResultSetMetaData rsmeta = null;
             for (; rset.next();) {
+                if (rsmeta == null) {
+                    rsmeta = rset.getMetaData();
+                }
                 final Entity ent = new Entity();
-                ResultSetMetaData rsmeta = rset.getMetaData();
                 for (int column = 1; column <= rsmeta.getColumnCount(); column++) {
-                    Property prop = null;
-                    final String columnName = rsmeta.getColumnName(column);
-                    switch (rsmeta.getColumnType(column)) {
-                    case Types.TINYINT:
-                        prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getByte(column));
-                        break;
-                    case Types.SMALLINT:
-                        prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getShort(column));
-                        break;
-                    case Types.INTEGER:
-                        prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getInt(column));
-                        break;
-                    case Types.BIGINT:
-                        prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getLong(column));
-                        break;
-                    case Types.DECIMAL:
-                        prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getBigDecimal(column));
-                        break;
-                    case Types.BOOLEAN:
-                        prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getBoolean(column));
-                        break;
-                    case Types.REAL:
-                        prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getFloat(column));
-                        break;
-                    case Types.DOUBLE:
-                        prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getDouble(column));
-                        break;
-                    case Types.DATE:
-                        prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getDate(column));
-                        break;
-                    case Types.TIMESTAMP:
-                        prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getTimestamp(column));
-                        break;
-                    case Types.TIME:
-                        prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getTime(column));
-                        break;
-                    case Types.CHAR:
-                    case Types.VARCHAR:
-                    default:
-                        prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getString(column));
-                        break;
-                    }
+                    Property prop = resultSet2Property(rset, rsmeta, column);
                     ent.addProperty(prop);
                 }
                 ent.setId(createId(eSetTarget.getName(), rset.getInt("ID")));
@@ -206,5 +169,55 @@ public class TinyH2EntityDataBuilder {
         } catch (URISyntaxException ex) {
             throw new ODataRuntimeException("Fail to create ID EntitySet name: " + entitySetName, ex);
         }
+    }
+
+    ///////////////////
+    // Mapping
+
+    private static Property resultSet2Property(ResultSet rset, ResultSetMetaData rsmeta, int column)
+            throws SQLException {
+        Property prop = null;
+        final String columnName = rsmeta.getColumnName(column);
+        switch (rsmeta.getColumnType(column)) {
+        case Types.TINYINT:
+            prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getByte(column));
+            break;
+        case Types.SMALLINT:
+            prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getShort(column));
+            break;
+        case Types.INTEGER:
+            prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getInt(column));
+            break;
+        case Types.BIGINT:
+            prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getLong(column));
+            break;
+        case Types.DECIMAL:
+            prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getBigDecimal(column));
+            break;
+        case Types.BOOLEAN:
+            prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getBoolean(column));
+            break;
+        case Types.REAL:
+            prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getFloat(column));
+            break;
+        case Types.DOUBLE:
+            prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getDouble(column));
+            break;
+        case Types.DATE:
+            prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getDate(column));
+            break;
+        case Types.TIMESTAMP:
+            prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getTimestamp(column));
+            break;
+        case Types.TIME:
+            prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getTime(column));
+            break;
+        case Types.CHAR:
+        case Types.VARCHAR:
+        default:
+            prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getString(column));
+            break;
+        }
+        return prop;
     }
 }
