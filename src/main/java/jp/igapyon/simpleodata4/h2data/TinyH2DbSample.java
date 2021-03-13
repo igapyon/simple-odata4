@@ -30,20 +30,22 @@ public class TinyH2DbSample {
                 + ",Name VARCHAR(80)" //
                 + ",Description VARCHAR(250)" //
 
+                // 実験的フィールド一覧.
+
                 // SByte, h2:TINYINT(?)
-                + ",Sbyte1 TINYINT DEFAULT 3" //
+                + ",Sbyte1 TINYINT DEFAULT 127" //
 
                 // Int16, h2:SMALLINT
-                + ",Int16a SMALLINT DEFAULT 30" //
+                + ",Int16a SMALLINT DEFAULT 32767" //
 
                 // Int32, h2:INT
-                + ",Int32a INT DEFAULT 300" //
+                + ",Int32a INT DEFAULT 2147483647" //
 
                 // Int64, h2:BIGINT
-                + ",Int64a BIGINT DEFAULT 3000" //
+                + ",Int64a BIGINT DEFAULT 9223372036854775807" //
 
                 // Decimal, h2:DECIMAL
-                + ",Decimal1 DECIMAL DEFAULT 30.5" //
+                + ",Decimal1 DECIMAL(6,2) DEFAULT 1234.56" //
 
                 // String, h2:VARCHAR, h2:CHAR
                 + ",String1 CHAR(2) DEFAULT 'C1'" //
