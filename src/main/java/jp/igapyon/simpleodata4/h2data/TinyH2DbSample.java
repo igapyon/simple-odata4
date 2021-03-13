@@ -1,7 +1,6 @@
 package jp.igapyon.simpleodata4.h2data;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
@@ -10,56 +9,11 @@ import java.sql.SQLException;
  * 
  * このクラスには、テスト用データを構築する処理も含む.
  */
-public class SimpleEntityDataH2 {
+public class TinyH2DbSample {
     // 増殖カウント. 最終的に 5000を目標にしたい.
     private static final int ZOUSYOKU = 5000;
 
-    private SimpleEntityDataH2() {
-    }
-
-    /**
-     * h2 データベースへのDB接続を取得します。
-     * 
-     * @return データベース接続。
-     */
-    public static Connection getH2Connection() {
-        Connection conn;
-        try {
-            Class.forName("org.h2.Driver");
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            throw new IllegalArgumentException(e);
-        }
-        // SQL Server 互換モードで動作させる.
-        final var jdbcConnStr = "jdbc:h2:mem:myproducts;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=FALSE;CASE_INSENSITIVE_IDENTIFIERS=TRUE;MODE=MSSQLServer";
-        // System.err.println("TRACE: DEMO: [connect jdbc] " + jdbcConnStr);
-        try {
-            conn = DriverManager.getConnection(//
-                    jdbcConnStr, "sa", "");
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-            throw new IllegalArgumentException(ex);
-        }
-
-        return conn;
-    }
-
-    /**
-     * SQL検索プレースホルダの文字列を生成します。
-     * 
-     * @param count プレースホルダ数。
-     * @return プレースホルダ文字列。
-     */
-    public static String getQueryPlaceholderString(int count) {
-        String queryPlaceholder = "";
-        for (int col = 0; col < count; col++) {
-            if (col != 0) {
-                queryPlaceholder += ",";
-            }
-            queryPlaceholder += "?";
-        }
-
-        return queryPlaceholder;
+    private TinyH2DbSample() {
     }
 
     /**
@@ -67,7 +21,7 @@ public class SimpleEntityDataH2 {
      * 
      * @param conn データベース接続。
      */
-    public static void setupTable(final Connection conn) {
+    public static void createTable(final Connection conn) {
         // System.err.println("TRACE: 作業用データベーステーブルを作成");
 
         try (var stmt = conn.prepareStatement("CREATE TABLE IF NOT EXISTS " //
@@ -116,7 +70,7 @@ public class SimpleEntityDataH2 {
         }
 
         try (var stmt = conn.prepareStatement(
-                "INSERT INTO MyProducts (ID, Name, Description) VALUES (" + getQueryPlaceholderString(3) + ")")) {
+                "INSERT INTO MyProducts (ID, Name, Description) VALUES (" + TinyH2Util.getQueryPlaceholderString(3) + ")")) {
             int idCounter = 1;
             stmt.setInt(1, idCounter++);
             stmt.setString(2, "MacBookPro16,2");

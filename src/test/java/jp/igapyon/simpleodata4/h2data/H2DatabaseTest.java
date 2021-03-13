@@ -1,23 +1,21 @@
-package jp.igapyon.simpleodata4.entity;
+package jp.igapyon.simpleodata4.h2data;
 
 import java.sql.Connection;
 
 import org.junit.jupiter.api.Test;
-
-import jp.igapyon.simpleodata4.h2data.SimpleEntityDataH2;
 
 // @SpringBootTest
 class H2DatabaseTest {
 
     @Test
     void test01() throws Exception {
-        Connection conn = SimpleEntityDataH2.getH2Connection();
+        Connection conn = TinyH2Util.getH2Connection();
 
         // テーブルをセットアップ.
-        SimpleEntityDataH2.setupTable(conn);
+        TinyH2DbSample.createTable(conn);
 
         // テーブルデータをセットアップ.
-        SimpleEntityDataH2.setupTableData(conn);
+        TinyH2DbSample.setupTableData(conn);
 
         try (var stmt = conn.prepareStatement("SELECT ID, Name, Description FROM MyProducts ORDER BY ID")) {
             stmt.executeQuery();

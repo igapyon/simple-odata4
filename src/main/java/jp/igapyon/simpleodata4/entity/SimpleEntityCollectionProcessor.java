@@ -77,6 +77,7 @@ public class SimpleEntityCollectionProcessor implements EntityCollectionProcesso
 
         // 要素セットの指定をもとに要素コレクションを取得.
         // これがデータ本体に該当.
+        // ここでは h2 database のデータ構築実装を呼び出している.
         final EntityCollection eCollection = TinyH2EntityDataBuilder.buildData(edmEntitySet, uriInfo);
 
         // 指定のレスポンスフォーマットに合致する直列化を準備.
