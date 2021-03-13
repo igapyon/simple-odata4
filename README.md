@@ -1,16 +1,24 @@
 # simple-odata4
 
-Simple OData v4 server usage sample. (with h2 database)
+Simple OData v4 server usage sample. (with Apache Olingo / Spring Boot / h2 database)
 
+# Try to run simple sample
 
-# How to run server odata
-
-動かし方
+## Spring Boot Web Server
 
 ```sh
-http://localhost:8080/simple.svc/
-http://localhost:8080/simple.svc/$metadata
-http://localhost:8080/simple.svc/MyProducts?$orderby=ID&$top=20
+simple-odata4 % mvn clean install spring-boot:run
+```
+
+## Run query
+
+```sh
+- http://localhost:8080/simple.svc/$metadata
+- http://localhost:8080/simple.svc/MyProducts?$orderby=ID&$top=20
+- http://localhost:8080/simple.svc/MyProducts?$top=10&$count=true&$select=Description,ID,Name
+- http://localhost:8080/simple.svc/MyProducts?$top=2001&$filter=Description eq 'MacBook Pro (13-inch, 2020, Thunderbolt 3ポートx 4)' and ID eq 1.0&$count=true&$select=ID,Name
+- http://localhost:8080/simple.svc/MyProducts?$top=5&$orderby=Description&$count=true&$select=Description,ID
+- http://localhost:8080/simple.svc/MyProducts?$top=6&$search=macbook&$count=true&$select=ID
 ```
 
 # Refs
