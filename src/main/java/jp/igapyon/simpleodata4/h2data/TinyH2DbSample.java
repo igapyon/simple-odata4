@@ -43,8 +43,9 @@ public class TinyH2DbSample {
 
                 // Int64, h2:BIGINT
                 + ",Int64a BIGINT DEFAULT 2147483647" //
-                + ",Int64b BIGINT DEFAULT 99999999999" //
-                + ",Int64max BIGINT DEFAULT 9223372036854775807" //
+
+                // 【諸事情によりINT MAX以上をサンプルから割愛】 + ",Int64b BIGINT DEFAULT 99999999999" //
+                // 【諸事情によりINT MAX以上をサンプルから割愛】 + ",Int64max BIGINT DEFAULT 9223372036854775807"
 
                 // Decimal, h2:DECIMAL
                 + ",Decimal1 DECIMAL(6,2) DEFAULT 1234.56" //
