@@ -7,29 +7,47 @@ Simple OData v4 server usage sample. (with Apache Olingo / Spring Boot / h2 data
 ## Spring Boot Web Server
 
 ```sh
-simple-odata4 % mvn clean install spring-boot:run
+mvn clean install spring-boot:run
 ```
 
 ## Run query
 
+### $metadata
+
 ```sh
-- http://localhost:8080/simple.svc/$metadata
-- http://localhost:8080/simple.svc/MyProducts?$orderby=ID&$top=20
-- http://localhost:8080/simple.svc/MyProducts?$top=10&$count=true&$select=Description,ID,Name
-- http://localhost:8080/simple.svc/MyProducts?$top=2001&$filter=Description eq 'MacBook Pro (13-inch, 2020, Thunderbolt 3ポートx 4)' and ID eq 1.0&$count=true&$select=ID,Name
-- http://localhost:8080/simple.svc/MyProducts?$top=5&$orderby=Description&$count=true&$select=Description,ID
-- http://localhost:8080/simple.svc/MyProducts?$top=6&$search=macbook&$count=true&$select=ID
+http://localhost:8080/simple.svc/$metadata
 ```
 
-# Refs
+### $orderby
 
-## 最も大切なチュートリアル
+```sh
+http://localhost:8080/simple.svc/MyProducts?$orderby=ID&$top=20
+```
+
+### $filter
+
+```sh
+http://localhost:8080/simple.svc/MyProducts?$top=2001&$filter=Description eq 'MacBook Pro (13-inch, 2020, Thunderbolt 3ポートx 4)' and ID eq 1.0&$count=true&$select=ID,Name
+```
+
+### $search
+
+```sh
+http://localhost:8080/simple.svc/MyProducts?$top=6&$search=macbook&$count=true&$select=ID
+```
+
+# 中身を理解するために役立つ情報源
+
+## 最も大切な OData v4 server チュートリアル
 
 - https://olingo.apache.org/doc/odata4/index.html
 
-## 参考 OData 2ベース機能 + h2 機能
+## 参考: 別バージョンながら役立つ OData 2情報
 
 - https://www.odata.org/documentation/odata-version-2-0/uri-conventions/
+
+## 参考: h2機能を調べる際に
+
 - http://www.h2database.com/html/functions.html
 
 # TODO
@@ -38,4 +56,3 @@ simple-odata4 % mvn clean install spring-boot:run
 - 日時型、日付型の対応実装。
 - 認証の実験。
 - 実験的に全文検索である `$search` をサポートしたものの、もう少し詳しいところが調べられていない。また全文検索で有効なのはアルファベットのみ。
-
