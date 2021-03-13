@@ -35,6 +35,12 @@ public class TinyH2EntityDataBuilder {
      * @return 要素コレクション.
      */
     public static EntityCollection buildData(EdmEntitySet edmEntitySet, UriInfo uriInfo) {
+        final EntityCollection eCollection = new EntityCollection();
+        if (!SimpleEdmProvider.ES_MYPRODUCTS_NAME.equals(edmEntitySet.getName())) {
+            // 処理対象外の要素セットです. 処理せずに戻します.
+            return eCollection;
+        }
+
         // インメモリ作業データベースに接続.
         Connection conn = TinyH2Util.getH2Connection();
 
@@ -42,15 +48,8 @@ public class TinyH2EntityDataBuilder {
         TinyH2DbSample.createTable(conn);
 
         // テーブルデータをセットアップ.
-        // サンプルデータ.
+        // サンプルデータを格納.
         TinyH2DbSample.setupTableData(conn);
-
-        EntityCollection eCollection = new EntityCollection();
-
-        if (!SimpleEdmProvider.ES_MYPRODUCTS_NAME.equals(edmEntitySet.getName())) {
-            // 処理対象外の要素セットです. 処理せずに戻します.
-            return eCollection;
-        }
 
         if (uriInfo.getSearchOption() != null) {
             // $search.

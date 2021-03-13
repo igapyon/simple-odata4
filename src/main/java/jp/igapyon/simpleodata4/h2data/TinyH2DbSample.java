@@ -30,7 +30,7 @@ public class TinyH2DbSample {
                 + ",Name VARCHAR(80)" //
                 + ",Description VARCHAR(250)" //
 
-                // 実験的フィールド一覧.
+                // テスト実験するためのフィールド.
 
                 // SByte, h2:TINYINT(?)
                 + ",Sbyte1 TINYINT DEFAULT 127" //

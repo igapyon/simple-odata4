@@ -1,5 +1,10 @@
 package jp.igapyon.simpleodata4.entity;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -15,6 +20,9 @@ import org.apache.olingo.commons.api.edm.provider.CsdlEntityType;
 import org.apache.olingo.commons.api.edm.provider.CsdlProperty;
 import org.apache.olingo.commons.api.edm.provider.CsdlPropertyRef;
 import org.apache.olingo.commons.api.edm.provider.CsdlSchema;
+
+import jp.igapyon.simpleodata4.h2data.TinyH2DbSample;
+import jp.igapyon.simpleodata4.h2data.TinyH2Util;
 
 /**
  * OData Common Schema Definition Language (CSDL) を提供するクラス.
@@ -74,27 +82,61 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
 
             // この一覧を可変に対応できるようにしたい。
 
-            // さしあたり以下の型に対応してみたい.
-            // SByte, h2:TINYINT(?)
-            // Int16, h2:SMALLINT
-            // Int32, h2:INT
-            // Int64, h2:BIGINT
-            // Decimal, h2:DECIMAL
-            // String, h2:VARCHAR, h2:CHAR
-            // Binary, h2:BINARY
-            // Boolean, h2:BOOLEAN
-            // Single, h2:REAL
-            // Double, h2:DOUBLE
-            // Date, h2:DATE(?) h2:TIMESTAMP(?)
-            // TimeOfDay, h2:TIME(?)
+                // インメモリ作業データベースに接続.
+                Connection conn = TinyH2Util.getH2Connection();
 
-            // 要素の情報をプロパティとして組み上げ.
-            CsdlProperty id = new CsdlProperty().setName(FIELDS[0])
-                    .setType(EdmPrimitiveTypeKind.Int32.getFullQualifiedName());
-            CsdlProperty name = new CsdlProperty().setName(FIELDS[1])
-                    .setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
-            CsdlProperty description = new CsdlProperty().setName(FIELDS[2])
-                    .setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
+                // テーブルをセットアップ.
+                TinyH2DbSample.createTable(conn);
+
+               final List<CsdlProperty> propertyList=new ArrayList<>();
+                try (PreparedStatement stmt = conn.prepareStatement("SELECT * FROM MyProducts")) {
+                    ResultSetMetaData rsmeta = stmt.getMetaData();
+                    final int columnCount = rsmeta.getColumnCount();
+                    for (int idxColumn = 1; idxColumn <= columnCount; idxColumn++) {
+                        final CsdlProperty prop = new CsdlProperty().setName(rsmeta.getColumnName(idxColumn));
+                        propertyList.add(prop);
+                        switch (rsmeta.getColumnType(idxColumn)) {
+                        case Types.TINYINT:
+                            prop.setType(EdmPrimitiveTypeKind.SByte.getFullQualifiedName());
+                            break;
+                        case Types.SMALLINT:
+                            prop.setType(EdmPrimitiveTypeKind.Int16.getFullQualifiedName());
+                            break;
+                        case Types.INTEGER: /*INT*/
+                            prop.setType(EdmPrimitiveTypeKind.Int32.getFullQualifiedName());
+                            break;
+                        case Types.BIGINT:
+                            prop.setType(EdmPrimitiveTypeKind.Int64.getFullQualifiedName());
+                            break;
+                        case Types.CHAR:
+                        case Types.VARCHAR:
+                        default:
+                            prop.setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
+                            break;
+
+                        // Decimal, h2:DECIMAL
+
+                        // Boolean, h2:BOOLEAN
+
+                        // Date, h2:DATE(?) h2:TIMESTAMP(?)
+
+                        }
+                    }
+
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                    throw new IllegalArgumentException("DB meta 取得失敗:" + ex.toString(), ex);
+                }
+
+            if (false) {
+                // 要素の情報をプロパティとして組み上げ.
+                CsdlProperty id = new CsdlProperty().setName(FIELDS[0])
+                        .setType(EdmPrimitiveTypeKind.Int32.getFullQualifiedName());
+                CsdlProperty name = new CsdlProperty().setName(FIELDS[1])
+                        .setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
+                CsdlProperty description = new CsdlProperty().setName(FIELDS[2])
+                        .setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
+            }
 
             // キー要素を CsdlPropertyRef として設定.
             CsdlPropertyRef propertyRef = new CsdlPropertyRef();
@@ -103,7 +145,7 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
             // CSDL要素型として情報を組み上げ.
             CsdlEntityType entityType = new CsdlEntityType();
             entityType.setName(ET_MYPRODUCT_NAME);
-            entityType.setProperties(Arrays.asList(id, name, description));
+            entityType.setProperties(propertyList);
             entityType.setKey(Collections.singletonList(propertyRef));
 
             return entityType;
