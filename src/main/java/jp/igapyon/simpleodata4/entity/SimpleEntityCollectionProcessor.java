@@ -90,23 +90,22 @@ public class SimpleEntityCollectionProcessor implements EntityCollectionProcesso
         // 要素のIdを作成.
         final String id = request.getRawBaseUri() + "/" + edmEntitySet.getName();
 
-        // $count あり
-        final CountOptionImpl copt = new CountOptionImpl();
-        copt.setValue(true);
-
         // 直列化の処理.
-        EntityCollectionSerializerOptions opts = null;
-        if (uriInfo.getSelectOption() == null) {
-            opts = EntityCollectionSerializerOptions.with() //
-                    .id(id).count(copt).contextURL(conUrl).build();
-        } else {
-            // $select
-            opts = EntityCollectionSerializerOptions.with() //
-                    .id(id).count(copt).contextURL(conUrl).select(uriInfo.getSelectOption()).build();
+        EntityCollectionSerializerOptions.Builder builder = EntityCollectionSerializerOptions.with() //
+                .id(id).contextURL(conUrl);
+        if (uriInfo.getCountOption() != null) {
+            // $count あり.
+            final CountOptionImpl copt = new CountOptionImpl();
+            copt.setValue(true);
+            builder.count(copt);
+        }
+        if (uriInfo.getSelectOption() != null) {
+            // $select あり.
+            builder.select(uriInfo.getSelectOption());
         }
 
         SerializerResult serResult = serializer.entityCollection( //
-                serviceMetadata, edmEntityType, eCollection, opts);
+                serviceMetadata, edmEntityType, eCollection, builder.build());
 
         // OData レスポンスを返却.
         response.setContent(serResult.getContent());
