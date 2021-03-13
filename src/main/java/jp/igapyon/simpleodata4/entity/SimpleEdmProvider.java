@@ -74,6 +74,20 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
 
             // この一覧を可変に対応できるようにしたい。
 
+            // さしあたり以下の型に対応してみたい.
+            // SByte, h2:TINYINT(?)
+            // Int16, h2:SMALLINT
+            // Int32, h2:INT
+            // Int64, h2:BIGINT
+            // Decimal, h2:DECIMAL
+            // String, h2:VARCHAR, h2:CHAR
+            // Binary, h2:BINARY
+            // Boolean, h2:BOOLEAN
+            // Single, h2:REAL
+            // Double, h2:DOUBLE
+            // Date, h2:DATE(?) h2:TIMESTAMP(?)
+            // TimeOfDay, h2:TIME(?)
+
             // 要素の情報をプロパティとして組み上げ.
             CsdlProperty id = new CsdlProperty().setName(FIELDS[0])
                     .setType(EdmPrimitiveTypeKind.Int32.getFullQualifiedName());
