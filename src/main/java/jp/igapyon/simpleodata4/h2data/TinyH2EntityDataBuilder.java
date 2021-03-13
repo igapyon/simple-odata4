@@ -64,12 +64,12 @@ public class TinyH2EntityDataBuilder {
             tinySql.getSelectCountQuery(uriInfo);
             final String sql = tinySql.getSqlInfo().getSqlBuilder().toString();
 
-            System.err.println("TRACE:SQL: " + sql);
+            System.err.println("OData v4: TRACE: SQL: " + sql);
             int countWithWhere = 0;
             try (var stmt = conn.prepareStatement(sql)) {
                 int idxColumn = 1;
                 for (Object look : tinySql.getSqlInfo().getSqlParamList()) {
-                    System.err.println("DEBUG:param:" + look);
+                    System.err.println("TRACE: DEBUG: param:" + look);
                     if (look instanceof Integer) {
                         stmt.setInt(idxColumn++, (Integer) look);
                     } else {
@@ -91,11 +91,11 @@ public class TinyH2EntityDataBuilder {
         tinySql.getSelectQuery(uriInfo);
         final String sql = tinySql.getSqlInfo().getSqlBuilder().toString();
 
-        System.err.println("TRACE:SQL: " + sql);
+        System.err.println("TRACE: SQL: " + sql);
         try (var stmt = conn.prepareStatement(sql)) {
             int idxColumn = 1;
             for (Object look : tinySql.getSqlInfo().getSqlParamList()) {
-                System.err.println("DEBUG:param:" + look);
+                System.err.println("TRACE: DEBUG: param:" + look);
                 if (look instanceof Integer) {
                     stmt.setInt(idxColumn++, (Integer) look);
                 } else {
