@@ -1,4 +1,4 @@
-package jp.igapyon.simpleodata4.entity;
+package jp.igapyon.simpleodata4.h2data;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -14,17 +14,17 @@ import org.apache.olingo.commons.api.data.ValueType;
 import org.apache.olingo.commons.api.edm.EdmEntitySet;
 import org.apache.olingo.commons.api.ex.ODataRuntimeException;
 import org.apache.olingo.server.api.uri.UriInfo;
-import org.apache.olingo.server.core.uri.queryoption.SearchOptionImpl;
 
-import jp.igapyon.simpleodata4.sqlbuild.TinySqlBuilder;
+import jp.igapyon.simpleodata4.entity.SimpleEdmProvider;
+import jp.igapyon.simpleodata4.h2data.sqlbuild.TinyH2SqlBuilder;
 
 /**
  * 実際に返却するデータ本体を組み上げるクラス.
  * 
  * EDM要素セットを入力に実際のデータを組み上げ.
  */
-public class SimpleEntityDataBuilder {
-    private SimpleEntityDataBuilder() {
+public class TinyH2EntityDataBuilder {
+    private TinyH2EntityDataBuilder() {
     }
 
     /**
@@ -54,13 +54,13 @@ public class SimpleEntityDataBuilder {
 
         if (uriInfo.getSearchOption() != null) {
             // $search.
-            new TrialFullTextSearch().process(conn, edmEntitySet, uriInfo, eCollection);
+            new TinyH2TrialFullTextSearch().process(conn, edmEntitySet, uriInfo, eCollection);
             return eCollection;
         }
 
         {
             // 件数をカウントして設定。
-            TinySqlBuilder tinySql = new TinySqlBuilder();
+            TinyH2SqlBuilder tinySql = new TinyH2SqlBuilder();
             tinySql.getSelectCountQuery(uriInfo);
             final String sql = tinySql.getSqlInfo().getSqlBuilder().toString();
 
@@ -87,7 +87,7 @@ public class SimpleEntityDataBuilder {
             eCollection.setCount(countWithWhere);
         }
 
-        TinySqlBuilder tinySql = new TinySqlBuilder();
+        TinyH2SqlBuilder tinySql = new TinyH2SqlBuilder();
         tinySql.getSelectQuery(uriInfo);
         final String sql = tinySql.getSqlInfo().getSqlBuilder().toString();
 
