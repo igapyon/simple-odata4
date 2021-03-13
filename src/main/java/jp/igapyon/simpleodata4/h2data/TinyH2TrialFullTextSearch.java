@@ -33,7 +33,7 @@ public class TinyH2TrialFullTextSearch {
 
             String sql = "SELECT QUERY,SCORE FROM FT_SEARCH(?, " + topValue + ", " + offsetValue + ")";
             try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-                System.err.println("TRACE: $search: SQL: " + sql);
+                System.err.println("OData v4: TRACE: $search: SQL: " + sql);
 
                 stmt.setString(1, searchOpt.getText());
                 ResultSet rset = stmt.executeQuery();

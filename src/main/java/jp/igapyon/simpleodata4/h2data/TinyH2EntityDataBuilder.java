@@ -69,12 +69,12 @@ public class TinyH2EntityDataBuilder {
             try (var stmt = conn.prepareStatement(sql)) {
                 int idxColumn = 1;
                 for (Object look : tinySql.getSqlInfo().getSqlParamList()) {
-                    System.err.println("TRACE: DEBUG: param:" + look);
                     if (look instanceof Integer) {
                         stmt.setInt(idxColumn++, (Integer) look);
                     } else {
                         stmt.setString(idxColumn++, (String) look);
                     }
+                    // TODO 他の型への対応.
                 }
 
                 stmt.executeQuery();
@@ -91,16 +91,16 @@ public class TinyH2EntityDataBuilder {
         tinySql.getSelectQuery(uriInfo);
         final String sql = tinySql.getSqlInfo().getSqlBuilder().toString();
 
-        System.err.println("TRACE: SQL: " + sql);
+        System.err.println("OData v4: TRACE: SQL: " + sql);
         try (var stmt = conn.prepareStatement(sql)) {
             int idxColumn = 1;
             for (Object look : tinySql.getSqlInfo().getSqlParamList()) {
-                System.err.println("TRACE: DEBUG: param:" + look);
                 if (look instanceof Integer) {
                     stmt.setInt(idxColumn++, (Integer) look);
                 } else {
                     stmt.setString(idxColumn++, (String) look);
                 }
+                // TODO 他の型への対応.
             }
 
             stmt.executeQuery();
