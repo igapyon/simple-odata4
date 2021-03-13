@@ -107,58 +107,51 @@ public class TinyH2EntityDataBuilder {
             for (; rset.next();) {
                 final Entity ent = new Entity();
                 ResultSetMetaData rsmeta = rset.getMetaData();
-                for (int index = 0; index < rsmeta.getColumnCount(); index++) {
-                    switch (rsmeta.getColumnType(index + 1)) {
+                for (int column = 1; column <= rsmeta.getColumnCount(); column++) {
+                    Property prop = null;
+                    switch (rsmeta.getColumnType(column)) {
                     case Types.TINYINT:
-                        ent.addProperty( //
-                                new Property(null, rsmeta.getColumnName(index + 1), ValueType.PRIMITIVE, //
-                                        rset.getByte(index + 1)));
+                        prop = new Property(null, rsmeta.getColumnName(column), ValueType.PRIMITIVE, //
+                                rset.getByte(column));
                         break;
                     case Types.SMALLINT:
-                        ent.addProperty( //
-                                new Property(null, rsmeta.getColumnName(index + 1), ValueType.PRIMITIVE, //
-                                        rset.getShort(index + 1)));
+                        prop = new Property(null, rsmeta.getColumnName(column), ValueType.PRIMITIVE, //
+                                rset.getShort(column));
                         break;
                     case Types.INTEGER:
-                        ent.addProperty( //
-                                new Property(null, rsmeta.getColumnName(index + 1), ValueType.PRIMITIVE, //
-                                        rset.getInt(index + 1)));
+                        prop = new Property(null, rsmeta.getColumnName(column), ValueType.PRIMITIVE, //
+                                rset.getInt(column));
                         break;
                     case Types.BIGINT:
-                        ent.addProperty( //
-                                new Property(null, rsmeta.getColumnName(index + 1), ValueType.PRIMITIVE, //
-                                        rset.getLong(index + 1)));
+                        prop = new Property(null, rsmeta.getColumnName(column), ValueType.PRIMITIVE, //
+                                rset.getLong(column));
                         break;
                     case Types.DECIMAL:
-                        ent.addProperty( //
-                                new Property(null, rsmeta.getColumnName(index + 1), ValueType.PRIMITIVE, //
-                                        rset.getBigDecimal(index + 1)));
+                        prop = new Property(null, rsmeta.getColumnName(column), ValueType.PRIMITIVE, //
+                                rset.getBigDecimal(column));
                         break;
                     case Types.BOOLEAN:
-                        ent.addProperty( //
-                                new Property(null, rsmeta.getColumnName(index + 1), ValueType.PRIMITIVE, //
-                                        rset.getBoolean(index + 1)));
+                        prop = new Property(null, rsmeta.getColumnName(column), ValueType.PRIMITIVE, //
+                                rset.getBoolean(column));
                         break;
                     case Types.DATE:
-                        ent.addProperty( //
-                                new Property(null, rsmeta.getColumnName(index + 1), ValueType.PRIMITIVE, //
-                                        rset.getDate(index + 1)));
+                        prop = new Property(null, rsmeta.getColumnName(column), ValueType.PRIMITIVE, //
+                                rset.getDate(column));
                         break;
                     case Types.TIMESTAMP:
-                        ent.addProperty( //
-                                new Property(null, rsmeta.getColumnName(index + 1), ValueType.PRIMITIVE, //
-                                        rset.getTimestamp(index + 1)));
+                        prop = new Property(null, rsmeta.getColumnName(column), ValueType.PRIMITIVE, //
+                                rset.getTimestamp(column));
                         break;
                     case Types.CHAR:
                     case Types.VARCHAR:
                     default:
-                        ent.addProperty( //
-                                new Property(null, rsmeta.getColumnName(index + 1), ValueType.PRIMITIVE, //
-                                        rset.getString(index + 1)));
+                        prop = new Property(null, rsmeta.getColumnName(column), ValueType.PRIMITIVE, //
+                                rset.getString(column));
                         break;
                     }
+                    ent.addProperty(prop);
                 }
-                // TODO ハードコードで修正必要箇所.
+                // TODO ハードコードで修正必要箇所. FIXME
                 ent.setId(createId(SimpleEdmProvider.ES_MYPRODUCTS_NAME, rset.getInt("ID")));
                 eCollection.getEntities().add(ent);
             }
