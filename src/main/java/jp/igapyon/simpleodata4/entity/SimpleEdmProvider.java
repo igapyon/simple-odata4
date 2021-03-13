@@ -118,8 +118,10 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
                         prop.setType(EdmPrimitiveTypeKind.Boolean.getFullQualifiedName());
                         break;
                     case Types.DATE:
-                    case Types.TIMESTAMP:
                         prop.setType(EdmPrimitiveTypeKind.Date.getFullQualifiedName());
+                        break;
+                    case Types.TIMESTAMP:
+                        prop.setType(EdmPrimitiveTypeKind.DateTimeOffset.getFullQualifiedName());
                         break;
                     case Types.CHAR:
                     case Types.VARCHAR:
