@@ -23,7 +23,7 @@ import org.apache.olingo.commons.api.edm.provider.CsdlSchema;
  */
 public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
     /**
-     * サービスの名前空間.
+     * サービスの名前空間. このソースをベースにカスタマイズする場合には変更.
      */
     public static final String NAMESPACE = "Igapyon.Simple";
 
@@ -33,29 +33,33 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
     public static final String CONTAINER_NAME = "Container";
 
     /**
-     * EDMコンテナ名のFQN(完全修飾名).
-     */
-    public static final FullQualifiedName CONTAINER = new FullQualifiedName(NAMESPACE, CONTAINER_NAME);
-
-    /**
-     * 要素型名.
+     * 要素型名. さしあたりはリレーショナルデータベースのテーブル名に相当するものと考えて差し支えない.
      */
     public static final String ET_MYPRODUCT_NAME = "MyProduct";
 
     /**
-     * 要素型のFQN(完全修飾名).
-     */
-    public static final FullQualifiedName ET_MYPRODUCT_FQN = new FullQualifiedName(NAMESPACE, ET_MYPRODUCT_NAME);
-
-    /**
-     * 要素型名の複数形.
+     * 要素型名の複数形. さしあたりはリレーショナルデータベースのテーブル名に相当するものに「s」をつけたものと考えて差し支えない. URIにも影響がある.
      */
     public static final String ES_MYPRODUCTS_NAME = "MyProducts";
 
     /**
      * エンティティのフィールド一覧.
+     * 
+     * 一意なID的なものがあるのが必要.
+     * 
+     * TODO この一覧は何かの工夫により自動的に可変になるようにしたい。
      */
     public static final String[] FIELDS = new String[] { "ID", "Name", "Description" };
+
+    /**
+     * EDMコンテナ名のFQN(完全修飾名).
+     */
+    public static final FullQualifiedName CONTAINER = new FullQualifiedName(NAMESPACE, CONTAINER_NAME);
+
+    /**
+     * 要素型のFQN(完全修飾名).
+     */
+    public static final FullQualifiedName ET_MYPRODUCT_FQN = new FullQualifiedName(NAMESPACE, ET_MYPRODUCT_NAME);
 
     /**
      * 与えられた型名のEntityType(要素型)のCSDLを取得.
@@ -67,6 +71,8 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
     public CsdlEntityType getEntityType(FullQualifiedName entityTypeName) {
         if (entityTypeName.equals(ET_MYPRODUCT_FQN)) {
             // 処理対象の型名です。
+
+            // この一覧を可変に対応できるようにしたい。
 
             // 要素の情報をプロパティとして組み上げ.
             CsdlProperty id = new CsdlProperty().setName(FIELDS[0])

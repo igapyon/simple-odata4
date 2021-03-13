@@ -1,4 +1,4 @@
-package jp.igapyon.simpleodata4.entity;
+package jp.igapyon.simpleodata4.h2data;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -14,36 +14,36 @@ import org.apache.olingo.commons.api.data.ValueType;
 import org.apache.olingo.commons.api.edm.EdmEntitySet;
 import org.apache.olingo.commons.api.ex.ODataRuntimeException;
 import org.apache.olingo.server.api.uri.UriInfo;
-import org.apache.olingo.server.core.uri.queryoption.SearchOptionImpl;
 
-import jp.igapyon.simpleodata4.sqlbuild.TinySqlBuilder;
+import jp.igapyon.simpleodata4.entity.SimpleEdmProvider;
+import jp.igapyon.simpleodata4.h2data.sqlbuild.TinyH2SqlBuilder;
 
 /**
  * 実際に返却するデータ本体を組み上げるクラス.
  * 
  * EDM要素セットを入力に実際のデータを組み上げ.
  */
-public class SimpleEntityDataBuilder {
-    private SimpleEntityDataBuilder() {
+public class TinyH2EntityDataBuilder {
+    private TinyH2EntityDataBuilder() {
     }
 
     /**
      * 指定のEDM要素セットに対応する要素コレクションを作成.
      * 
      * @param edmEntitySet EDM要素セット.
-     * @param uriInfo SQL構築のデータ構造.
+     * @param uriInfo      SQL構築のデータ構造.
      * @return 要素コレクション.
      */
     public static EntityCollection buildData(EdmEntitySet edmEntitySet, UriInfo uriInfo) {
         // インメモリ作業データベースに接続.
-        Connection conn = SimpleEntityDataH2.getH2Connection();
+        Connection conn = TinyH2Util.getH2Connection();
 
         // テーブルをセットアップ.
-        SimpleEntityDataH2.setupTable(conn);
+        TinyH2DbSample.createTable(conn);
 
         // テーブルデータをセットアップ.
         // サンプルデータ.
-        SimpleEntityDataH2.setupTableData(conn);
+        TinyH2DbSample.setupTableData(conn);
 
         EntityCollection eCollection = new EntityCollection();
 
@@ -53,14 +53,14 @@ public class SimpleEntityDataBuilder {
         }
 
         if (uriInfo.getSearchOption() != null) {
-            // $search はサポート外.
-            SearchOptionImpl searchOpt = (SearchOptionImpl) uriInfo.getSearchOption();
-            throw new ODataRuntimeException("NOT SUPPORTED:$search:" + searchOpt.toString());
+            // $search.
+            new TinyH2TrialFullTextSearch().process(conn, edmEntitySet, uriInfo, eCollection);
+            return eCollection;
         }
 
         {
             // 件数をカウントして設定。
-            TinySqlBuilder tinySql = new TinySqlBuilder();
+            TinyH2SqlBuilder tinySql = new TinyH2SqlBuilder();
             tinySql.getSelectCountQuery(uriInfo);
             final String sql = tinySql.getSqlInfo().getSqlBuilder().toString();
 
@@ -87,7 +87,7 @@ public class SimpleEntityDataBuilder {
             eCollection.setCount(countWithWhere);
         }
 
-        TinySqlBuilder tinySql = new TinySqlBuilder();
+        TinyH2SqlBuilder tinySql = new TinyH2SqlBuilder();
         tinySql.getSelectQuery(uriInfo);
         final String sql = tinySql.getSqlInfo().getSqlBuilder().toString();
 
@@ -110,18 +110,18 @@ public class SimpleEntityDataBuilder {
                 ResultSetMetaData rsmeta = rset.getMetaData();
                 for (int index = 0; index < rsmeta.getColumnCount(); index++) {
                     switch (rsmeta.getColumnType(index + 1)) {
-                        case Types.BIGINT:
-                        case Types.INTEGER:
-                        case Types.SMALLINT:
-                            ent.addProperty( //
-                                    new Property(null, rsmeta.getColumnName(index + 1), ValueType.PRIMITIVE, //
-                                            rset.getInt(index + 1)));
-                            break;
-                        default:
-                            ent.addProperty( //
-                                    new Property(null, rsmeta.getColumnName(index + 1), ValueType.PRIMITIVE, //
-                                            rset.getString(index + 1)));
-                            break;
+                    case Types.BIGINT:
+                    case Types.INTEGER:
+                    case Types.SMALLINT:
+                        ent.addProperty( //
+                                new Property(null, rsmeta.getColumnName(index + 1), ValueType.PRIMITIVE, //
+                                        rset.getInt(index + 1)));
+                        break;
+                    default:
+                        ent.addProperty( //
+                                new Property(null, rsmeta.getColumnName(index + 1), ValueType.PRIMITIVE, //
+                                        rset.getString(index + 1)));
+                        break;
                     }
                 }
                 ent.setId(createId(SimpleEdmProvider.ES_MYPRODUCTS_NAME, rset.getInt("ID")));
