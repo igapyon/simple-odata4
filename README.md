@@ -52,6 +52,8 @@ http://localhost:8080/simple.svc/MyProducts?$top=6&$search=macbook&$count=true&$
 
 # TODO
 
+- 文字列の長さ対応。
+- TODO Null の対応。
 - TODO 実行時エラーを調整すること。現在 IllegalArgumentExceptionでそのまま500になったうえにエラー内容が見えてしまう。
 - 日時型、日付型の対応実装。
 - 認証の実験。

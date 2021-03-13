@@ -1,27 +1,17 @@
 package jp.igapyon.simpleodata4.entity;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.sql.Types;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-import org.apache.olingo.commons.api.edm.EdmPrimitiveTypeKind;
 import org.apache.olingo.commons.api.edm.FullQualifiedName;
 import org.apache.olingo.commons.api.edm.provider.CsdlAbstractEdmProvider;
 import org.apache.olingo.commons.api.edm.provider.CsdlEntityContainer;
 import org.apache.olingo.commons.api.edm.provider.CsdlEntityContainerInfo;
 import org.apache.olingo.commons.api.edm.provider.CsdlEntitySet;
 import org.apache.olingo.commons.api.edm.provider.CsdlEntityType;
-import org.apache.olingo.commons.api.edm.provider.CsdlProperty;
-import org.apache.olingo.commons.api.edm.provider.CsdlPropertyRef;
 import org.apache.olingo.commons.api.edm.provider.CsdlSchema;
 
-import jp.igapyon.simpleodata4.h2data.TinyH2DbSample;
-import jp.igapyon.simpleodata4.h2data.TinyH2Util;
+import jp.igapyon.simpleodata4.h2data.TinyH2EdmBuilder;
 
 /**
  * OData Common Schema Definition Language (CSDL) を提供するクラス.
@@ -68,6 +58,8 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
      */
     public static final FullQualifiedName ET_MYPRODUCT_FQN = new FullQualifiedName(NAMESPACE, ET_MYPRODUCT_NAME);
 
+    private static final TinyH2EdmBuilder edmBuilder = new TinyH2EdmBuilder(ES_MYPRODUCTS_NAME, ET_MYPRODUCT_NAME);
+
     /**
      * 与えられた型名のEntityType(要素型)のCSDLを取得.
      * 
@@ -78,79 +70,7 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
     public CsdlEntityType getEntityType(FullQualifiedName entityTypeName) {
         if (entityTypeName.equals(ET_MYPRODUCT_FQN)) {
             // 処理対象の型名です。
-
-            // この一覧を可変に対応できるようにしたい。
-
-            // インメモリ作業データベースに接続.
-            Connection conn = TinyH2Util.getH2Connection();
-
-            // テーブルをセットアップ.
-            TinyH2DbSample.createTable(conn);
-
-            // バッファ的な h2 データベースから該当情報を取得.
-            final List<CsdlProperty> propertyList = new ArrayList<>();
-            try (PreparedStatement stmt = conn.prepareStatement("SELECT * FROM " + ES_MYPRODUCTS_NAME)) {
-                ResultSetMetaData rsmeta = stmt.getMetaData();
-                final int columnCount = rsmeta.getColumnCount();
-                for (int idxColumn = 1; idxColumn <= columnCount; idxColumn++) {
-                    final CsdlProperty prop = new CsdlProperty().setName(rsmeta.getColumnName(idxColumn));
-                    propertyList.add(prop);
-                    switch (rsmeta.getColumnType(idxColumn)) {
-                    case Types.TINYINT:
-                        prop.setType(EdmPrimitiveTypeKind.SByte.getFullQualifiedName());
-                        break;
-                    case Types.SMALLINT:
-                        prop.setType(EdmPrimitiveTypeKind.Int16.getFullQualifiedName());
-                        break;
-                    case Types.INTEGER: /* INT */
-                        prop.setType(EdmPrimitiveTypeKind.Int32.getFullQualifiedName());
-                        break;
-                    case Types.BIGINT:
-                        prop.setType(EdmPrimitiveTypeKind.Int64.getFullQualifiedName());
-                        break;
-                    case Types.DECIMAL:
-                        prop.setType(EdmPrimitiveTypeKind.Decimal.getFullQualifiedName());
-                        prop.setScale(rsmeta.getScale(idxColumn));
-                        prop.setPrecision(rsmeta.getPrecision(idxColumn));
-                        break;
-                    case Types.BOOLEAN:
-                        prop.setType(EdmPrimitiveTypeKind.Boolean.getFullQualifiedName());
-                        break;
-                    case Types.DATE:
-                        prop.setType(EdmPrimitiveTypeKind.Date.getFullQualifiedName());
-                        break;
-                    case Types.TIMESTAMP:
-                        prop.setType(EdmPrimitiveTypeKind.DateTimeOffset.getFullQualifiedName());
-                        break;
-                    case Types.CHAR:
-                    case Types.VARCHAR:
-                        prop.setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
-                        // TODO 桁数の取得方法不明.
-                        break;
-                    default:
-                        prop.setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
-                        break;
-                    }
-
-                    // TODO デフォルト値の取得???
-                }
-
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-                throw new IllegalArgumentException("DB meta 取得失敗:" + ex.toString(), ex);
-            }
-
-            // キー要素を CsdlPropertyRef として設定.
-            CsdlPropertyRef propertyRef = new CsdlPropertyRef();
-            propertyRef.setName(FIELDS[0]);
-
-            // CSDL要素型として情報を組み上げ.
-            CsdlEntityType entityType = new CsdlEntityType();
-            entityType.setName(ET_MYPRODUCT_NAME);
-            entityType.setProperties(propertyList);
-            entityType.setKey(Collections.singletonList(propertyRef));
-
-            return entityType;
+            return edmBuilder.getEntityType();
         }
 
         // 該当する型名の要素型はありません.
