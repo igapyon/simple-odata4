@@ -109,44 +109,36 @@ public class TinyH2EntityDataBuilder {
                 ResultSetMetaData rsmeta = rset.getMetaData();
                 for (int column = 1; column <= rsmeta.getColumnCount(); column++) {
                     Property prop = null;
+                    final String columnName = rsmeta.getColumnName(column);
                     switch (rsmeta.getColumnType(column)) {
                     case Types.TINYINT:
-                        prop = new Property(null, rsmeta.getColumnName(column), ValueType.PRIMITIVE, //
-                                rset.getByte(column));
+                        prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getByte(column));
                         break;
                     case Types.SMALLINT:
-                        prop = new Property(null, rsmeta.getColumnName(column), ValueType.PRIMITIVE, //
-                                rset.getShort(column));
+                        prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getShort(column));
                         break;
                     case Types.INTEGER:
-                        prop = new Property(null, rsmeta.getColumnName(column), ValueType.PRIMITIVE, //
-                                rset.getInt(column));
+                        prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getInt(column));
                         break;
                     case Types.BIGINT:
-                        prop = new Property(null, rsmeta.getColumnName(column), ValueType.PRIMITIVE, //
-                                rset.getLong(column));
+                        prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getLong(column));
                         break;
                     case Types.DECIMAL:
-                        prop = new Property(null, rsmeta.getColumnName(column), ValueType.PRIMITIVE, //
-                                rset.getBigDecimal(column));
+                        prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getBigDecimal(column));
                         break;
                     case Types.BOOLEAN:
-                        prop = new Property(null, rsmeta.getColumnName(column), ValueType.PRIMITIVE, //
-                                rset.getBoolean(column));
+                        prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getBoolean(column));
                         break;
                     case Types.DATE:
-                        prop = new Property(null, rsmeta.getColumnName(column), ValueType.PRIMITIVE, //
-                                rset.getDate(column));
+                        prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getDate(column));
                         break;
                     case Types.TIMESTAMP:
-                        prop = new Property(null, rsmeta.getColumnName(column), ValueType.PRIMITIVE, //
-                                rset.getTimestamp(column));
+                        prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getTimestamp(column));
                         break;
                     case Types.CHAR:
                     case Types.VARCHAR:
                     default:
-                        prop = new Property(null, rsmeta.getColumnName(column), ValueType.PRIMITIVE, //
-                                rset.getString(column));
+                        prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getString(column));
                         break;
                     }
                     ent.addProperty(prop);
