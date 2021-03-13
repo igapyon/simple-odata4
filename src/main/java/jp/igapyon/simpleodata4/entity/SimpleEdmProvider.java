@@ -109,19 +109,29 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
                     case Types.BIGINT:
                         prop.setType(EdmPrimitiveTypeKind.Int64.getFullQualifiedName());
                         break;
+                    case Types.DECIMAL:
+                        prop.setType(EdmPrimitiveTypeKind.Decimal.getFullQualifiedName());
+                        prop.setScale(rsmeta.getScale(idxColumn));
+                        prop.setPrecision(rsmeta.getPrecision(idxColumn));
+                        break;
+                    case Types.BOOLEAN:
+                        prop.setType(EdmPrimitiveTypeKind.Boolean.getFullQualifiedName());
+                        break;
+                    case Types.DATE:
+                    case Types.TIMESTAMP:
+                        prop.setType(EdmPrimitiveTypeKind.Date.getFullQualifiedName());
+                        break;
                     case Types.CHAR:
                     case Types.VARCHAR:
+                        prop.setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
+                        // TODO 桁数の取得方法不明.
+                        break;
                     default:
                         prop.setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
                         break;
-
-                    // Decimal, h2:DECIMAL
-
-                    // Boolean, h2:BOOLEAN
-
-                    // Date, h2:DATE(?) h2:TIMESTAMP(?)
-
                     }
+
+                    // TODO デフォルト値の取得???
                 }
 
             } catch (SQLException ex) {

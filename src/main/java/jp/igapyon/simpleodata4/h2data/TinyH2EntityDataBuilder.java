@@ -129,6 +129,26 @@ public class TinyH2EntityDataBuilder {
                                 new Property(null, rsmeta.getColumnName(index + 1), ValueType.PRIMITIVE, //
                                         rset.getLong(index + 1)));
                         break;
+                    case Types.DECIMAL:
+                        ent.addProperty( //
+                                new Property(null, rsmeta.getColumnName(index + 1), ValueType.PRIMITIVE, //
+                                        rset.getBigDecimal(index + 1)));
+                        break;
+                    case Types.BOOLEAN:
+                        ent.addProperty( //
+                                new Property(null, rsmeta.getColumnName(index + 1), ValueType.PRIMITIVE, //
+                                        rset.getBoolean(index + 1)));
+                        break;
+                    case Types.DATE:
+                        ent.addProperty( //
+                                new Property(null, rsmeta.getColumnName(index + 1), ValueType.PRIMITIVE, //
+                                        rset.getDate(index + 1)));
+                        break;
+                    case Types.TIMESTAMP:
+                        ent.addProperty( //
+                                new Property(null, rsmeta.getColumnName(index + 1), ValueType.PRIMITIVE, //
+                                        rset.getTimestamp(index + 1)));
+                        break;
                     case Types.CHAR:
                     case Types.VARCHAR:
                     default:
