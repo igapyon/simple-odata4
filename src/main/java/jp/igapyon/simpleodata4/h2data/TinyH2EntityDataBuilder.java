@@ -3,6 +3,7 @@ package jp.igapyon.simpleodata4.h2data;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -90,12 +91,7 @@ public class TinyH2EntityDataBuilder {
             try (var stmt = conn.prepareStatement(sql)) {
                 int column = 1;
                 for (Object look : tinySql.getSqlInfo().getSqlParamList()) {
-                    if (look instanceof Integer) {
-                        stmt.setInt(column++, (Integer) look);
-                    } else {
-                        stmt.setString(column++, (String) look);
-                    }
-                    // TODO 他の型への対応.
+                    bindPreparedParameter(look,stmt,column++);
                 }
 
                 stmt.executeQuery();
@@ -118,12 +114,7 @@ public class TinyH2EntityDataBuilder {
         try (var stmt = conn.prepareStatement(sql)) {
             int idxColumn = 1;
             for (Object look : tinySql.getSqlInfo().getSqlParamList()) {
-                if (look instanceof Integer) {
-                    stmt.setInt(idxColumn++, (Integer) look);
-                } else {
-                    stmt.setString(idxColumn++, (String) look);
-                }
-                // TODO 他の型への対応.
+                bindPreparedParameter(look,stmt,idxColumn++);
             }
 
             stmt.executeQuery();
@@ -219,5 +210,13 @@ public class TinyH2EntityDataBuilder {
             break;
         }
         return prop;
+    }
+
+    private static void bindPreparedParameter(Object look, PreparedStatement stmt, int column) throws SQLException {
+        if (look instanceof Integer) {
+            stmt.setInt(column, (Integer) look);
+        } else {
+            stmt.setString(column, (String) look);
+        }
     }
 }
