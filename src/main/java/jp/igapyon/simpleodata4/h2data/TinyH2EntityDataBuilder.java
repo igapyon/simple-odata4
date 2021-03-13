@@ -12,6 +12,7 @@ import org.apache.olingo.commons.api.data.EntityCollection;
 import org.apache.olingo.commons.api.data.Property;
 import org.apache.olingo.commons.api.data.ValueType;
 import org.apache.olingo.commons.api.edm.EdmEntitySet;
+import org.apache.olingo.commons.api.edm.provider.CsdlEntitySet;
 import org.apache.olingo.commons.api.ex.ODataRuntimeException;
 import org.apache.olingo.server.api.uri.UriInfo;
 
@@ -36,7 +37,26 @@ public class TinyH2EntityDataBuilder {
      */
     public static EntityCollection buildData(EdmEntitySet edmEntitySet, UriInfo uriInfo) {
         final EntityCollection eCollection = new EntityCollection();
-        if (!SimpleEdmProvider.ES_MYPRODUCTS_NAME.equals(edmEntitySet.getName())) {
+
+        SimpleEdmProvider provider = SimpleEdmProvider.getInstance();
+        if (!edmEntitySet.getEntityContainer().getName().equals(provider.getEntityContainer().getName())) {
+            // Container 名が不一致. 処理せずに戻します.
+            return eCollection;
+        }
+
+        CsdlEntitySet eSetTarget = null;
+        String targetEntityName = null;
+        EdmLoop: for (EdmEntitySet eSet : edmEntitySet.getEntityContainer().getEntitySets()) {
+            for (CsdlEntitySet eSetProvided : provider.getEntityContainer().getEntitySets()) {
+                if (eSet.getName().equals(eSetProvided.getName())) {
+                    eSetTarget = eSetProvided;
+                    targetEntityName = eSetProvided.getName();
+                    break EdmLoop;
+                }
+            }
+        }
+
+        if (targetEntityName == null) {
             // 処理対象外の要素セットです. 処理せずに戻します.
             return eCollection;
         }
@@ -60,6 +80,7 @@ public class TinyH2EntityDataBuilder {
         {
             // 件数をカウントして設定。
             TinyH2SqlBuilder tinySql = new TinyH2SqlBuilder();
+            tinySql.getSqlInfo().setEntityName(targetEntityName);
             tinySql.getSelectCountQuery(uriInfo);
             final String sql = tinySql.getSqlInfo().getSqlBuilder().toString();
 
@@ -87,6 +108,8 @@ public class TinyH2EntityDataBuilder {
         }
 
         TinyH2SqlBuilder tinySql = new TinyH2SqlBuilder();
+        tinySql.getSqlInfo().setEntityName(targetEntityName);
+        
         tinySql.getSelectQuery(uriInfo);
         final String sql = tinySql.getSqlInfo().getSqlBuilder().toString();
 
@@ -152,17 +175,18 @@ public class TinyH2EntityDataBuilder {
                     }
                     ent.addProperty(prop);
                 }
-                // TODO ハードコードで修正必要箇所. FIXME
-                ent.setId(createId(SimpleEdmProvider.ES_MYPRODUCTS_NAME, rset.getInt("ID")));
+                ent.setId(createId(eSetTarget.getName(), rset.getInt("ID")));
                 eCollection.getEntities().add(ent);
             }
         } catch (SQLException ex) {
+            ex.printStackTrace();
             throw new IllegalArgumentException("検索失敗:" + ex.toString(), ex);
         }
 
         try {
             conn.close();
         } catch (SQLException ex) {
+            ex.printStackTrace();
             throw new IllegalArgumentException("検索失敗:" + ex.toString(), ex);
         }
 

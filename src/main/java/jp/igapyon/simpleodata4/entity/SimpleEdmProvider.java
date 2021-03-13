@@ -39,7 +39,7 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
      * 
      * TODO これをいずれ privateに変更
      */
-    public static final String ES_MYPRODUCTS_NAME = "MyProducts";
+    private static final String ES_MYPRODUCTS_NAME = "MyProducts";
 
     /**
      * EDMコンテナ名のFQN(完全修飾名).
@@ -52,6 +52,16 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
     public static final FullQualifiedName ET_MYPRODUCT_FQN = new FullQualifiedName(NAMESPACE, ET_MYPRODUCT_NAME);
 
     private static final TinyH2EdmBuilder edmBuilder = new TinyH2EdmBuilder(ES_MYPRODUCTS_NAME, ET_MYPRODUCT_NAME);
+
+    private static SimpleEdmProvider provider = new SimpleEdmProvider();
+
+    private SimpleEdmProvider() {
+        // hidden
+    }
+
+    public static SimpleEdmProvider getInstance() {
+        return provider;
+    }
 
     /**
      * 与えられた型名のEntityType(要素型)のCSDLを取得.
