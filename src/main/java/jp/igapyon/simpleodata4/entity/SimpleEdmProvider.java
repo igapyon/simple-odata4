@@ -32,21 +32,14 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
     /**
      * 要素型名. さしあたりはリレーショナルデータベースのテーブル名に相当するものと考えて差し支えない.
      */
-    public static final String ET_MYPRODUCT_NAME = "MyProduct";
+    private static final String ET_MYPRODUCT_NAME = "MyProduct";
 
     /**
      * 要素型名の複数形. さしあたりはリレーショナルデータベースのテーブル名に相当するものに「s」をつけたものと考えて差し支えない. URIにも影響がある.
+     * 
+     * TODO これをいずれ privateに変更
      */
     public static final String ES_MYPRODUCTS_NAME = "MyProducts";
-
-    /**
-     * エンティティのフィールド一覧.
-     * 
-     * 一意なID的なものがあるのが必要.
-     * 
-     * TODO この一覧は何かの工夫により自動的に可変になるようにしたい。
-     */
-    public static final String[] FIELDS = new String[] { "ID", "Name", "Description" };
 
     /**
      * EDMコンテナ名のFQN(完全修飾名).

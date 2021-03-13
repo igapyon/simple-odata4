@@ -52,9 +52,9 @@ http://localhost:8080/simple.svc/MyProducts?$top=6&$search=macbook&$count=true&$
 
 # TODO
 
-- 文字列の長さ対応。
 - TODO Null の対応。
 - TODO 実行時エラーを調整すること。現在 IllegalArgumentExceptionでそのまま500になったうえにエラー内容が見えてしまう。
-- 日時型、日付型の対応実装。
+- 対応しない命令の場合、適切に例外で異常停止
+- JUnitでデータ実装を通過させたい
 - 認証の実験。
 - 実験的に全文検索である `$search` をサポートしたものの、もう少し詳しいところが調べられていない。また全文検索で有効なのはアルファベットのみ。
