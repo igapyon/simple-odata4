@@ -3,6 +3,8 @@ package jp.igapyon.simpleodata4.h2data;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Types;
@@ -12,6 +14,7 @@ import org.apache.olingo.commons.api.data.EntityCollection;
 import org.apache.olingo.commons.api.data.Property;
 import org.apache.olingo.commons.api.data.ValueType;
 import org.apache.olingo.commons.api.edm.EdmEntitySet;
+import org.apache.olingo.commons.api.edm.provider.CsdlEntitySet;
 import org.apache.olingo.commons.api.ex.ODataRuntimeException;
 import org.apache.olingo.server.api.uri.UriInfo;
 
@@ -36,7 +39,26 @@ public class TinyH2EntityDataBuilder {
      */
     public static EntityCollection buildData(EdmEntitySet edmEntitySet, UriInfo uriInfo) {
         final EntityCollection eCollection = new EntityCollection();
-        if (!SimpleEdmProvider.ES_MYPRODUCTS_NAME.equals(edmEntitySet.getName())) {
+
+        SimpleEdmProvider provider = SimpleEdmProvider.getInstance();
+        if (!edmEntitySet.getEntityContainer().getName().equals(provider.getEntityContainer().getName())) {
+            // Container 名が不一致. 処理せずに戻します.
+            return eCollection;
+        }
+
+        CsdlEntitySet eSetTarget = null;
+        String targetEntityName = null;
+        EdmLoop: for (EdmEntitySet eSet : edmEntitySet.getEntityContainer().getEntitySets()) {
+            for (CsdlEntitySet eSetProvided : provider.getEntityContainer().getEntitySets()) {
+                if (eSet.getName().equals(eSetProvided.getName())) {
+                    eSetTarget = eSetProvided;
+                    targetEntityName = eSetProvided.getName();
+                    break EdmLoop;
+                }
+            }
+        }
+
+        if (targetEntityName == null) {
             // 処理対象外の要素セットです. 処理せずに戻します.
             return eCollection;
         }
@@ -60,6 +82,7 @@ public class TinyH2EntityDataBuilder {
         {
             // 件数をカウントして設定。
             TinyH2SqlBuilder tinySql = new TinyH2SqlBuilder();
+            tinySql.getSqlInfo().setEntityName(targetEntityName);
             tinySql.getSelectCountQuery(uriInfo);
             final String sql = tinySql.getSqlInfo().getSqlBuilder().toString();
 
@@ -68,12 +91,7 @@ public class TinyH2EntityDataBuilder {
             try (var stmt = conn.prepareStatement(sql)) {
                 int column = 1;
                 for (Object look : tinySql.getSqlInfo().getSqlParamList()) {
-                    if (look instanceof Integer) {
-                        stmt.setInt(column++, (Integer) look);
-                    } else {
-                        stmt.setString(column++, (String) look);
-                    }
-                    // TODO 他の型への対応.
+                    bindPreparedParameter(look,stmt,column++);
                 }
 
                 stmt.executeQuery();
@@ -87,6 +105,8 @@ public class TinyH2EntityDataBuilder {
         }
 
         TinyH2SqlBuilder tinySql = new TinyH2SqlBuilder();
+        tinySql.getSqlInfo().setEntityName(targetEntityName);
+
         tinySql.getSelectQuery(uriInfo);
         final String sql = tinySql.getSqlInfo().getSqlBuilder().toString();
 
@@ -94,75 +114,33 @@ public class TinyH2EntityDataBuilder {
         try (var stmt = conn.prepareStatement(sql)) {
             int idxColumn = 1;
             for (Object look : tinySql.getSqlInfo().getSqlParamList()) {
-                if (look instanceof Integer) {
-                    stmt.setInt(idxColumn++, (Integer) look);
-                } else {
-                    stmt.setString(idxColumn++, (String) look);
-                }
-                // TODO 他の型への対応.
+                bindPreparedParameter(look,stmt,idxColumn++);
             }
 
             stmt.executeQuery();
             var rset = stmt.getResultSet();
+            ResultSetMetaData rsmeta = null;
             for (; rset.next();) {
+                if (rsmeta == null) {
+                    rsmeta = rset.getMetaData();
+                }
                 final Entity ent = new Entity();
-                ResultSetMetaData rsmeta = rset.getMetaData();
                 for (int column = 1; column <= rsmeta.getColumnCount(); column++) {
-                    Property prop = null;
-                    final String columnName = rsmeta.getColumnName(column);
-                    switch (rsmeta.getColumnType(column)) {
-                    case Types.TINYINT:
-                        prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getByte(column));
-                        break;
-                    case Types.SMALLINT:
-                        prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getShort(column));
-                        break;
-                    case Types.INTEGER:
-                        prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getInt(column));
-                        break;
-                    case Types.BIGINT:
-                        prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getLong(column));
-                        break;
-                    case Types.DECIMAL:
-                        prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getBigDecimal(column));
-                        break;
-                    case Types.BOOLEAN:
-                        prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getBoolean(column));
-                        break;
-                    case Types.REAL:
-                        prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getFloat(column));
-                        break;
-                    case Types.DOUBLE:
-                        prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getDouble(column));
-                        break;
-                    case Types.DATE:
-                        prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getDate(column));
-                        break;
-                    case Types.TIMESTAMP:
-                        prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getTimestamp(column));
-                        break;
-                    case Types.TIME:
-                        prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getTime(column));
-                        break;
-                    case Types.CHAR:
-                    case Types.VARCHAR:
-                    default:
-                        prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getString(column));
-                        break;
-                    }
+                    Property prop = resultSet2Property(rset, rsmeta, column);
                     ent.addProperty(prop);
                 }
-                // TODO ハードコードで修正必要箇所. FIXME
-                ent.setId(createId(SimpleEdmProvider.ES_MYPRODUCTS_NAME, rset.getInt("ID")));
+                ent.setId(createId(eSetTarget.getName(), rset.getInt("ID")));
                 eCollection.getEntities().add(ent);
             }
         } catch (SQLException ex) {
+            ex.printStackTrace();
             throw new IllegalArgumentException("検索失敗:" + ex.toString(), ex);
         }
 
         try {
             conn.close();
         } catch (SQLException ex) {
+            ex.printStackTrace();
             throw new IllegalArgumentException("検索失敗:" + ex.toString(), ex);
         }
 
@@ -181,6 +159,64 @@ public class TinyH2EntityDataBuilder {
             return new URI(entitySetName + "(" + String.valueOf(id) + ")");
         } catch (URISyntaxException ex) {
             throw new ODataRuntimeException("Fail to create ID EntitySet name: " + entitySetName, ex);
+        }
+    }
+
+    ///////////////////
+    // Mapping
+
+    private static Property resultSet2Property(ResultSet rset, ResultSetMetaData rsmeta, int column)
+            throws SQLException {
+        Property prop = null;
+        final String columnName = rsmeta.getColumnName(column);
+        switch (rsmeta.getColumnType(column)) {
+        case Types.TINYINT:
+            prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getByte(column));
+            break;
+        case Types.SMALLINT:
+            prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getShort(column));
+            break;
+        case Types.INTEGER:
+            prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getInt(column));
+            break;
+        case Types.BIGINT:
+            prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getLong(column));
+            break;
+        case Types.DECIMAL:
+            prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getBigDecimal(column));
+            break;
+        case Types.BOOLEAN:
+            prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getBoolean(column));
+            break;
+        case Types.REAL:
+            prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getFloat(column));
+            break;
+        case Types.DOUBLE:
+            prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getDouble(column));
+            break;
+        case Types.DATE:
+            prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getDate(column));
+            break;
+        case Types.TIMESTAMP:
+            prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getTimestamp(column));
+            break;
+        case Types.TIME:
+            prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getTime(column));
+            break;
+        case Types.CHAR:
+        case Types.VARCHAR:
+        default:
+            prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getString(column));
+            break;
+        }
+        return prop;
+    }
+
+    private static void bindPreparedParameter(Object look, PreparedStatement stmt, int column) throws SQLException {
+        if (look instanceof Integer) {
+            stmt.setInt(column, (Integer) look);
+        } else {
+            stmt.setString(column, (String) look);
         }
     }
 }

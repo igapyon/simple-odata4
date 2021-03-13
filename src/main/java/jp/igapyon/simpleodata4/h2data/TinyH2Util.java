@@ -25,7 +25,7 @@ public class TinyH2Util {
             throw new IllegalArgumentException(e);
         }
         // SQL Server 互換モードで動作させる.
-        final var jdbcConnStr = "jdbc:h2:mem:myproducts;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=FALSE;CASE_INSENSITIVE_IDENTIFIERS=TRUE;MODE=MSSQLServer";
+        final var jdbcConnStr = "jdbc:h2:mem:localmetainfo;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=FALSE;CASE_INSENSITIVE_IDENTIFIERS=TRUE;MODE=MSSQLServer";
         // System.err.println("TRACE: DEMO: [connect jdbc] " + jdbcConnStr);
         try {
             conn = DriverManager.getConnection(//

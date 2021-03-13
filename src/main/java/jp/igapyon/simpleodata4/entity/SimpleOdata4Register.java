@@ -47,7 +47,7 @@ public class SimpleOdata4Register {
             OData odata = OData.newInstance();
 
             // EdmProvider を登録.
-            ServiceMetadata edm = odata.createServiceMetadata(new SimpleEdmProvider(), new ArrayList<>());
+            ServiceMetadata edm = odata.createServiceMetadata(SimpleEdmProvider.getInstance(), new ArrayList<>());
             ODataHttpHandler handler = odata.createHandler(edm);
 
             // EntityCollectionProcessor を登録.

@@ -11,8 +11,22 @@ import java.util.List;
  * 当面は、このクラスはSQL文とパラメータを蓄える。
  */
 public class TinySqlBuildInfo {
+    private String entityName = null;
     private final StringBuilder sqlBuilder = new StringBuilder();
     private final List<Object> sqlParamList = new ArrayList<>();
+
+    /**
+     * 処理対象のエンティティ名を設定.
+     * 
+     * @return 処理対象のエンティティ名.
+     */
+    public String getEntityName() {
+        return entityName;
+    }
+
+    public void setEntityName(String entityName) {
+        this.entityName = entityName;
+    }
 
     /**
      * SQL文をビルド.
