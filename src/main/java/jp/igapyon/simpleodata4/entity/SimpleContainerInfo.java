@@ -21,6 +21,7 @@ public class SimpleContainerInfo {
     private void ensureInit() {
         if (localEntityInfoList.size() == 0) {
             localEntityInfoList.add(new SimpleEntityInfo(this, "MyProducts", "MyProduct", "MyProducts"));
+            localEntityInfoList.add(new SimpleEntityInfo(this, "ODataAppInfos", "ODataAppInfo", "ODataAppInfos"));
         }
     }
 
@@ -51,21 +52,36 @@ public class SimpleContainerInfo {
         ensureInit();
         System.err.println("TRACE: getLocalEntityInfoByEntityName(): " + entityName);
         // TODO FIXME
-        return localEntityInfoList.get(0);
+        for (SimpleEntityInfo look : localEntityInfoList) {
+            if (look.getEntityName().equals(entityName)) {
+                return look;
+            }
+        }
+        return null;
     }
 
     public SimpleEntityInfo getLocalEntityInfoByEntitySetName(String entitySetName) {
         ensureInit();
         System.err.println("TRACE: getLocalEntityInfoByEntitySetName(): " + entitySetName);
         // TODO FIXME
-        return localEntityInfoList.get(0);
+        for (SimpleEntityInfo look : localEntityInfoList) {
+            if (look.getEntitySetName().equals(entitySetName)) {
+                return look;
+            }
+        }
+        return null;
     }
 
     public SimpleEntityInfo getLocalEntityInfoByEntityNameFQN(FullQualifiedName entityNameFQN) {
         ensureInit();
         System.err.println("TRACE: getLocalEntityInfoByEntityNameFQN(): " + entityNameFQN);
         // TODO FIXME
-        return localEntityInfoList.get(0);
+        for (SimpleEntityInfo look : localEntityInfoList) {
+            if (look.getEntityNameFQN().equals(entityNameFQN)) {
+                return look;
+            }
+        }
+        return null;
     }
 
     ///////////////////////////////
