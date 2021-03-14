@@ -63,19 +63,15 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
         // コンテナが一致する場合.
 
         // 要素セット名が一致する場合.
-        if (entitySetName
-                .equals(localContainerInfo.getLocalEntityInfoByEntitySetName("MyProducts").getEntitySetName())) {
-            // 要素セット名が一致する場合.
-            // CSDL要素セットとして情報を組み上げ.
-            CsdlEntitySet entitySet = new CsdlEntitySet();
-            entitySet.setName(localContainerInfo.getLocalEntityInfoByEntitySetName("MyProducts").getEntitySetName());
-            entitySet.setType(localContainerInfo.getLocalEntityInfoByEntitySetName("MyProducts").getEntityNameFQN());
+        // CSDL要素セットとして情報を組み上げ.
+        CsdlEntitySet entitySet = new CsdlEntitySet();
+        entitySet.setName(entitySetName);
+        entitySet.setType(localContainerInfo.getLocalEntityInfoByEntitySetName(entitySetName).getEntityNameFQN());
 
-            return entitySet;
-        }
+        return entitySet;
 
         // 該当する型名の要素セットはありません.
-        return null;
+        // return null;
     }
 
     /**

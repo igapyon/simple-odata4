@@ -68,7 +68,6 @@ public class SimpleContainerInfo {
         return localEntityInfoList.get(0);
     }
 
-
     ///////////////////////////////
     /////////////////
 
