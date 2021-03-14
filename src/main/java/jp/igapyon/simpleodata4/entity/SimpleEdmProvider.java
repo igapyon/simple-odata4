@@ -19,6 +19,11 @@ import jp.igapyon.simpleodata4.h2data.TinyH2EdmBuilder;
  * コードの多くは olingo のための基礎的な記述に該当.
  */
 public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
+    public static final SimpleContainerInfo containerInfo = new SimpleContainerInfo();
+
+    public static final SimpleEntityInfo entityInfo = new SimpleEntityInfo(containerInfo, "MyProducts", "MyProduct",
+            "MyProducts");
+
     /**
      * サービスの名前空間. このソースをベースにカスタマイズする場合には変更.
      */
