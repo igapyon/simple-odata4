@@ -87,8 +87,8 @@ public class SimpleContainerInfo {
     ///////////////////////////////
     /////////////////
 
-public    List<SimpleEntityInfo> getLocalEntityInfoList(){
-return localEntityInfoList;
+    public List<SimpleEntityInfo> getLocalEntityInfoList() {
+        return localEntityInfoList;
     }
 
     /**

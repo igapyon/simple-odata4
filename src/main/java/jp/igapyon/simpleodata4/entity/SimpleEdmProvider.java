@@ -83,10 +83,9 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
     public CsdlEntityContainer getEntityContainer() {
         // 要素セットを作成.
         List<CsdlEntitySet> entitySets = new ArrayList<>();
-        for(SimpleEntityInfo localEntryInfo:localContainerInfo.getLocalEntityInfoList()){
-        // TODO 増殖か?
-        entitySets.add(getEntitySet(localContainerInfo.getContainerFQN(),
-        localEntryInfo.getEntitySetName()));
+        for (SimpleEntityInfo localEntryInfo : localContainerInfo.getLocalEntityInfoList()) {
+            // TODO 増殖か?
+            entitySets.add(getEntitySet(localContainerInfo.getContainerFQN(), localEntryInfo.getEntitySetName()));
         }
 
         // 要素コンテナを作成.
@@ -110,10 +109,9 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
 
         // 要素型を設定.
         List<CsdlEntityType> entityTypes = new ArrayList<>();
-        for(SimpleEntityInfo localEntryInfo:localContainerInfo.getLocalEntityInfoList()){
-        // TODO 増殖.
-        entityTypes.add(
-                getEntityType(localEntryInfo.getEntityNameFQN()));
+        for (SimpleEntityInfo localEntryInfo : localContainerInfo.getLocalEntityInfoList()) {
+            // TODO 増殖.
+            entityTypes.add(getEntityType(localEntryInfo.getEntityNameFQN()));
         }
 
         schema.setEntityTypes(entityTypes);
