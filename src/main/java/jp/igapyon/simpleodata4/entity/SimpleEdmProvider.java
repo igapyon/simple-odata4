@@ -19,39 +19,13 @@ import jp.igapyon.simpleodata4.h2data.TinyH2EdmBuilder;
  * コードの多くは olingo のための基礎的な記述に該当.
  */
 public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
-    /**
-     * サービスの名前空間. このソースをベースにカスタマイズする場合には変更.
-     */
-    public static final String NAMESPACE = "Igapyon.Simple";
+    public static final SimpleContainerInfo containerInfo = new SimpleContainerInfo();
 
-    /**
-     * EDMコンテナ名.
-     */
-    public static final String CONTAINER_NAME = "Container";
+    public static final SimpleEntityInfo entityInfo = new SimpleEntityInfo(containerInfo, "MyProducts", "MyProduct",
+            "MyProducts");
 
-    /**
-     * 要素型名. さしあたりはリレーショナルデータベースのテーブル名に相当するものと考えて差し支えない.
-     */
-    private static final String ET_MYPRODUCT_NAME = "MyProduct";
-
-    /**
-     * 要素型名の複数形. さしあたりはリレーショナルデータベースのテーブル名に相当するものに「s」をつけたものと考えて差し支えない. URIにも影響がある.
-     * 
-     * TODO これをいずれ privateに変更
-     */
-    private static final String ES_MYPRODUCTS_NAME = "MyProducts";
-
-    /**
-     * EDMコンテナ名のFQN(完全修飾名).
-     */
-    public static final FullQualifiedName CONTAINER = new FullQualifiedName(NAMESPACE, CONTAINER_NAME);
-
-    /**
-     * 要素型のFQN(完全修飾名).
-     */
-    public static final FullQualifiedName ET_MYPRODUCT_FQN = new FullQualifiedName(NAMESPACE, ET_MYPRODUCT_NAME);
-
-    private static final TinyH2EdmBuilder edmBuilder = new TinyH2EdmBuilder(ES_MYPRODUCTS_NAME, ET_MYPRODUCT_NAME);
+    private static final TinyH2EdmBuilder edmBuilder = new TinyH2EdmBuilder(entityInfo.getEntitySetName(),
+            entityInfo.getEntityName());
 
     private static SimpleEdmProvider provider = new SimpleEdmProvider();
 
@@ -71,7 +45,7 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
      */
     @Override
     public CsdlEntityType getEntityType(FullQualifiedName entityTypeName) {
-        if (entityTypeName.equals(ET_MYPRODUCT_FQN)) {
+        if (entityTypeName.equals(entityInfo.getEntityNameFQN())) {
             // 処理対象の型名です。
             return edmBuilder.getEntityType();
         }
@@ -89,7 +63,7 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
      */
     @Override
     public CsdlEntitySet getEntitySet(FullQualifiedName entityContainer, String entitySetName) {
-        if (!entityContainer.equals(CONTAINER)) {
+        if (!entityContainer.equals(containerInfo.getContainerFQN())) {
             // 該当する型名の要素セットはありません.
             return null;
         }
@@ -97,12 +71,12 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
         // コンテナが一致する場合.
 
         // 要素セット名が一致する場合.
-        if (entitySetName.equals(ES_MYPRODUCTS_NAME)) {
+        if (entitySetName.equals(entityInfo.getEntitySetName())) {
             // 要素セット名が一致する場合.
             // CSDL要素セットとして情報を組み上げ.
             CsdlEntitySet entitySet = new CsdlEntitySet();
-            entitySet.setName(ES_MYPRODUCTS_NAME);
-            entitySet.setType(ET_MYPRODUCT_FQN);
+            entitySet.setName(entityInfo.getEntitySetName());
+            entitySet.setType(entityInfo.getEntityNameFQN());
 
             return entitySet;
         }
@@ -120,11 +94,11 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
     public CsdlEntityContainer getEntityContainer() {
         // 要素セットを作成.
         List<CsdlEntitySet> entitySets = new ArrayList<>();
-        entitySets.add(getEntitySet(CONTAINER, ES_MYPRODUCTS_NAME));
+        entitySets.add(getEntitySet(containerInfo.getContainerFQN(), entityInfo.getEntitySetName()));
 
         // 要素コンテナを作成.
         CsdlEntityContainer entityContainer = new CsdlEntityContainer();
-        entityContainer.setName(CONTAINER_NAME);
+        entityContainer.setName(containerInfo.getContainerName());
         entityContainer.setEntitySets(entitySets);
 
         return entityContainer;
@@ -139,11 +113,11 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
     public List<CsdlSchema> getSchemas() {
         // CSDLスキーマを作成.
         CsdlSchema schema = new CsdlSchema();
-        schema.setNamespace(NAMESPACE);
+        schema.setNamespace(containerInfo.getNamespace());
 
         // 要素型を設定.
         List<CsdlEntityType> entityTypes = new ArrayList<>();
-        entityTypes.add(getEntityType(ET_MYPRODUCT_FQN));
+        entityTypes.add(getEntityType(entityInfo.getEntityNameFQN()));
         schema.setEntityTypes(entityTypes);
 
         // 要素コンテナを設定.
@@ -166,9 +140,9 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
      */
     @Override
     public CsdlEntityContainerInfo getEntityContainerInfo(FullQualifiedName entityContainerName) {
-        if (entityContainerName == null || entityContainerName.equals(CONTAINER)) {
+        if (entityContainerName == null || entityContainerName.equals(containerInfo.getContainerFQN())) {
             CsdlEntityContainerInfo entityContainerInfo = new CsdlEntityContainerInfo();
-            entityContainerInfo.setContainerName(CONTAINER);
+            entityContainerInfo.setContainerName(containerInfo.getContainerFQN());
             return entityContainerInfo;
         }
 

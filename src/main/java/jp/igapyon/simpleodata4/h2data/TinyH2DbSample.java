@@ -27,7 +27,7 @@ public class TinyH2DbSample {
         // System.err.println("TRACE: 作業用データベーステーブルを作成");
 
         try (var stmt = conn.prepareStatement("CREATE TABLE IF NOT EXISTS " //
-                + "ODataAppInfo (" //
+                + "ODataAppInfos (" //
                 + "ID INT NOT NULL" // primary key. これほんとは Key とかにして Key = version とかで分岐したい.
                 + ",Ver VARCHAR(20) NOT NULL" //
                 + ",PRIMARY KEY(ID)" //
@@ -131,7 +131,7 @@ public class TinyH2DbSample {
         ///////////////////////////////////////////
         // バージョン情報に関するデータの追加
         try (var stmt = conn.prepareStatement(
-                "INSERT INTO ODataAppInfo (ID, Ver) VALUES (" + TinyH2Util.getQueryPlaceholderString(2) + ")")) {
+                "INSERT INTO ODataAppInfos (ID, Ver) VALUES (" + TinyH2Util.getQueryPlaceholderString(2) + ")")) {
             int idCounter = 1;
             stmt.setInt(1, idCounter++);
             stmt.setString(2, SimpleOdata4App.VERSION);
