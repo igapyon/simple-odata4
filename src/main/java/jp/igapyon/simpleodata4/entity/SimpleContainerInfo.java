@@ -87,6 +87,10 @@ public class SimpleContainerInfo {
     ///////////////////////////////
     /////////////////
 
+public    List<SimpleEntityInfo> getLocalEntityInfoList(){
+return localEntityInfoList;
+    }
+
     /**
      * EDMコンテナ名のFQN(完全修飾名).
      * 

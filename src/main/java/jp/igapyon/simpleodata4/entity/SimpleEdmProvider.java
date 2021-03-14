@@ -83,9 +83,11 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
     public CsdlEntityContainer getEntityContainer() {
         // 要素セットを作成.
         List<CsdlEntitySet> entitySets = new ArrayList<>();
+        for(SimpleEntityInfo localEntryInfo:localContainerInfo.getLocalEntityInfoList()){
         // TODO 増殖か?
         entitySets.add(getEntitySet(localContainerInfo.getContainerFQN(),
-                localContainerInfo.getLocalEntityInfoByEntitySetName("MyProducts").getEntitySetName()));
+        localEntryInfo.getEntitySetName()));
+        }
 
         // 要素コンテナを作成.
         CsdlEntityContainer entityContainer = new CsdlEntityContainer();
