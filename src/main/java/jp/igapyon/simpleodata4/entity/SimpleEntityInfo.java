@@ -1,5 +1,7 @@
 package jp.igapyon.simpleodata4.entity;
 
+import org.apache.olingo.commons.api.edm.FullQualifiedName;
+
 public class SimpleEntityInfo {
     private SimpleContainerInfo containerInfo = null;
 
@@ -73,5 +75,17 @@ public class SimpleEntityInfo {
 
     public void setDbTableName(String dbTableName) {
         this.dbTableName = dbTableName;
+    }
+
+    //////////////////////////////////
+    //
+
+    /**
+     * 要素型のFQN(完全修飾名).
+     * 
+     * @return 要素型のFQN(完全修飾名).
+     */
+    public FullQualifiedName getEntityNameFQN() {
+        return new FullQualifiedName(containerInfo.getNamespace(), getEntityName());
     }
 }

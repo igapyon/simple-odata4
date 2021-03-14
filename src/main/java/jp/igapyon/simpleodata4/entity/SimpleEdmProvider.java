@@ -24,15 +24,8 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
     public static final SimpleEntityInfo entityInfo = new SimpleEntityInfo(containerInfo, "MyProducts", "MyProduct",
             "MyProducts");
 
-
-
-    /**
-     * 要素型のFQN(完全修飾名).
-     */
-    public static final FullQualifiedName ET_MYPRODUCT_FQN = new FullQualifiedName(containerInfo.getNamespace(),
-    entityInfo.getEntityName());
-
-    private static final TinyH2EdmBuilder edmBuilder = new TinyH2EdmBuilder(entityInfo.getEntitySetName(), entityInfo.getEntityName());
+    private static final TinyH2EdmBuilder edmBuilder = new TinyH2EdmBuilder(entityInfo.getEntitySetName(),
+            entityInfo.getEntityName());
 
     private static SimpleEdmProvider provider = new SimpleEdmProvider();
 
@@ -52,7 +45,7 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
      */
     @Override
     public CsdlEntityType getEntityType(FullQualifiedName entityTypeName) {
-        if (entityTypeName.equals(ET_MYPRODUCT_FQN)) {
+        if (entityTypeName.equals(entityInfo.getEntityNameFQN())) {
             // 処理対象の型名です。
             return edmBuilder.getEntityType();
         }
@@ -83,7 +76,7 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
             // CSDL要素セットとして情報を組み上げ.
             CsdlEntitySet entitySet = new CsdlEntitySet();
             entitySet.setName(entityInfo.getEntitySetName());
-            entitySet.setType(ET_MYPRODUCT_FQN);
+            entitySet.setType(entityInfo.getEntityNameFQN());
 
             return entitySet;
         }
@@ -124,7 +117,7 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
 
         // 要素型を設定.
         List<CsdlEntityType> entityTypes = new ArrayList<>();
-        entityTypes.add(getEntityType(ET_MYPRODUCT_FQN));
+        entityTypes.add(getEntityType(entityInfo.getEntityNameFQN()));
         schema.setEntityTypes(entityTypes);
 
         // 要素コンテナを設定.
