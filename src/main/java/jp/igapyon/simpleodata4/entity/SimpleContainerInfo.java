@@ -5,6 +5,9 @@ import java.util.List;
 
 import org.apache.olingo.commons.api.edm.FullQualifiedName;
 
+/**
+ * コンテナに関するローカル情報構造.
+ */
 public class SimpleContainerInfo {
     /**
      * ネームスペース名.
