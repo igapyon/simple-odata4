@@ -46,8 +46,7 @@ public class SimpleEntityInfo {
         this.entityName = entityName;
         this.dbTableName = dbTableName;
 
-        // TODO 引数を変更すべきか
-        this.edmBuilder = new TinyH2EdmBuilder(entitySetName, entityName);
+        this.edmBuilder = new TinyH2EdmBuilder(this);
     }
 
     public SimpleContainerInfo getContainerInfo() {
