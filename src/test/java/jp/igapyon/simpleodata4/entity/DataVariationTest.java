@@ -17,8 +17,27 @@ import org.apache.olingo.server.api.ServiceMetadata;
 import org.junit.jupiter.api.Test;
 
 class DataVariationTest {
+// http://localhost:8080/simple.svc/MyProducts?$top=2001&$filter=Description eq 'MacBook Pro (13-inch, 2020, Thunderbolt 3ポートx 4)' and ID eq 1.0&$count=true&$select=ID,Name
+
     @Test
-    void test01() throws Exception {
+    void testSimpleOrderBy() throws Exception {
+        final ODataHttpHandler handler = getHandler();
+        final ODataRequest req = new ODataRequest();
+        req.setMethod(HttpMethod.GET);
+        req.setRawBaseUri("http://localhost:8080/simple.svc");
+        req.setRawODataPath("/MyProducts");
+        req.setRawQueryPath("orderby=ID&$top=1&$select=ID,Name,Description");
+        req.setRawRequestUri(req.getRawBaseUri() + req.getRawODataPath() + "?" + req.getRawQueryPath());
+
+        final ODataResponse resp = handler.process(req);
+        assertEquals(200, resp.getStatusCode());
+        assertEquals(
+                "{\"@odata.context\":\"$metadata#MyProducts\",\"value\":[{\"ID\":1,\"Name\":\"MacBookPro16,2\",\"Description\":\"MacBook Pro (13-inch, 2020, Thunderbolt 3ポートx 4)\"}]}",
+                stream2String(resp.getContent()));
+    }
+
+    @Test
+    void testSimpleSearch() throws Exception {
         final ODataHttpHandler handler = getHandler();
         final ODataRequest req = new ODataRequest();
         req.setMethod(HttpMethod.GET);
