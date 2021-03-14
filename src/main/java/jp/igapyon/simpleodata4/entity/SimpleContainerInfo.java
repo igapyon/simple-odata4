@@ -1,5 +1,8 @@
 package jp.igapyon.simpleodata4.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.olingo.commons.api.edm.FullQualifiedName;
 
 public class SimpleContainerInfo {
@@ -13,21 +16,31 @@ public class SimpleContainerInfo {
      */
     private String containerName = "Container";
 
-    private SimpleEntityInfo localEntityInfo = null;
+    private List<SimpleEntityInfo> localEntityInfoList = new ArrayList<>();
+
+    private void ensureInit() {
+        if (localEntityInfoList.size() == 0) {
+            localEntityInfoList.add(new SimpleEntityInfo(this, "MyProducts", "MyProduct", "MyProducts"));
+        }
+    }
 
     public String getNamespace() {
+        ensureInit();
         return namespace;
     }
 
     public void setNamespace(String namespace) {
+        ensureInit();
         this.namespace = namespace;
     }
 
     public String getContainerName() {
+        ensureInit();
         return containerName;
     }
 
     public void setContainerName(String containerName) {
+        ensureInit();
         this.containerName = containerName;
     }
 
@@ -35,23 +48,26 @@ public class SimpleContainerInfo {
     /////////////////
 
     public SimpleEntityInfo getLocalEntityInfoByEntityName(String entityName) {
+        ensureInit();
         System.err.println("TRACE: getLocalEntityInfoByEntityName(): " + entityName);
-        return localEntityInfo;
+        // TODO FIXME
+        return localEntityInfoList.get(0);
     }
 
     public SimpleEntityInfo getLocalEntityInfoByEntitySetName(String entitySetName) {
+        ensureInit();
         System.err.println("TRACE: getLocalEntityInfoByEntitySetName(): " + entitySetName);
-        return localEntityInfo;
+        // TODO FIXME
+        return localEntityInfoList.get(0);
     }
 
     public SimpleEntityInfo getLocalEntityInfoByEntityNameFQN(FullQualifiedName entityNameFQN) {
+        ensureInit();
         System.err.println("TRACE: getLocalEntityInfoByEntityNameFQN(): " + entityNameFQN);
-        return localEntityInfo;
+        // TODO FIXME
+        return localEntityInfoList.get(0);
     }
 
-    public void setLocalEntityInfo(SimpleEntityInfo localEntityInfo) {
-        this.localEntityInfo = localEntityInfo;
-    }
 
     ///////////////////////////////
     /////////////////
@@ -62,6 +78,7 @@ public class SimpleContainerInfo {
      * @return EDMコンテナ名のFQN(完全修飾名).
      */
     public FullQualifiedName getContainerFQN() {
+        ensureInit();
         return new FullQualifiedName(getNamespace(), getContainerName());
     }
 }

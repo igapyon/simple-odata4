@@ -11,8 +11,6 @@ import org.apache.olingo.commons.api.edm.provider.CsdlEntitySet;
 import org.apache.olingo.commons.api.edm.provider.CsdlEntityType;
 import org.apache.olingo.commons.api.edm.provider.CsdlSchema;
 
-import jp.igapyon.simpleodata4.h2data.TinyH2EdmBuilder;
-
 /**
  * OData Common Schema Definition Language (CSDL) を提供するクラス.
  * 
@@ -20,16 +18,6 @@ import jp.igapyon.simpleodata4.h2data.TinyH2EdmBuilder;
  */
 public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
     public static final SimpleContainerInfo localContainerInfo = new SimpleContainerInfo();
-
-    static {
-        localContainerInfo
-                .setLocalEntityInfo(new SimpleEntityInfo(localContainerInfo, "MyProducts", "MyProduct", "MyProducts"));
-    }
-
-    // TODO 引数を変更すべきか
-    private static final TinyH2EdmBuilder edmBuilder = new TinyH2EdmBuilder(
-            localContainerInfo.getLocalEntityInfoByEntitySetName("MyProducts").getEntitySetName(),
-            localContainerInfo.getLocalEntityInfoByEntitySetName("MyProducts").getEntityName());
 
     private static SimpleEdmProvider provider = new SimpleEdmProvider();
 
@@ -48,9 +36,10 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
      */
     @Override
     public CsdlEntityType getEntityType(FullQualifiedName entityTypeName) {
-        if (entityTypeName.equals(localContainerInfo.getLocalEntityInfoByEntityNameFQN(entityTypeName).getEntityNameFQN())) {
+        if (entityTypeName
+                .equals(localContainerInfo.getLocalEntityInfoByEntityNameFQN(entityTypeName).getEntityNameFQN())) {
             // 処理対象の型名です。
-            return edmBuilder.getEntityType();
+            return localContainerInfo.getLocalEntityInfoByEntityNameFQN(entityTypeName).getEdmBuilder().getEntityType();
         }
 
         // 該当する型名の要素型はありません.
@@ -74,7 +63,8 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
         // コンテナが一致する場合.
 
         // 要素セット名が一致する場合.
-        if (entitySetName.equals(localContainerInfo.getLocalEntityInfoByEntitySetName("MyProducts").getEntitySetName())) {
+        if (entitySetName
+                .equals(localContainerInfo.getLocalEntityInfoByEntitySetName("MyProducts").getEntitySetName())) {
             // 要素セット名が一致する場合.
             // CSDL要素セットとして情報を組み上げ.
             CsdlEntitySet entitySet = new CsdlEntitySet();
@@ -123,7 +113,8 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
         // 要素型を設定.
         List<CsdlEntityType> entityTypes = new ArrayList<>();
         // TODO 増殖.
-        entityTypes.add(getEntityType(localContainerInfo.getLocalEntityInfoByEntitySetName("MyProducts").getEntityNameFQN()));
+        entityTypes.add(
+                getEntityType(localContainerInfo.getLocalEntityInfoByEntitySetName("MyProducts").getEntityNameFQN()));
         schema.setEntityTypes(entityTypes);
 
         // 要素コンテナを設定.

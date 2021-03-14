@@ -15,22 +15,15 @@ import org.apache.olingo.commons.api.edm.provider.CsdlProperty;
 import org.apache.olingo.commons.api.edm.provider.CsdlPropertyRef;
 
 import jp.igapyon.simpleodata4.SimpleOdata4App;
+import jp.igapyon.simpleodata4.entity.SimpleEntityInfo;
 
 public class TinyH2EdmBuilder {
-    /**
-     * 要素型名. さしあたりはリレーショナルデータベースのテーブル名に相当するものと考えて差し支えない.
-     */
-    private String etTargetName = null /* "MyProduct" */;
+private SimpleEntityInfo localEntityInfo=null;
 
-    /**
-     * 要素型名の複数形. さしあたりはリレーショナルデータベースのテーブル名に相当するものに「s」をつけたものと考えて差し支えない. URIにも影響がある.
-     */
-    private String esTargetsName = null /* "MyProducts" */;
 
-    public TinyH2EdmBuilder(String esTargetsName, String etTargetName) {
+    public TinyH2EdmBuilder(SimpleEntityInfo localEntityInfo) {
         System.err.println("OData v4: App: " + SimpleOdata4App.VERSION);
-        this.esTargetsName = esTargetsName;
-        this.etTargetName = etTargetName;
+        this.localEntityInfo=localEntityInfo;
     }
 
     public CsdlEntityType getEntityType() {
@@ -45,7 +38,7 @@ public class TinyH2EdmBuilder {
         // バッファ的な h2 データベースから該当情報を取得.
         final List<CsdlProperty> propertyList = new ArrayList<>();
         // SELECT * について、この箇所のみ記述を許容したい。
-        try (PreparedStatement stmt = conn.prepareStatement("SELECT * FROM " + esTargetsName)) {
+        try (PreparedStatement stmt = conn.prepareStatement("SELECT * FROM " + localEntityInfo.getDbTableName())) {
             ResultSetMetaData rsmeta = stmt.getMetaData();
             final int columnCount = rsmeta.getColumnCount();
             for (int column = 1; column <= columnCount; column++) {
@@ -129,7 +122,7 @@ public class TinyH2EdmBuilder {
 
         // CSDL要素型として情報を組み上げ.
         CsdlEntityType entityType = new CsdlEntityType();
-        entityType.setName(etTargetName);
+        entityType.setName(localEntityInfo.getEntityName());
         entityType.setProperties(propertyList);
         entityType.setKey(Collections.singletonList(propertyRef));
 
