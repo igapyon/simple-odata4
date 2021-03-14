@@ -2,6 +2,8 @@ package jp.igapyon.simpleodata4.entity;
 
 import org.apache.olingo.commons.api.edm.FullQualifiedName;
 
+import jp.igapyon.simpleodata4.h2data.TinyH2EdmBuilder;
+
 public class SimpleEntityInfo {
     private SimpleContainerInfo containerInfo = null;
 
@@ -24,6 +26,11 @@ public class SimpleEntityInfo {
      */
     private String dbTableName = null;
 
+    private TinyH2EdmBuilder edmBuilder = null;
+
+    private SimpleEntityInfo() {
+    }
+
     /**
      * エンティティ情報.
      * 
@@ -38,6 +45,11 @@ public class SimpleEntityInfo {
         this.entitySetName = entitySetName;
         this.entityName = entityName;
         this.dbTableName = dbTableName;
+
+        // TODO 引数を変更すべきか
+        this.edmBuilder = new TinyH2EdmBuilder(
+            entitySetName,
+            entityName);
     }
 
     public SimpleContainerInfo getContainerInfo() {
@@ -75,6 +87,10 @@ public class SimpleEntityInfo {
 
     public void setDbTableName(String dbTableName) {
         this.dbTableName = dbTableName;
+    }
+
+    public TinyH2EdmBuilder getEdmBuilder() {
+        return edmBuilder;
     }
 
     //////////////////////////////////
