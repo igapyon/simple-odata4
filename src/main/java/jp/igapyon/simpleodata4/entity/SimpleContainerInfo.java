@@ -13,6 +13,8 @@ public class SimpleContainerInfo {
      */
     private String containerName = "Container";
 
+    private SimpleEntityInfo localEntityInfo = null;
+
     public String getNamespace() {
         return namespace;
     }
@@ -27,6 +29,14 @@ public class SimpleContainerInfo {
 
     public void setContainerName(String containerName) {
         this.containerName = containerName;
+    }
+
+    public SimpleEntityInfo getLocalEntityInfo() {
+        return localEntityInfo;
+    }
+
+    public void setLocalEntityInfo(SimpleEntityInfo localEntityInfo) {
+        this.localEntityInfo = localEntityInfo;
     }
 
     ///////////////////////////////
