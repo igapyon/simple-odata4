@@ -25,12 +25,6 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
             "MyProducts");
 
 
-    /**
-     * 要素型名の複数形. さしあたりはリレーショナルデータベースのテーブル名に相当するものに「s」をつけたものと考えて差し支えない. URIにも影響がある.
-     * 
-     * TODO これをいずれ privateに変更
-     */
-    private static final String ES_MYPRODUCTS_NAME = "MyProducts";
 
     /**
      * 要素型のFQN(完全修飾名).
@@ -38,7 +32,7 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
     public static final FullQualifiedName ET_MYPRODUCT_FQN = new FullQualifiedName(containerInfo.getNamespace(),
     entityInfo.getEntityName());
 
-    private static final TinyH2EdmBuilder edmBuilder = new TinyH2EdmBuilder(ES_MYPRODUCTS_NAME, entityInfo.getEntityName());
+    private static final TinyH2EdmBuilder edmBuilder = new TinyH2EdmBuilder(entityInfo.getEntitySetName(), entityInfo.getEntityName());
 
     private static SimpleEdmProvider provider = new SimpleEdmProvider();
 
@@ -84,11 +78,11 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
         // コンテナが一致する場合.
 
         // 要素セット名が一致する場合.
-        if (entitySetName.equals(ES_MYPRODUCTS_NAME)) {
+        if (entitySetName.equals(entityInfo.getEntitySetName())) {
             // 要素セット名が一致する場合.
             // CSDL要素セットとして情報を組み上げ.
             CsdlEntitySet entitySet = new CsdlEntitySet();
-            entitySet.setName(ES_MYPRODUCTS_NAME);
+            entitySet.setName(entityInfo.getEntitySetName());
             entitySet.setType(ET_MYPRODUCT_FQN);
 
             return entitySet;
@@ -107,7 +101,7 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
     public CsdlEntityContainer getEntityContainer() {
         // 要素セットを作成.
         List<CsdlEntitySet> entitySets = new ArrayList<>();
-        entitySets.add(getEntitySet(containerInfo.getContainerFQN(), ES_MYPRODUCTS_NAME));
+        entitySets.add(getEntitySet(containerInfo.getContainerFQN(), entityInfo.getEntitySetName()));
 
         // 要素コンテナを作成.
         CsdlEntityContainer entityContainer = new CsdlEntityContainer();
