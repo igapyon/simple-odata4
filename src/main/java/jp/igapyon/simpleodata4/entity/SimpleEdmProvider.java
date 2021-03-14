@@ -29,10 +29,6 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
      */
     public static final String NAMESPACE = "Igapyon.Simple";
 
-    /**
-     * EDMコンテナ名.
-     */
-    public static final String CONTAINER_NAME = "Container";
 
     /**
      * 要素型名. さしあたりはリレーショナルデータベースのテーブル名に相当するものと考えて差し支えない.
@@ -49,7 +45,7 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
     /**
      * EDMコンテナ名のFQN(完全修飾名).
      */
-    public static final FullQualifiedName CONTAINER = new FullQualifiedName(NAMESPACE, CONTAINER_NAME);
+    public static final FullQualifiedName CONTAINER = new FullQualifiedName(NAMESPACE, containerInfo.getContainerName());
 
     /**
      * 要素型のFQN(完全修飾名).
@@ -129,7 +125,7 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
 
         // 要素コンテナを作成.
         CsdlEntityContainer entityContainer = new CsdlEntityContainer();
-        entityContainer.setName(CONTAINER_NAME);
+        entityContainer.setName(containerInfo.getContainerName());
         entityContainer.setEntitySets(entitySets);
 
         return entityContainer;
