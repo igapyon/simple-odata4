@@ -13,6 +13,8 @@ public class SimpleContainerInfo {
      */
     private String containerName = "Container";
 
+    private SimpleEntityInfo localEntityInfo = null;
+
     public String getNamespace() {
         return namespace;
     }
@@ -27,6 +29,28 @@ public class SimpleContainerInfo {
 
     public void setContainerName(String containerName) {
         this.containerName = containerName;
+    }
+
+    ///////////////////////////////
+    /////////////////
+
+    public SimpleEntityInfo getLocalEntityInfoByEntityName(String entityName) {
+        System.err.println("TRACE: getLocalEntityInfoByEntityName(): " + entityName);
+        return localEntityInfo;
+    }
+
+    public SimpleEntityInfo getLocalEntityInfoByEntitySetName(String entitySetName) {
+        System.err.println("TRACE: getLocalEntityInfoByEntitySetName(): " + entitySetName);
+        return localEntityInfo;
+    }
+
+    public SimpleEntityInfo getLocalEntityInfoByEntityNameFQN(FullQualifiedName entityNameFQN) {
+        System.err.println("TRACE: getLocalEntityInfoByEntityNameFQN(): " + entityNameFQN);
+        return localEntityInfo;
+    }
+
+    public void setLocalEntityInfo(SimpleEntityInfo localEntityInfo) {
+        this.localEntityInfo = localEntityInfo;
     }
 
     ///////////////////////////////
