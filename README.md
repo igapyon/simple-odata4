@@ -52,7 +52,6 @@ http://localhost:8080/simple.svc/MyProducts?$top=6&$search=macbook&$count=true&$
 
 # TODO
 
-- JUnitでデータ処理実装を通過させたい (ビルド時にエラーを捕捉したい)
 - PreparedStatementの入力の型対応の追加.
 - 実行時エラーを調整すること。現在 IllegalArgumentExceptionでそのまま500になったうえにエラー内容が見えてしまう。ODataApplicationException に対応することが第一案.
 - 対応しない命令の場合、適切に例外で異常停止

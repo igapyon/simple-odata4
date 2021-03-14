@@ -66,6 +66,7 @@ public class SimpleEntityCollectionProcessor implements EntityCollectionProcesso
     public void readEntityCollection(ODataRequest request, ODataResponse response, //
             UriInfo uriInfo, ContentType responseFormat) //
             throws ODataApplicationException, SerializerException {
+        // System.err.println("TRACE: rawQueryPath: " + request.getRawQueryPath());
 
         // URI情報からURIリソースの指定を取得.
         List<UriResource> resourcePaths = uriInfo.getUriResourceParts();
