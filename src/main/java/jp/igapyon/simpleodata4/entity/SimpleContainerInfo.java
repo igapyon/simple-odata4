@@ -1,5 +1,8 @@
 package jp.igapyon.simpleodata4.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.olingo.commons.api.edm.FullQualifiedName;
 
 public class SimpleContainerInfo {
@@ -13,11 +16,11 @@ public class SimpleContainerInfo {
      */
     private String containerName = "Container";
 
-    private SimpleEntityInfo localEntityInfo = null;
+    private List<SimpleEntityInfo> localEntityInfoList = new ArrayList<>();
 
     private void ensureInit() {
-        if (localEntityInfo == null) {
-            localEntityInfo = new SimpleEntityInfo(this, "MyProducts", "MyProduct", "MyProducts");
+        if (localEntityInfoList.size() == 0) {
+            localEntityInfoList.add(new SimpleEntityInfo(this, "MyProducts", "MyProduct", "MyProducts"));
         }
     }
 
@@ -47,25 +50,24 @@ public class SimpleContainerInfo {
     public SimpleEntityInfo getLocalEntityInfoByEntityName(String entityName) {
         ensureInit();
         System.err.println("TRACE: getLocalEntityInfoByEntityName(): " + entityName);
-        return localEntityInfo;
+        // TODO FIXME
+        return localEntityInfoList.get(0);
     }
 
     public SimpleEntityInfo getLocalEntityInfoByEntitySetName(String entitySetName) {
         ensureInit();
         System.err.println("TRACE: getLocalEntityInfoByEntitySetName(): " + entitySetName);
-        return localEntityInfo;
+        // TODO FIXME
+        return localEntityInfoList.get(0);
     }
 
     public SimpleEntityInfo getLocalEntityInfoByEntityNameFQN(FullQualifiedName entityNameFQN) {
         ensureInit();
         System.err.println("TRACE: getLocalEntityInfoByEntityNameFQN(): " + entityNameFQN);
-        return localEntityInfo;
+        // TODO FIXME
+        return localEntityInfoList.get(0);
     }
 
-    public void setLocalEntityInfo(SimpleEntityInfo localEntityInfo) {
-        ensureInit();
-        this.localEntityInfo = localEntityInfo;
-    }
 
     ///////////////////////////////
     /////////////////
