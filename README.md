@@ -52,9 +52,9 @@ http://localhost:8080/simple.svc/MyProducts?$top=6&$search=macbook&$count=true&$
 
 # TODO
 
-- TODO Null の対応。
-- TODO 実行時エラーを調整すること。現在 IllegalArgumentExceptionでそのまま500になったうえにエラー内容が見えてしまう。ODataApplicationException に対応することが第一案.
+- PreparedStatementの入力の型対応の追加.
+- 実行時エラーを調整すること。現在 IllegalArgumentExceptionでそのまま500になったうえにエラー内容が見えてしまう。ODataApplicationException に対応することが第一案.
 - 対応しない命令の場合、適切に例外で異常停止
-- JUnitでデータ実装を通過させたい
 - 認証の実験。
 - 実験的に全文検索である `$search` をサポートしたものの、もう少し詳しいところが調べられていない。また全文検索で有効なのはアルファベットのみ。
+- ($search対応の後続となるため、しばらく対応できない) TODO Null の対応。

@@ -91,7 +91,7 @@ public class TinyH2EntityDataBuilder {
             try (var stmt = conn.prepareStatement(sql)) {
                 int column = 1;
                 for (Object look : tinySql.getSqlInfo().getSqlParamList()) {
-                    bindPreparedParameter(look,stmt,column++);
+                    bindPreparedParameter(look, stmt, column++);
                 }
 
                 stmt.executeQuery();
@@ -114,7 +114,7 @@ public class TinyH2EntityDataBuilder {
         try (var stmt = conn.prepareStatement(sql)) {
             int idxColumn = 1;
             for (Object look : tinySql.getSqlInfo().getSqlParamList()) {
-                bindPreparedParameter(look,stmt,idxColumn++);
+                bindPreparedParameter(look, stmt, idxColumn++);
             }
 
             stmt.executeQuery();
@@ -216,6 +216,7 @@ public class TinyH2EntityDataBuilder {
         if (look instanceof Integer) {
             stmt.setInt(column, (Integer) look);
         } else {
+            // TODO 他の型への対応を追加。
             stmt.setString(column, (String) look);
         }
     }
