@@ -18,12 +18,11 @@ import jp.igapyon.simpleodata4.SimpleOdata4App;
 import jp.igapyon.simpleodata4.entity.SimpleEntityInfo;
 
 public class TinyH2EdmBuilder {
-private SimpleEntityInfo localEntityInfo=null;
-
+    private SimpleEntityInfo localEntityInfo = null;
 
     public TinyH2EdmBuilder(SimpleEntityInfo localEntityInfo) {
         System.err.println("OData v4: App: " + SimpleOdata4App.VERSION);
-        this.localEntityInfo=localEntityInfo;
+        this.localEntityInfo = localEntityInfo;
     }
 
     public CsdlEntityType getEntityType() {

@@ -63,19 +63,15 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
         // コンテナが一致する場合.
 
         // 要素セット名が一致する場合.
-        if (entitySetName
-                .equals(localContainerInfo.getLocalEntityInfoByEntitySetName("MyProducts").getEntitySetName())) {
-            // 要素セット名が一致する場合.
-            // CSDL要素セットとして情報を組み上げ.
-            CsdlEntitySet entitySet = new CsdlEntitySet();
-            entitySet.setName(localContainerInfo.getLocalEntityInfoByEntitySetName("MyProducts").getEntitySetName());
-            entitySet.setType(localContainerInfo.getLocalEntityInfoByEntitySetName("MyProducts").getEntityNameFQN());
+        // CSDL要素セットとして情報を組み上げ.
+        CsdlEntitySet entitySet = new CsdlEntitySet();
+        entitySet.setName(entitySetName);
+        entitySet.setType(localContainerInfo.getLocalEntityInfoByEntitySetName(entitySetName).getEntityNameFQN());
 
-            return entitySet;
-        }
+        return entitySet;
 
         // 該当する型名の要素セットはありません.
-        return null;
+        // return null;
     }
 
     /**
@@ -87,9 +83,10 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
     public CsdlEntityContainer getEntityContainer() {
         // 要素セットを作成.
         List<CsdlEntitySet> entitySets = new ArrayList<>();
-        // TODO 増殖か?
-        entitySets.add(getEntitySet(localContainerInfo.getContainerFQN(),
-                localContainerInfo.getLocalEntityInfoByEntitySetName("MyProducts").getEntitySetName()));
+        for (SimpleEntityInfo localEntryInfo : localContainerInfo.getLocalEntityInfoList()) {
+            // TODO 増殖か?
+            entitySets.add(getEntitySet(localContainerInfo.getContainerFQN(), localEntryInfo.getEntitySetName()));
+        }
 
         // 要素コンテナを作成.
         CsdlEntityContainer entityContainer = new CsdlEntityContainer();
@@ -112,9 +109,11 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
 
         // 要素型を設定.
         List<CsdlEntityType> entityTypes = new ArrayList<>();
-        // TODO 増殖.
-        entityTypes.add(
-                getEntityType(localContainerInfo.getLocalEntityInfoByEntitySetName("MyProducts").getEntityNameFQN()));
+        for (SimpleEntityInfo localEntryInfo : localContainerInfo.getLocalEntityInfoList()) {
+            // TODO 増殖.
+            entityTypes.add(getEntityType(localEntryInfo.getEntityNameFQN()));
+        }
+
         schema.setEntityTypes(entityTypes);
 
         // 要素コンテナを設定.
