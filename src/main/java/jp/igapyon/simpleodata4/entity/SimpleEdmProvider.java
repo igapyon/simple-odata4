@@ -26,9 +26,10 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
                 .setLocalEntityInfo(new SimpleEntityInfo(localContainerInfo, "MyProducts", "MyProduct", "MyProducts"));
     }
 
+    // TODO 引数を変更すべきか
     private static final TinyH2EdmBuilder edmBuilder = new TinyH2EdmBuilder(
-            localContainerInfo.getLocalEntityInfo().getEntitySetName(),
-            localContainerInfo.getLocalEntityInfo().getEntityName());
+            localContainerInfo.getLocalEntityInfoByEntitySetName("MyProducts").getEntitySetName(),
+            localContainerInfo.getLocalEntityInfoByEntitySetName("MyProducts").getEntityName());
 
     private static SimpleEdmProvider provider = new SimpleEdmProvider();
 
@@ -47,7 +48,7 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
      */
     @Override
     public CsdlEntityType getEntityType(FullQualifiedName entityTypeName) {
-        if (entityTypeName.equals(localContainerInfo.getLocalEntityInfo().getEntityNameFQN())) {
+        if (entityTypeName.equals(localContainerInfo.getLocalEntityInfoByEntityNameFQN(entityTypeName).getEntityNameFQN())) {
             // 処理対象の型名です。
             return edmBuilder.getEntityType();
         }
@@ -73,12 +74,12 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
         // コンテナが一致する場合.
 
         // 要素セット名が一致する場合.
-        if (entitySetName.equals(localContainerInfo.getLocalEntityInfo().getEntitySetName())) {
+        if (entitySetName.equals(localContainerInfo.getLocalEntityInfoByEntitySetName("MyProducts").getEntitySetName())) {
             // 要素セット名が一致する場合.
             // CSDL要素セットとして情報を組み上げ.
             CsdlEntitySet entitySet = new CsdlEntitySet();
-            entitySet.setName(localContainerInfo.getLocalEntityInfo().getEntitySetName());
-            entitySet.setType(localContainerInfo.getLocalEntityInfo().getEntityNameFQN());
+            entitySet.setName(localContainerInfo.getLocalEntityInfoByEntitySetName("MyProducts").getEntitySetName());
+            entitySet.setType(localContainerInfo.getLocalEntityInfoByEntitySetName("MyProducts").getEntityNameFQN());
 
             return entitySet;
         }
@@ -96,8 +97,9 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
     public CsdlEntityContainer getEntityContainer() {
         // 要素セットを作成.
         List<CsdlEntitySet> entitySets = new ArrayList<>();
+        // TODO 増殖か?
         entitySets.add(getEntitySet(localContainerInfo.getContainerFQN(),
-                localContainerInfo.getLocalEntityInfo().getEntitySetName()));
+                localContainerInfo.getLocalEntityInfoByEntitySetName("MyProducts").getEntitySetName()));
 
         // 要素コンテナを作成.
         CsdlEntityContainer entityContainer = new CsdlEntityContainer();
@@ -120,7 +122,8 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
 
         // 要素型を設定.
         List<CsdlEntityType> entityTypes = new ArrayList<>();
-        entityTypes.add(getEntityType(localContainerInfo.getLocalEntityInfo().getEntityNameFQN()));
+        // TODO 増殖.
+        entityTypes.add(getEntityType(localContainerInfo.getLocalEntityInfoByEntitySetName("MyProducts").getEntityNameFQN()));
         schema.setEntityTypes(entityTypes);
 
         // 要素コンテナを設定.

@@ -31,7 +31,21 @@ public class SimpleContainerInfo {
         this.containerName = containerName;
     }
 
-    public SimpleEntityInfo getLocalEntityInfo() {
+    ///////////////////////////////
+    /////////////////
+
+    public SimpleEntityInfo getLocalEntityInfoByEntityName(String entityName) {
+        System.err.println("TRACE: getLocalEntityInfoByEntityName(): " + entityName);
+        return localEntityInfo;
+    }
+
+    public SimpleEntityInfo getLocalEntityInfoByEntitySetName(String entitySetName) {
+        System.err.println("TRACE: getLocalEntityInfoByEntitySetName(): " + entitySetName);
+        return localEntityInfo;
+    }
+
+    public SimpleEntityInfo getLocalEntityInfoByEntityNameFQN(FullQualifiedName entityNameFQN) {
+        System.err.println("TRACE: getLocalEntityInfoByEntityNameFQN(): " + entityNameFQN);
         return localEntityInfo;
     }
 
