@@ -40,6 +40,7 @@ public class TinyH2TrialFullTextSearch {
                 for (; rset.next();) {
                     String valQuery = rset.getString(1);
                     // System.err.println("QUERY:" + valQuery);
+                    // TODO , FIXME ハードコード
                     if (valQuery.contains("MyProducts") == false) {
                         continue;
                     }
