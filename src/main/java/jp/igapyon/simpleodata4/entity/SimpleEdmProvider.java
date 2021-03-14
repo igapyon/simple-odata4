@@ -25,12 +25,6 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
             "MyProducts");
 
     /**
-     * サービスの名前空間. このソースをベースにカスタマイズする場合には変更.
-     */
-    public static final String NAMESPACE = "Igapyon.Simple";
-
-
-    /**
      * 要素型名. さしあたりはリレーショナルデータベースのテーブル名に相当するものと考えて差し支えない.
      */
     private static final String ET_MYPRODUCT_NAME = "MyProduct";
@@ -45,12 +39,12 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
     /**
      * EDMコンテナ名のFQN(完全修飾名).
      */
-    public static final FullQualifiedName CONTAINER = new FullQualifiedName(NAMESPACE, containerInfo.getContainerName());
+    public static final FullQualifiedName CONTAINER = new FullQualifiedName(containerInfo.getNamespace(), containerInfo.getContainerName());
 
     /**
      * 要素型のFQN(完全修飾名).
      */
-    public static final FullQualifiedName ET_MYPRODUCT_FQN = new FullQualifiedName(NAMESPACE, ET_MYPRODUCT_NAME);
+    public static final FullQualifiedName ET_MYPRODUCT_FQN = new FullQualifiedName(containerInfo.getNamespace(), ET_MYPRODUCT_NAME);
 
     private static final TinyH2EdmBuilder edmBuilder = new TinyH2EdmBuilder(ES_MYPRODUCTS_NAME, ET_MYPRODUCT_NAME);
 
@@ -140,7 +134,7 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
     public List<CsdlSchema> getSchemas() {
         // CSDLスキーマを作成.
         CsdlSchema schema = new CsdlSchema();
-        schema.setNamespace(NAMESPACE);
+        schema.setNamespace(containerInfo.getNamespace());
 
         // 要素型を設定.
         List<CsdlEntityType> entityTypes = new ArrayList<>();
