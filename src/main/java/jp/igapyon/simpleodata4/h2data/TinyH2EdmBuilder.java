@@ -14,6 +14,8 @@ import org.apache.olingo.commons.api.edm.provider.CsdlEntityType;
 import org.apache.olingo.commons.api.edm.provider.CsdlProperty;
 import org.apache.olingo.commons.api.edm.provider.CsdlPropertyRef;
 
+import jp.igapyon.simpleodata4.SimpleOdata4App;
+
 public class TinyH2EdmBuilder {
     /**
      * 要素型名. さしあたりはリレーショナルデータベースのテーブル名に相当するものと考えて差し支えない.
@@ -26,6 +28,7 @@ public class TinyH2EdmBuilder {
     private String esTargetsName = null /* "MyProducts" */;
 
     public TinyH2EdmBuilder(String esTargetsName, String etTargetName) {
+        System.err.println("OData v4: App: " + SimpleOdata4App.VERSION);
         this.esTargetsName = esTargetsName;
         this.etTargetName = etTargetName;
     }

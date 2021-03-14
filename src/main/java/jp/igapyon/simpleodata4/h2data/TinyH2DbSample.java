@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+import jp.igapyon.simpleodata4.SimpleOdata4App;
+
 /**
  * 実際に返却するデータ本体を組み上げるクラス.
  * 
@@ -23,6 +25,17 @@ public class TinyH2DbSample {
      */
     public static void createTable(final Connection conn) {
         // System.err.println("TRACE: 作業用データベーステーブルを作成");
+
+        try (var stmt = conn.prepareStatement("CREATE TABLE IF NOT EXISTS " //
+                + "ODataAppInfo (" //
+                + "ID INT NOT NULL" // primary key. これほんとは Key とかにして Key = version とかで分岐したい.
+                + ",Ver VARCHAR(20) NOT NULL" //
+                + ",PRIMARY KEY(ID)" //
+                + ")")) {
+            stmt.executeUpdate();
+        } catch (SQLException ex) {
+            throw new IllegalArgumentException("テーブル作成に失敗: " + ex.toString(), ex);
+        }
 
         try (var stmt = conn.prepareStatement("CREATE TABLE IF NOT EXISTS " //
                 + "MyProducts (" //
@@ -115,6 +128,22 @@ public class TinyH2DbSample {
             throw new IllegalArgumentException("全文検索の初期設定に失敗: " + ex.toString(), ex);
         }
 
+        ///////////////////////////////////////////
+        // バージョン情報に関するデータの追加
+        try (var stmt = conn.prepareStatement(
+                "INSERT INTO ODataAppInfo (ID, Ver) VALUES (" + TinyH2Util.getQueryPlaceholderString(2) + ")")) {
+            int idCounter = 1;
+            stmt.setInt(1, idCounter++);
+            stmt.setString(2, SimpleOdata4App.VERSION);
+            stmt.executeUpdate();
+
+            conn.commit();
+        } catch (SQLException ex) {
+            throw new IllegalArgumentException("テーブル作成に失敗: " + ex.toString(), ex);
+        }
+
+        ///////////////////////
+        // ダミーなデータの追加
         try (var stmt = conn.prepareStatement("INSERT INTO MyProducts (ID, Name, Description) VALUES ("
                 + TinyH2Util.getQueryPlaceholderString(3) + ")")) {
             int idCounter = 1;
@@ -154,7 +183,6 @@ public class TinyH2DbSample {
                 stmt.executeUpdate();
             }
             conn.commit();
-
         } catch (SQLException ex) {
             throw new IllegalArgumentException("テーブル作成に失敗: " + ex.toString(), ex);
         }
