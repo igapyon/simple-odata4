@@ -4,6 +4,9 @@ import org.apache.olingo.commons.api.edm.FullQualifiedName;
 
 import jp.igapyon.simpleodata4.h2data.TinyH2EdmBuilder;
 
+/**
+ * エンティティに関するローカル情報.
+ */
 public class SimpleEntityInfo {
     private SimpleContainerInfo containerInfo = null;
 
