@@ -50,11 +50,17 @@ http://localhost:8080/simple.svc/MyProducts?$top=6&$search=macbook&$count=true&$
 
 - http://www.h2database.com/html/functions.html
 
-# TODO
+# 作業メモ
+
+## 更新内容
+
+- ODataの自動テストを組み込んだ。
+
+## TODO
 
 - PreparedStatementの入力の型対応の追加.
 - 実行時エラーを調整すること。現在 IllegalArgumentExceptionでそのまま500になったうえにエラー内容が見えてしまう。ODataApplicationException に対応することが第一案.
 - 対応しない命令の場合、適切に例外で異常停止
 - 認証の実験。
-- 実験的に全文検索である `$search` をサポートしたものの、もう少し詳しいところが調べられていない。また全文検索で有効なのはアルファベットのみ。
+- 実験的に全文検索である `$search` をサポートしたものの、もう少し詳しいところが調べられていない。また全文検索で有効なのはアルファベットのみ。h2 database でここを深掘りしても不毛か?
 - ($search対応の後続となるため、しばらく対応できない) TODO Null の対応。

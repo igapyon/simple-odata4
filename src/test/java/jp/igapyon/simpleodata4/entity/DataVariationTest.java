@@ -16,9 +16,10 @@ import org.apache.olingo.server.api.ODataResponse;
 import org.apache.olingo.server.api.ServiceMetadata;
 import org.junit.jupiter.api.Test;
 
+/**
+ * OData サーバについて、おおざっぱに通過させてデグレードを検知.
+ */
 class DataVariationTest {
-// http://localhost:8080/simple.svc/MyProducts?
-
     @Test
     void testSimpleOrderBy() throws Exception {
         final ODataHttpHandler handler = getHandler();
@@ -34,6 +35,21 @@ class DataVariationTest {
         assertEquals(
                 "{\"@odata.context\":\"$metadata#MyProducts\",\"value\":[{\"ID\":1,\"Name\":\"MacBookPro16,2\",\"Description\":\"MacBook Pro (13-inch, 2020, Thunderbolt 3ポートx 4)\"}]}",
                 stream2String(resp.getContent()));
+    }
+
+    @Test
+    void testSimpleAllWithoutSelect() throws Exception {
+        final ODataHttpHandler handler = getHandler();
+        final ODataRequest req = new ODataRequest();
+        req.setMethod(HttpMethod.GET);
+        req.setRawBaseUri("http://localhost:8080/simple.svc");
+        req.setRawODataPath("/MyProducts");
+        req.setRawQueryPath("$orderby=ID&$top=2");
+        req.setRawRequestUri(req.getRawBaseUri() + req.getRawODataPath() + "?" + req.getRawQueryPath());
+
+        final ODataResponse resp = handler.process(req);
+        assertEquals(200, resp.getStatusCode());
+        // コンテンツ内容は確認なし.
     }
 
     @Test
