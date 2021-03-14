@@ -48,13 +48,11 @@ public class TinyH2EntityDataBuilder {
 
         CsdlEntitySet eSetTarget = null;
         String targetEntityName = null;
-        EdmLoop: for (EdmEntitySet eSet : edmEntitySet.getEntityContainer().getEntitySets()) {
-            for (CsdlEntitySet eSetProvided : provider.getEntityContainer().getEntitySets()) {
-                if (eSet.getName().equals(eSetProvided.getName())) {
-                    eSetTarget = eSetProvided;
-                    targetEntityName = eSetProvided.getName();
-                    break EdmLoop;
-                }
+        for (CsdlEntitySet eSetProvided : provider.getEntityContainer().getEntitySets()) {
+            if (edmEntitySet.getName().equals(eSetProvided.getName())) {
+                eSetTarget = eSetProvided;
+                targetEntityName = eSetProvided.getName();
+                break;
             }
         }
 
