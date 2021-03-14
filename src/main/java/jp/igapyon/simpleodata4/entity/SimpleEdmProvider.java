@@ -110,9 +110,12 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
 
         // 要素型を設定.
         List<CsdlEntityType> entityTypes = new ArrayList<>();
+        for(SimpleEntityInfo localEntryInfo:localContainerInfo.getLocalEntityInfoList()){
         // TODO 増殖.
         entityTypes.add(
-                getEntityType(localContainerInfo.getLocalEntityInfoByEntitySetName("MyProducts").getEntityNameFQN()));
+                getEntityType(localEntryInfo.getEntityNameFQN()));
+        }
+
         schema.setEntityTypes(entityTypes);
 
         // 要素コンテナを設定.
