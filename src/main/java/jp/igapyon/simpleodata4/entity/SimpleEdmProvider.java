@@ -11,8 +11,6 @@ import org.apache.olingo.commons.api.edm.provider.CsdlEntitySet;
 import org.apache.olingo.commons.api.edm.provider.CsdlEntityType;
 import org.apache.olingo.commons.api.edm.provider.CsdlSchema;
 
-import jp.igapyon.simpleodata4.h2data.TinyH2EdmBuilder;
-
 /**
  * OData Common Schema Definition Language (CSDL) を提供するクラス.
  * 
