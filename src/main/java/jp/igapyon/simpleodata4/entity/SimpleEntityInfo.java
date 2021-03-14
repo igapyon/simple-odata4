@@ -47,9 +47,9 @@ public class SimpleEntityInfo {
     }
 
     /**
-     * データベース上のテーブル名.
+     * エンティティ名. MyProduct 相当.
      * 
-     * @return データべ薄上のテーブル名を取得.
+     * @return エンティティ名. MyProduct 相当.
      */
     public String getEntityName() {
         return entityName;

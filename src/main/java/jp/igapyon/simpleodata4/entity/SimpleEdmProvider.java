@@ -24,10 +24,6 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
     public static final SimpleEntityInfo entityInfo = new SimpleEntityInfo(containerInfo, "MyProducts", "MyProduct",
             "MyProducts");
 
-    /**
-     * 要素型名. さしあたりはリレーショナルデータベースのテーブル名に相当するものと考えて差し支えない.
-     */
-    private static final String ET_MYPRODUCT_NAME = "MyProduct";
 
     /**
      * 要素型名の複数形. さしあたりはリレーショナルデータベースのテーブル名に相当するものに「s」をつけたものと考えて差し支えない. URIにも影響がある.
@@ -40,9 +36,9 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
      * 要素型のFQN(完全修飾名).
      */
     public static final FullQualifiedName ET_MYPRODUCT_FQN = new FullQualifiedName(containerInfo.getNamespace(),
-            ET_MYPRODUCT_NAME);
+    entityInfo.getEntityName());
 
-    private static final TinyH2EdmBuilder edmBuilder = new TinyH2EdmBuilder(ES_MYPRODUCTS_NAME, ET_MYPRODUCT_NAME);
+    private static final TinyH2EdmBuilder edmBuilder = new TinyH2EdmBuilder(ES_MYPRODUCTS_NAME, entityInfo.getEntityName());
 
     private static SimpleEdmProvider provider = new SimpleEdmProvider();
 
