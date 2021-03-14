@@ -58,6 +58,7 @@ http://localhost:8080/simple.svc/MyProducts?$top=6&$search=macbook&$count=true&$
 
 ## TODO
 
+- Container や Entity のローカル情報体を観察していると、これは CsdlEntitySet などとほぼ一致することに気がつき始めた。extends でカスタムクラスを作成する方向性を考察開始。
 - IDについてPrimaryKeyで動作するようにする。データベース項目名も可変にしたい。ただし当面は単一項目でユニークと期待。
 - PreparedStatementの入力の型対応に先立ち、引数の型バリエーションを追加。特に日付・日時絡みは調整が必要な見込み。
 - PreparedStatementの入力の型対応の追加.
