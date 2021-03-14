@@ -37,14 +37,10 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
     private static final String ES_MYPRODUCTS_NAME = "MyProducts";
 
     /**
-     * EDMコンテナ名のFQN(完全修飾名).
-     */
-    public static final FullQualifiedName CONTAINER = new FullQualifiedName(containerInfo.getNamespace(), containerInfo.getContainerName());
-
-    /**
      * 要素型のFQN(完全修飾名).
      */
-    public static final FullQualifiedName ET_MYPRODUCT_FQN = new FullQualifiedName(containerInfo.getNamespace(), ET_MYPRODUCT_NAME);
+    public static final FullQualifiedName ET_MYPRODUCT_FQN = new FullQualifiedName(containerInfo.getNamespace(),
+            ET_MYPRODUCT_NAME);
 
     private static final TinyH2EdmBuilder edmBuilder = new TinyH2EdmBuilder(ES_MYPRODUCTS_NAME, ET_MYPRODUCT_NAME);
 
@@ -84,7 +80,7 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
      */
     @Override
     public CsdlEntitySet getEntitySet(FullQualifiedName entityContainer, String entitySetName) {
-        if (!entityContainer.equals(CONTAINER)) {
+        if (!entityContainer.equals(containerInfo.getContainerFQN())) {
             // 該当する型名の要素セットはありません.
             return null;
         }
@@ -115,7 +111,7 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
     public CsdlEntityContainer getEntityContainer() {
         // 要素セットを作成.
         List<CsdlEntitySet> entitySets = new ArrayList<>();
-        entitySets.add(getEntitySet(CONTAINER, ES_MYPRODUCTS_NAME));
+        entitySets.add(getEntitySet(containerInfo.getContainerFQN(), ES_MYPRODUCTS_NAME));
 
         // 要素コンテナを作成.
         CsdlEntityContainer entityContainer = new CsdlEntityContainer();
@@ -161,9 +157,9 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
      */
     @Override
     public CsdlEntityContainerInfo getEntityContainerInfo(FullQualifiedName entityContainerName) {
-        if (entityContainerName == null || entityContainerName.equals(CONTAINER)) {
+        if (entityContainerName == null || entityContainerName.equals(containerInfo.getContainerFQN())) {
             CsdlEntityContainerInfo entityContainerInfo = new CsdlEntityContainerInfo();
-            entityContainerInfo.setContainerName(CONTAINER);
+            entityContainerInfo.setContainerName(containerInfo.getContainerFQN());
             return entityContainerInfo;
         }
 
