@@ -1,4 +1,4 @@
-package jp.igapyon.simpleodata4.entity;
+package jp.igapyon.simpleodata4.basic;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -16,10 +16,32 @@ import org.apache.olingo.server.api.ODataResponse;
 import org.apache.olingo.server.api.ServiceMetadata;
 import org.junit.jupiter.api.Test;
 
+import jp.igapyon.simpleodata4.SimpleOdata4App;
+import jp.igapyon.simpleodata4.entity.SimpleEdmProvider;
+import jp.igapyon.simpleodata4.entity.SimpleEntityCollectionProcessor;
+
 /**
  * OData サーバについて、おおざっぱに通過させてデグレードを検知.
  */
-class DataVariationTest {
+class BasicODataSampleDbTest {
+    @Test
+    void testSimpleVersion() throws Exception {
+        final ODataHttpHandler handler = getHandler();
+        final ODataRequest req = new ODataRequest();
+        req.setMethod(HttpMethod.GET);
+        req.setRawBaseUri("http://localhost:8080/simple.svc");
+        req.setRawODataPath("/ODataAppInfos");
+        req.setRawQueryPath("$top=1");
+        req.setRawRequestUri(req.getRawBaseUri() + req.getRawODataPath() + "?" + req.getRawQueryPath());
+
+        final ODataResponse resp = handler.process(req);
+        assertEquals(200, resp.getStatusCode());
+        final String result = stream2String(resp.getContent());
+        // System.err.println("result: " + result);
+        assertEquals("{\"@odata.context\":\"$metadata#ODataAppInfos\",\"value\":[{\"ID\":1,\"Ver\":\""
+                + SimpleOdata4App.VERSION + "\"}]}", result);
+    }
+
     @Test
     void testSimpleOrderBy() throws Exception {
         final ODataHttpHandler handler = getHandler();

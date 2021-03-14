@@ -21,7 +21,7 @@ public class TinyH2EdmBuilder {
     private SimpleEntityInfo localEntityInfo = null;
 
     public TinyH2EdmBuilder(SimpleEntityInfo localEntityInfo) {
-        System.err.println("OData v4: App: " + SimpleOdata4App.VERSION);
+        System.err.println("OData v4: App: " + SimpleOdata4App.VERSION + " - " + localEntityInfo.getEntitySetName());
         this.localEntityInfo = localEntityInfo;
     }
 

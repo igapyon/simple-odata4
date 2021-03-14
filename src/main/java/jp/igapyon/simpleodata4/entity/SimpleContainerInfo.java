@@ -50,8 +50,6 @@ public class SimpleContainerInfo {
 
     public SimpleEntityInfo getLocalEntityInfoByEntityName(String entityName) {
         ensureInit();
-        System.err.println("TRACE: getLocalEntityInfoByEntityName(): " + entityName);
-        // TODO FIXME
         for (SimpleEntityInfo look : localEntityInfoList) {
             if (look.getEntityName().equals(entityName)) {
                 return look;
@@ -62,8 +60,6 @@ public class SimpleContainerInfo {
 
     public SimpleEntityInfo getLocalEntityInfoByEntitySetName(String entitySetName) {
         ensureInit();
-        System.err.println("TRACE: getLocalEntityInfoByEntitySetName(): " + entitySetName);
-        // TODO FIXME
         for (SimpleEntityInfo look : localEntityInfoList) {
             if (look.getEntitySetName().equals(entitySetName)) {
                 return look;
@@ -74,8 +70,6 @@ public class SimpleContainerInfo {
 
     public SimpleEntityInfo getLocalEntityInfoByEntityNameFQN(FullQualifiedName entityNameFQN) {
         ensureInit();
-        System.err.println("TRACE: getLocalEntityInfoByEntityNameFQN(): " + entityNameFQN);
-        // TODO FIXME
         for (SimpleEntityInfo look : localEntityInfoList) {
             if (look.getEntityNameFQN().equals(entityNameFQN)) {
                 return look;

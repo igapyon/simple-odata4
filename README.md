@@ -58,7 +58,7 @@ http://localhost:8080/simple.svc/MyProducts?$top=6&$search=macbook&$count=true&$
 
 ## TODO
 
-- バージョンを表すエンティティを追加する実験。これには複数テーブル対応への実験も包含。
+- IDについてPrimaryKeyで動作するようにする。名前も可変にする。
 - PreparedStatementの入力の型対応に先立ち、引数の型バリエーションを追加。特に日付・日時絡みは調整が必要な見込み。
 - PreparedStatementの入力の型対応の追加.
 - 実行時エラーを調整すること。現在 IllegalArgumentExceptionでそのまま500になったうえにエラー内容が見えてしまう。ODataApplicationException に対応することが第一案.
