@@ -25,7 +25,8 @@ public class TinyH2EntityTypeBuilder {
 
     public TinyH2EntityTypeBuilder(OiyokanCsdlEntitySet entitySet) {
         this.entitySet = entitySet;
-        System.err.println("OData v4: EntityType: " + SimpleOdata4App.VERSION + " - " + entitySet.getName());
+        System.err.println( //
+                "OData v4: EntityType: " + entitySet.getName() + " (Oiyokan: " + SimpleOdata4App.VERSION + ")");
     }
 
     /**
