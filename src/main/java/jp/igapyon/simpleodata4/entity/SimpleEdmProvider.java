@@ -64,7 +64,7 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
 
         // 要素セット名が一致する場合.
         // CSDL要素セットとして情報を組み上げ.
-        CsdlEntitySet entitySet = new CsdlEntitySet();
+        OiyokanCsdlEntitySet entitySet = new OiyokanCsdlEntitySet();
         entitySet.setName(entitySetName);
         entitySet.setType(localContainerInfo.getLocalEntityInfoByEntitySetName(entitySetName).getEntityNameFQN());
 
