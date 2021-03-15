@@ -1,10 +1,10 @@
 package jp.igapyon.simpleodata4.entity;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.olingo.commons.api.edm.FullQualifiedName;
 import org.apache.olingo.commons.api.edm.provider.CsdlEntityContainer;
+import org.apache.olingo.commons.api.edm.provider.CsdlEntitySet;
 
 public class OiyokanCsdlEntityContainer extends CsdlEntityContainer {
 
@@ -18,59 +18,50 @@ public class OiyokanCsdlEntityContainer extends CsdlEntityContainer {
      */
     private String containerName = "Container";
 
-    private List<OiyokanCsdlEntitySet> localEntityInfoList = new ArrayList<>();
+    public void ensureOpen() {
+        if (getEntitySets() == null) {
+            setEntitySets(new ArrayList<CsdlEntitySet>());
+        }
 
-    private void ensureInit() {
-        if (localEntityInfoList.size() == 0) {
-            localEntityInfoList.add(new OiyokanCsdlEntitySet(this, "MyProducts", "MyProduct", "MyProducts"));
-            localEntityInfoList.add(new OiyokanCsdlEntitySet(this, "ODataAppInfos", "ODataAppInfo", "ODataAppInfos"));
+        if (getEntitySets().size() == 0) {
+            getEntitySets().add(new OiyokanCsdlEntitySet(this, "MyProducts", "MyProduct", "MyProducts"));
+            getEntitySets().add(new OiyokanCsdlEntitySet(this, "ODataAppInfos", "ODataAppInfo", "ODataAppInfos"));
         }
     }
 
-    public String getInternalNamespace() {
+    /**
+     * 名前空間を取得します。これが存在するととても便利なため、これを追加。
+     * 
+     * @return 名前空間名.
+     */
+    public String getNamespace() {
         return namespace;
-    }
-
-    public void setInternalNamespace(String namespace) {
-        this.namespace = namespace;
     }
 
     public String getInternalContainerName() {
         return containerName;
     }
 
-    public void setInternalContainerName(String containerName) {
-        this.containerName = containerName;
-    }
-
     ///////////////////////////////
     /////////////////
 
     public OiyokanCsdlEntitySet getLocalEntityInfoByEntityName(String entityName) {
-        ensureInit();
-        for (OiyokanCsdlEntitySet look : localEntityInfoList) {
+        for (CsdlEntitySet entitySet : this.getEntitySets()) {
+            OiyokanCsdlEntitySet look = (OiyokanCsdlEntitySet) entitySet;
             if (look.getInternalEntityName().equals(entityName)) {
                 return look;
             }
         }
-        return null;
-    }
 
-    public OiyokanCsdlEntitySet getLocalEntityInfoByEntitySetName(String entitySetName) {
-        ensureInit();
-        for (OiyokanCsdlEntitySet look : localEntityInfoList) {
-            if (look.getInternalEntitySetName().equals(entitySetName)) {
-                return look;
-            }
-        }
         return null;
     }
 
     public OiyokanCsdlEntitySet getLocalEntityInfoByEntityNameFQN(FullQualifiedName entityNameFQN) {
-        ensureInit();
-        for (OiyokanCsdlEntitySet look : localEntityInfoList) {
-            if (look.getInternalEntityNameFQN().equals(entityNameFQN)) {
-                return look;
+        ensureOpen();
+        for (CsdlEntitySet look : getEntitySets()) {
+            OiyokanCsdlEntitySet look2 = (OiyokanCsdlEntitySet) look;
+            if (look2.getInternalEntityNameFQN().equals(entityNameFQN)) {
+                return look2;
             }
         }
         return null;
@@ -78,11 +69,6 @@ public class OiyokanCsdlEntityContainer extends CsdlEntityContainer {
 
     ///////////////////////////////
     /////////////////
-
-    public List<OiyokanCsdlEntitySet> getLocalEntityInfoList() {
-        ensureInit();
-        return localEntityInfoList;
-    }
 
     /**
      * EDMコンテナ名のFQN(完全修飾名).
@@ -90,6 +76,6 @@ public class OiyokanCsdlEntityContainer extends CsdlEntityContainer {
      * @return EDMコンテナ名のFQN(完全修飾名).
      */
     public FullQualifiedName getInternalContainerFQN() {
-        return new FullQualifiedName(getInternalNamespace(), getInternalContainerName());
+        return new FullQualifiedName(getNamespace(), getInternalContainerName());
     }
 }

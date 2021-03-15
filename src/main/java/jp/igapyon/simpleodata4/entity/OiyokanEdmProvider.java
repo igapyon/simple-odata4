@@ -36,6 +36,8 @@ public class OiyokanEdmProvider extends CsdlAbstractEdmProvider {
      */
     @Override
     public CsdlEntityType getEntityType(FullQualifiedName entityTypeName) {
+        localContainerInfo.ensureOpen();
+
         if (entityTypeName.equals(
                 localContainerInfo.getLocalEntityInfoByEntityNameFQN(entityTypeName).getInternalEntityNameFQN())) {
             // 処理対象の型名です。
@@ -55,6 +57,8 @@ public class OiyokanEdmProvider extends CsdlAbstractEdmProvider {
      */
     @Override
     public CsdlEntitySet getEntitySet(FullQualifiedName entityContainer, String entitySetName) {
+        localContainerInfo.ensureOpen();
+
         if (!entityContainer.equals(localContainerInfo.getInternalContainerFQN())) {
             // 該当する型名の要素セットはありません.
             return null;
@@ -65,17 +69,7 @@ public class OiyokanEdmProvider extends CsdlAbstractEdmProvider {
         // 要素セット名が一致する場合.
         // CSDL要素セットとして情報を組み上げ.
 
-        OiyokanCsdlEntitySet entitySet = null;
-        if (entitySetName.equals("MyProducts")) {
-            entitySet = new OiyokanCsdlEntitySet(localContainerInfo, "MyProducts", "MyProduct", "MyProducts");
-        } else if (entitySetName.equals("ODataAppInfos")) {
-            entitySet = new OiyokanCsdlEntitySet(localContainerInfo, "ODataAppInfos", "ODataAppInfo", "ODataAppInfos");
-        }
-        entitySet.setName(entitySetName);
-        entitySet.setType(
-                localContainerInfo.getLocalEntityInfoByEntitySetName(entitySetName).getInternalEntityNameFQN());
-
-        return entitySet;
+        return localContainerInfo.getEntitySet(entitySetName);
 
         // 該当する型名の要素セットはありません.
         // return null;
@@ -88,18 +82,22 @@ public class OiyokanEdmProvider extends CsdlAbstractEdmProvider {
      */
     @Override
     public CsdlEntityContainer getEntityContainer() {
+        localContainerInfo.ensureOpen();
+
         // 要素セットを作成.
         List<CsdlEntitySet> entitySets = new ArrayList<>();
-        for (OiyokanCsdlEntitySet localEntryInfo : localContainerInfo.getLocalEntityInfoList()) {
+        for (CsdlEntitySet look : localContainerInfo.getEntitySets()) {
+            OiyokanCsdlEntitySet look2 = (OiyokanCsdlEntitySet) look;
             // TODO 増殖か?
-            entitySets.add(getEntitySet(localContainerInfo.getInternalContainerFQN(),
-                    localEntryInfo.getInternalEntitySetName()));
+            entitySets.add(getEntitySet(localContainerInfo.getInternalContainerFQN(), look2.getName()));
         }
 
         // 要素コンテナを作成.
         OiyokanCsdlEntityContainer entityContainer = new OiyokanCsdlEntityContainer();
         entityContainer.setName(localContainerInfo.getInternalContainerName());
         entityContainer.setEntitySets(entitySets);
+
+        entityContainer.ensureOpen();
 
         return entityContainer;
     }
@@ -111,18 +109,21 @@ public class OiyokanEdmProvider extends CsdlAbstractEdmProvider {
      */
     @Override
     public List<CsdlSchema> getSchemas() {
+        localContainerInfo.ensureOpen();
+
         // CSDLスキーマを作成.
         CsdlSchema schema = new CsdlSchema();
-        schema.setNamespace(localContainerInfo.getInternalNamespace());
+        schema.setNamespace(localContainerInfo.getNamespace());
 
         // 要素型を設定.
-        List<CsdlEntityType> entityTypes = new ArrayList<>();
-        for (OiyokanCsdlEntitySet localEntryInfo : localContainerInfo.getLocalEntityInfoList()) {
+        List<CsdlEntityType> look = new ArrayList<>();
+        for (CsdlEntitySet localEntryInfo : localContainerInfo.getEntitySets()) {
+            OiyokanCsdlEntitySet local2 = (OiyokanCsdlEntitySet) localEntryInfo;
             // TODO 増殖.
-            entityTypes.add(getEntityType(localEntryInfo.getInternalEntityNameFQN()));
+            look.add(getEntityType(local2.getInternalEntityNameFQN()));
         }
 
-        schema.setEntityTypes(entityTypes);
+        schema.setEntityTypes(look);
 
         // 要素コンテナを設定.
         schema.setEntityContainer(getEntityContainer());
@@ -144,6 +145,8 @@ public class OiyokanEdmProvider extends CsdlAbstractEdmProvider {
      */
     @Override
     public CsdlEntityContainerInfo getEntityContainerInfo(FullQualifiedName entityContainerName) {
+        localContainerInfo.ensureOpen();
+
         if (entityContainerName == null || entityContainerName.equals(localContainerInfo.getInternalContainerFQN())) {
             CsdlEntityContainerInfo entityContainerInfo = new CsdlEntityContainerInfo();
             entityContainerInfo.setContainerName(localContainerInfo.getInternalContainerFQN());

@@ -16,14 +16,7 @@ public class OiyokanCsdlEntitySet extends CsdlEntitySet {
         this.edmBuilder = edmBuilder;
     }
 
-    private OiyokanCsdlEntityContainer containerInfo = null;
-
-    /**
-     * 要素型名の複数形. さしあたりはリレーショナルデータベースのテーブル名に相当するものに「s」をつけたものと考えて差し支えない. URIにも影響がある.
-     * 
-     * MyProducts 相当.
-     */
-    private String entitySetName = null;
+    private OiyokanCsdlEntityContainer csdlEntityContainer = null;
 
     /**
      * 要素型名. さしあたりはリレーショナルデータベースのテーブル名に相当するものと考えて差し支えない.
@@ -47,20 +40,14 @@ public class OiyokanCsdlEntitySet extends CsdlEntitySet {
      */
     public OiyokanCsdlEntitySet(OiyokanCsdlEntityContainer containerInfo, String entitySetName, String entityName,
             String dbTableName) {
-        this.containerInfo = containerInfo;
-        this.entitySetName = entitySetName;
+        this.csdlEntityContainer = containerInfo;
         this.entityName = entityName;
         this.dbTableName = dbTableName;
 
+        this.setName(entitySetName);
+        this.setType(new FullQualifiedName(containerInfo.getNamespace(), entityName));
+
         this.edmBuilder = new TinyH2EdmBuilder(this);
-    }
-
-    public OiyokanCsdlEntityContainer getInternalContainerInfo() {
-        return containerInfo;
-    }
-
-    public void setInternalContainerInfo(OiyokanCsdlEntityContainer containerInfo) {
-        this.containerInfo = containerInfo;
     }
 
     /**
@@ -72,18 +59,11 @@ public class OiyokanCsdlEntitySet extends CsdlEntitySet {
         return entityName;
     }
 
-    // public void setInternalEntityName(String entityName) {
-    // this.entityName = entityName;
-    // }
-
-    public String getInternalEntitySetName() {
-        return entitySetName;
-    }
-
-    // public void setInternalEntitySetName(String entitySetName) {
-    // this.entitySetName = entitySetName;
-    // }
-
+    /**
+     * 独自に追加した項目。
+     * 
+     * @return DBテーブル名。
+     */
     public String getDbTableName() {
         return dbTableName;
     }
@@ -97,6 +77,6 @@ public class OiyokanCsdlEntitySet extends CsdlEntitySet {
      * @return 要素型のFQN(完全修飾名).
      */
     public FullQualifiedName getInternalEntityNameFQN() {
-        return new FullQualifiedName(containerInfo.getInternalNamespace(), getInternalEntityName());
+        return new FullQualifiedName(csdlEntityContainer.getNamespace(), getInternalEntityName());
     }
 }

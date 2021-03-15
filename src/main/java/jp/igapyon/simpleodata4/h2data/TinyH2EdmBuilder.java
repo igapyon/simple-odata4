@@ -21,8 +21,7 @@ public class TinyH2EdmBuilder {
     private OiyokanCsdlEntitySet localEntityInfo = null;
 
     public TinyH2EdmBuilder(OiyokanCsdlEntitySet localEntityInfo) {
-        System.err.println(
-                "OData v4: App: " + SimpleOdata4App.VERSION + " - " + localEntityInfo.getInternalEntitySetName());
+        System.err.println("OData v4: App: " + SimpleOdata4App.VERSION + " - " + localEntityInfo.getName());
         this.localEntityInfo = localEntityInfo;
     }
 
