@@ -17,7 +17,7 @@ import org.apache.olingo.commons.api.edm.provider.CsdlSchema;
  * コードの多くは olingo のための基礎的な記述に該当.
  */
 public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
-    public static final SimpleContainerInfo localContainerInfo = new SimpleContainerInfo();
+    public static final OiyokanCsdlEntityContainer localContainerInfo = new OiyokanCsdlEntityContainer();
 
     private static SimpleEdmProvider provider = new SimpleEdmProvider();
 

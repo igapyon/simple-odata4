@@ -16,7 +16,7 @@ public class OiyokanCsdlEntitySet extends CsdlEntitySet {
         this.edmBuilder = edmBuilder;
     }
 
-    private SimpleContainerInfo containerInfo = null;
+    private OiyokanCsdlEntityContainer containerInfo = null;
 
     /**
      * 要素型名の複数形. さしあたりはリレーショナルデータベースのテーブル名に相当するものに「s」をつけたものと考えて差し支えない. URIにも影響がある.
@@ -45,7 +45,7 @@ public class OiyokanCsdlEntitySet extends CsdlEntitySet {
      * @param entityName    MyProduct 相当.
      * @param dbTableName   データベース上のテーブル名.
      */
-    public OiyokanCsdlEntitySet(SimpleContainerInfo containerInfo, String entitySetName, String entityName,
+    public OiyokanCsdlEntitySet(OiyokanCsdlEntityContainer containerInfo, String entitySetName, String entityName,
             String dbTableName) {
         this.containerInfo = containerInfo;
         this.entitySetName = entitySetName;
@@ -55,11 +55,11 @@ public class OiyokanCsdlEntitySet extends CsdlEntitySet {
         this.edmBuilder = new TinyH2EdmBuilder(this);
     }
 
-    public SimpleContainerInfo getInternalContainerInfo() {
+    public OiyokanCsdlEntityContainer getInternalContainerInfo() {
         return containerInfo;
     }
 
-    public void setInternalContainerInfo(SimpleContainerInfo containerInfo) {
+    public void setInternalContainerInfo(OiyokanCsdlEntityContainer containerInfo) {
         this.containerInfo = containerInfo;
     }
 
