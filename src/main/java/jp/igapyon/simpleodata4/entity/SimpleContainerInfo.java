@@ -19,12 +19,12 @@ public class SimpleContainerInfo {
      */
     private String containerName = "Container";
 
-    private List<SimpleEntityInfo> localEntityInfoList = new ArrayList<>();
+    private List<OiyokanCsdlEntitySet> localEntityInfoList = new ArrayList<>();
 
     private void ensureInit() {
         if (localEntityInfoList.size() == 0) {
-            localEntityInfoList.add(new SimpleEntityInfo(this, "MyProducts", "MyProduct", "MyProducts"));
-            localEntityInfoList.add(new SimpleEntityInfo(this, "ODataAppInfos", "ODataAppInfo", "ODataAppInfos"));
+            localEntityInfoList.add(new OiyokanCsdlEntitySet(this, "MyProducts", "MyProduct", "MyProducts"));
+            localEntityInfoList.add(new OiyokanCsdlEntitySet(this, "ODataAppInfos", "ODataAppInfo", "ODataAppInfos"));
         }
     }
 
@@ -51,9 +51,9 @@ public class SimpleContainerInfo {
     ///////////////////////////////
     /////////////////
 
-    public SimpleEntityInfo getLocalEntityInfoByEntityName(String entityName) {
+    public OiyokanCsdlEntitySet getLocalEntityInfoByEntityName(String entityName) {
         ensureInit();
-        for (SimpleEntityInfo look : localEntityInfoList) {
+        for (OiyokanCsdlEntitySet look : localEntityInfoList) {
             if (look.getInternalEntityName().equals(entityName)) {
                 return look;
             }
@@ -61,9 +61,9 @@ public class SimpleContainerInfo {
         return null;
     }
 
-    public SimpleEntityInfo getLocalEntityInfoByEntitySetName(String entitySetName) {
+    public OiyokanCsdlEntitySet getLocalEntityInfoByEntitySetName(String entitySetName) {
         ensureInit();
-        for (SimpleEntityInfo look : localEntityInfoList) {
+        for (OiyokanCsdlEntitySet look : localEntityInfoList) {
             if (look.getInternalEntitySetName().equals(entitySetName)) {
                 return look;
             }
@@ -71,9 +71,9 @@ public class SimpleContainerInfo {
         return null;
     }
 
-    public SimpleEntityInfo getLocalEntityInfoByEntityNameFQN(FullQualifiedName entityNameFQN) {
+    public OiyokanCsdlEntitySet getLocalEntityInfoByEntityNameFQN(FullQualifiedName entityNameFQN) {
         ensureInit();
-        for (SimpleEntityInfo look : localEntityInfoList) {
+        for (OiyokanCsdlEntitySet look : localEntityInfoList) {
             if (look.getInternalEntityNameFQN().equals(entityNameFQN)) {
                 return look;
             }
@@ -84,7 +84,7 @@ public class SimpleContainerInfo {
     ///////////////////////////////
     /////////////////
 
-    public List<SimpleEntityInfo> getLocalEntityInfoList() {
+    public List<OiyokanCsdlEntitySet> getLocalEntityInfoList() {
         return localEntityInfoList;
     }
 

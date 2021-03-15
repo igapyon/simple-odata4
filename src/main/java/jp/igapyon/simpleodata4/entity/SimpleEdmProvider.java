@@ -36,8 +36,8 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
      */
     @Override
     public CsdlEntityType getEntityType(FullQualifiedName entityTypeName) {
-        if (entityTypeName
-                .equals(localContainerInfo.getLocalEntityInfoByEntityNameFQN(entityTypeName).getInternalEntityNameFQN())) {
+        if (entityTypeName.equals(
+                localContainerInfo.getLocalEntityInfoByEntityNameFQN(entityTypeName).getInternalEntityNameFQN())) {
             // 処理対象の型名です。
             return localContainerInfo.getLocalEntityInfoByEntityNameFQN(entityTypeName).getEdmBuilder().getEntityType();
         }
@@ -64,9 +64,16 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
 
         // 要素セット名が一致する場合.
         // CSDL要素セットとして情報を組み上げ.
-        OiyokanCsdlEntitySet entitySet = new OiyokanCsdlEntitySet();
+
+        OiyokanCsdlEntitySet entitySet = null;
+        if (entitySetName.equals("MyProducts")) {
+            entitySet = new OiyokanCsdlEntitySet(localContainerInfo, "MyProducts", "MyProduct", "MyProducts");
+        } else if (entitySetName.equals("ODataAppInfos")) {
+            entitySet = new OiyokanCsdlEntitySet(localContainerInfo, "ODataAppInfos", "ODataAppInfo", "ODataAppInfos");
+        }
         entitySet.setName(entitySetName);
-        entitySet.setType(localContainerInfo.getLocalEntityInfoByEntitySetName(entitySetName).getInternalEntityNameFQN());
+        entitySet.setType(
+                localContainerInfo.getLocalEntityInfoByEntitySetName(entitySetName).getInternalEntityNameFQN());
 
         return entitySet;
 
@@ -83,9 +90,10 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
     public CsdlEntityContainer getEntityContainer() {
         // 要素セットを作成.
         List<CsdlEntitySet> entitySets = new ArrayList<>();
-        for (SimpleEntityInfo localEntryInfo : localContainerInfo.getLocalEntityInfoList()) {
+        for (OiyokanCsdlEntitySet localEntryInfo : localContainerInfo.getLocalEntityInfoList()) {
             // TODO 増殖か?
-            entitySets.add(getEntitySet(localContainerInfo.getContainerFQN(), localEntryInfo.getInternalEntitySetName()));
+            entitySets
+                    .add(getEntitySet(localContainerInfo.getContainerFQN(), localEntryInfo.getInternalEntitySetName()));
         }
 
         // 要素コンテナを作成.
@@ -109,7 +117,7 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
 
         // 要素型を設定.
         List<CsdlEntityType> entityTypes = new ArrayList<>();
-        for (SimpleEntityInfo localEntryInfo : localContainerInfo.getLocalEntityInfoList()) {
+        for (OiyokanCsdlEntitySet localEntryInfo : localContainerInfo.getLocalEntityInfoList()) {
             // TODO 増殖.
             entityTypes.add(getEntityType(localEntryInfo.getInternalEntityNameFQN()));
         }
