@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.olingo.commons.api.edm.FullQualifiedName;
 import org.apache.olingo.commons.api.edm.provider.CsdlEntityContainer;
+import org.apache.olingo.commons.api.edm.provider.CsdlEntitySet;
 
 public class OiyokanCsdlEntityContainer extends CsdlEntityContainer {
 
@@ -44,12 +45,13 @@ public class OiyokanCsdlEntityContainer extends CsdlEntityContainer {
     /////////////////
 
     public OiyokanCsdlEntitySet getLocalEntityInfoByEntityName(String entityName) {
-        ensureInit();
-        for (OiyokanCsdlEntitySet look : localEntityInfoList) {
+        for (CsdlEntitySet entitySet : this.getEntitySets()) {
+            OiyokanCsdlEntitySet look = (OiyokanCsdlEntitySet) entitySet;
             if (look.getInternalEntityName().equals(entityName)) {
                 return look;
             }
         }
+        
         return null;
     }
 
