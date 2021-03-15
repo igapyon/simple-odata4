@@ -39,9 +39,9 @@ public class OiyokanEdmProvider extends CsdlAbstractEdmProvider {
         localTemplateEntityContainer.ensureBuild();
 
         if (entityTypeName.equals(
-                localTemplateEntityContainer.getLocalEntityInfoByEntityNameFQN(entityTypeName).getEntityNameFqnIyo())) {
+                localTemplateEntityContainer.getEntitySetByEntityNameFqnIyo(entityTypeName).getEntityNameFqnIyo())) {
             // 処理対象の型名です。
-            return localTemplateEntityContainer.getLocalEntityInfoByEntityNameFQN(entityTypeName).getEdmBuilder().getEntityType();
+            return localTemplateEntityContainer.getEntitySetByEntityNameFqnIyo(entityTypeName).getEdmBuilder().getEntityType();
         }
 
         // 該当する型名の要素型はありません.
@@ -59,7 +59,7 @@ public class OiyokanEdmProvider extends CsdlAbstractEdmProvider {
     public CsdlEntitySet getEntitySet(FullQualifiedName entityContainer, String entitySetName) {
         localTemplateEntityContainer.ensureBuild();
 
-        if (!entityContainer.equals(localTemplateEntityContainer.getInternalContainerFQN())) {
+        if (!entityContainer.equals(localTemplateEntityContainer.getContainerFqnIyo())) {
             // 該当する型名の要素セットはありません.
             return null;
         }
@@ -89,7 +89,7 @@ public class OiyokanEdmProvider extends CsdlAbstractEdmProvider {
         for (CsdlEntitySet look : localTemplateEntityContainer.getEntitySets()) {
             OiyokanCsdlEntitySet look2 = (OiyokanCsdlEntitySet) look;
             // TODO 増殖か?
-            entitySets.add(getEntitySet(localTemplateEntityContainer.getInternalContainerFQN(), look2.getName()));
+            entitySets.add(getEntitySet(localTemplateEntityContainer.getContainerFqnIyo(), look2.getName()));
         }
 
         // 要素コンテナを作成.
@@ -147,9 +147,9 @@ public class OiyokanEdmProvider extends CsdlAbstractEdmProvider {
     public CsdlEntityContainerInfo getEntityContainerInfo(FullQualifiedName entityContainerName) {
         localTemplateEntityContainer.ensureBuild();
 
-        if (entityContainerName == null || entityContainerName.equals(localTemplateEntityContainer.getInternalContainerFQN())) {
+        if (entityContainerName == null || entityContainerName.equals(localTemplateEntityContainer.getContainerFqnIyo())) {
             CsdlEntityContainerInfo entityContainerInfo = new CsdlEntityContainerInfo();
-            entityContainerInfo.setContainerName(localTemplateEntityContainer.getInternalContainerFQN());
+            entityContainerInfo.setContainerName(localTemplateEntityContainer.getContainerFqnIyo());
             return entityContainerInfo;
         }
 

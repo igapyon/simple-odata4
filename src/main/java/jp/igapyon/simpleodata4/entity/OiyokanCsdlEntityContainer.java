@@ -74,7 +74,13 @@ public class OiyokanCsdlEntityContainer extends CsdlEntityContainer {
         return null;
     }
 
-    public OiyokanCsdlEntitySet getLocalEntityInfoByEntityNameFQN(FullQualifiedName entityNameFQN) {
+    /**
+     * エンティティ名FQNをもとに エンティティセットを取得.
+     * 
+     * @param entityNameFQN エンティティ名FQN.
+     * @return エンティティセット.
+     */
+    public OiyokanCsdlEntitySet getEntitySetByEntityNameFqnIyo(FullQualifiedName entityNameFQN) {
         ensureBuild();
         for (CsdlEntitySet look : getEntitySets()) {
             OiyokanCsdlEntitySet look2 = (OiyokanCsdlEntitySet) look;
@@ -85,15 +91,12 @@ public class OiyokanCsdlEntityContainer extends CsdlEntityContainer {
         return null;
     }
 
-    ///////////////////////////////
-    /////////////////
-
     /**
      * EDMコンテナ名のFQN(完全修飾名).
      * 
      * @return EDMコンテナ名のFQN(完全修飾名).
      */
-    public FullQualifiedName getInternalContainerFQN() {
+    public FullQualifiedName getContainerFqnIyo() {
         return new FullQualifiedName(getNamespaceIyo(), getContainerNameIyo());
     }
 }
