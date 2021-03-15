@@ -16,15 +16,15 @@ import org.apache.olingo.commons.api.edm.provider.CsdlSchema;
  * 
  * コードの多くは olingo のための基礎的な記述に該当.
  */
-public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
+public class OiyokanEdmProvider extends CsdlAbstractEdmProvider {
     public static final OiyokanCsdlEntityContainer localContainerInfo = new OiyokanCsdlEntityContainer();
 
-    private static SimpleEdmProvider provider = new SimpleEdmProvider();
+    private static OiyokanEdmProvider provider = new OiyokanEdmProvider();
 
-    private SimpleEdmProvider() {
+    private OiyokanEdmProvider() {
     }
 
-    public static SimpleEdmProvider getInstance() {
+    public static OiyokanEdmProvider getInstance() {
         return provider;
     }
 
@@ -92,8 +92,8 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
         List<CsdlEntitySet> entitySets = new ArrayList<>();
         for (OiyokanCsdlEntitySet localEntryInfo : localContainerInfo.getLocalEntityInfoList()) {
             // TODO 増殖か?
-            entitySets
-                    .add(getEntitySet(localContainerInfo.getInternalContainerFQN(), localEntryInfo.getInternalEntitySetName()));
+            entitySets.add(getEntitySet(localContainerInfo.getInternalContainerFQN(),
+                    localEntryInfo.getInternalEntitySetName()));
         }
 
         // 要素コンテナを作成.

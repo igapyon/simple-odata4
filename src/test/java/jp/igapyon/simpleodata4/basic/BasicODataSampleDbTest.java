@@ -17,7 +17,7 @@ import org.apache.olingo.server.api.ServiceMetadata;
 import org.junit.jupiter.api.Test;
 
 import jp.igapyon.simpleodata4.SimpleOdata4App;
-import jp.igapyon.simpleodata4.entity.SimpleEdmProvider;
+import jp.igapyon.simpleodata4.entity.OiyokanEdmProvider;
 import jp.igapyon.simpleodata4.entity.SimpleEntityCollectionProcessor;
 
 /**
@@ -114,7 +114,7 @@ class BasicODataSampleDbTest {
         final OData odata = OData.newInstance();
 
         // EdmProvider を登録.
-        final ServiceMetadata edm = odata.createServiceMetadata(SimpleEdmProvider.getInstance(), new ArrayList<>());
+        final ServiceMetadata edm = odata.createServiceMetadata(OiyokanEdmProvider.getInstance(), new ArrayList<>());
         final ODataHttpHandler handler = odata.createHandler(edm);
 
         // EntityCollectionProcessor を登録.

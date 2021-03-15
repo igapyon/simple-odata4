@@ -18,7 +18,7 @@ import org.apache.olingo.commons.api.edm.provider.CsdlEntitySet;
 import org.apache.olingo.commons.api.ex.ODataRuntimeException;
 import org.apache.olingo.server.api.uri.UriInfo;
 
-import jp.igapyon.simpleodata4.entity.SimpleEdmProvider;
+import jp.igapyon.simpleodata4.entity.OiyokanEdmProvider;
 import jp.igapyon.simpleodata4.h2data.sqlbuild.TinyH2SqlBuilder;
 
 /**
@@ -40,7 +40,7 @@ public class TinyH2EntityDataBuilder {
     public static EntityCollection buildData(EdmEntitySet edmEntitySet, UriInfo uriInfo) {
         final EntityCollection eCollection = new EntityCollection();
 
-        SimpleEdmProvider provider = SimpleEdmProvider.getInstance();
+        OiyokanEdmProvider provider = OiyokanEdmProvider.getInstance();
         if (!edmEntitySet.getEntityContainer().getName().equals(provider.getEntityContainer().getName())) {
             // Container 名が不一致. 処理せずに戻します.
             return eCollection;
