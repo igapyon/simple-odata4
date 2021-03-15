@@ -24,6 +24,7 @@ public class OiyokanCsdlEntityContainer extends CsdlEntityContainer {
         }
 
         if (getEntitySets().size() == 0) {
+            // EntitySet の初期セットを実施。
             getEntitySets().add(new OiyokanCsdlEntitySet(this, "MyProducts", "MyProduct", "MyProducts"));
             getEntitySets().add(new OiyokanCsdlEntitySet(this, "ODataAppInfos", "ODataAppInfo", "ODataAppInfos"));
         }
@@ -46,10 +47,10 @@ public class OiyokanCsdlEntityContainer extends CsdlEntityContainer {
     /////////////////
 
     public OiyokanCsdlEntitySet getLocalEntityInfoByEntityName(String entityName) {
-        for (CsdlEntitySet entitySet : this.getEntitySets()) {
-            OiyokanCsdlEntitySet look = (OiyokanCsdlEntitySet) entitySet;
-            if (look.getInternalEntityName().equals(entityName)) {
-                return look;
+        for (CsdlEntitySet look : this.getEntitySets()) {
+            OiyokanCsdlEntitySet look2 = (OiyokanCsdlEntitySet) look;
+            if (look2.getInternalEntityName().equals(entityName)) {
+                return look2;
             }
         }
 
