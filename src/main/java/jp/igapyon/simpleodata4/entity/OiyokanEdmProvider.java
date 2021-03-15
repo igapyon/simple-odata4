@@ -22,15 +22,6 @@ public class OiyokanEdmProvider extends CsdlAbstractEdmProvider {
      */
     private static final OiyokanCsdlEntityContainer localTemplateEntityContainer = new OiyokanCsdlEntityContainer();
 
-    private static OiyokanEdmProvider provider = new OiyokanEdmProvider();
-
-    private OiyokanEdmProvider() {
-    }
-
-    public static OiyokanEdmProvider getInstance() {
-        return provider;
-    }
-
     /**
      * 与えられた型名のEntityTypeを取得.
      * 

@@ -47,7 +47,7 @@ public class OiyokanOdata4Register {
             OData odata = OData.newInstance();
 
             // EdmProvider を登録.
-            ServiceMetadata edm = odata.createServiceMetadata(OiyokanEdmProvider.getInstance(), new ArrayList<>());
+            ServiceMetadata edm = odata.createServiceMetadata(new OiyokanEdmProvider(), new ArrayList<>());
             ODataHttpHandler handler = odata.createHandler(edm);
 
             // EntityCollectionProcessor を登録.

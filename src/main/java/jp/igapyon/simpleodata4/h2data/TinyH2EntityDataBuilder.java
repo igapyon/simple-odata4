@@ -40,7 +40,7 @@ public class TinyH2EntityDataBuilder {
     public static EntityCollection buildData(EdmEntitySet edmEntitySet, UriInfo uriInfo) {
         final EntityCollection eCollection = new EntityCollection();
 
-        OiyokanEdmProvider provider = OiyokanEdmProvider.getInstance();
+        OiyokanEdmProvider provider = new OiyokanEdmProvider();
         if (!edmEntitySet.getEntityContainer().getName().equals(provider.getEntityContainer().getName())) {
             // Container 名が不一致. 処理せずに戻します.
             return eCollection;
