@@ -45,7 +45,7 @@ public class OiyokanCsdlEntitySet extends CsdlEntitySet {
         this.dbTableName = dbTableName;
 
         this.setName(entitySetName);
-        this.setType(new FullQualifiedName(containerInfo.getNamespace(), entityName));
+        this.setType(new FullQualifiedName(containerInfo.getNamespaceIyo(), entityName));
 
         this.edmBuilder = new TinyH2EdmBuilder(this);
     }
@@ -77,6 +77,6 @@ public class OiyokanCsdlEntitySet extends CsdlEntitySet {
      * @return 要素型のFQN(完全修飾名).
      */
     public FullQualifiedName getInternalEntityNameFQN() {
-        return new FullQualifiedName(csdlEntityContainer.getNamespace(), getInternalEntityName());
+        return new FullQualifiedName(csdlEntityContainer.getNamespaceIyo(), getInternalEntityName());
     }
 }

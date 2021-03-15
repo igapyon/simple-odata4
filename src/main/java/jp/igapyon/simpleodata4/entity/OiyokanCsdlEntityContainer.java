@@ -6,19 +6,25 @@ import org.apache.olingo.commons.api.edm.FullQualifiedName;
 import org.apache.olingo.commons.api.edm.provider.CsdlEntityContainer;
 import org.apache.olingo.commons.api.edm.provider.CsdlEntitySet;
 
+/**
+ * CsdlEntityContainer の Iyokan 拡張
+ */
 public class OiyokanCsdlEntityContainer extends CsdlEntityContainer {
-
     /**
-     * ネームスペース名.
+     * ネームスペース名. CsdlEntityContainer の上位の概念をここで記述。
      */
     private String namespace = "Igapyon.Simple";
 
     /**
-     * EDMコンテナ名.
+     * コンテナ名. CsdlEntityContainer の名前そのもの.
      */
     private String containerName = "Container";
 
-    public void ensureOpen() {
+    
+    /**
+     * このコンテナをビルド。確実なビルドのため何度も呼び出し可。
+     */
+    public void ensureBuild() {
         if (getEntitySets() == null) {
             setEntitySets(new ArrayList<CsdlEntitySet>());
         }
@@ -31,15 +37,20 @@ public class OiyokanCsdlEntityContainer extends CsdlEntityContainer {
     }
 
     /**
-     * 名前空間を取得します。これが存在するととても便利なため、これを追加。
+     * 名前空間を取得します。これが存在すると便利なため、これを追加。
      * 
      * @return 名前空間名.
      */
-    public String getNamespace() {
+    public String getNamespaceIyo() {
         return namespace;
     }
 
-    public String getInternalContainerName() {
+    /**
+     * コンテナ名を取得。これが存在すると便利なため、これを追加。
+     * 
+     * @return コンテナ名.
+     */
+    public String getContainerNameIyo() {
         return containerName;
     }
 
@@ -58,7 +69,7 @@ public class OiyokanCsdlEntityContainer extends CsdlEntityContainer {
     }
 
     public OiyokanCsdlEntitySet getLocalEntityInfoByEntityNameFQN(FullQualifiedName entityNameFQN) {
-        ensureOpen();
+        ensureBuild();
         for (CsdlEntitySet look : getEntitySets()) {
             OiyokanCsdlEntitySet look2 = (OiyokanCsdlEntitySet) look;
             if (look2.getInternalEntityNameFQN().equals(entityNameFQN)) {
@@ -77,6 +88,6 @@ public class OiyokanCsdlEntityContainer extends CsdlEntityContainer {
      * @return EDMコンテナ名のFQN(完全修飾名).
      */
     public FullQualifiedName getInternalContainerFQN() {
-        return new FullQualifiedName(getNamespace(), getInternalContainerName());
+        return new FullQualifiedName(getNamespaceIyo(), getContainerNameIyo());
     }
 }
