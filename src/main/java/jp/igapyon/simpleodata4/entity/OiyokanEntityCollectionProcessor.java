@@ -24,7 +24,7 @@ import org.apache.olingo.server.api.uri.UriResource;
 import org.apache.olingo.server.api.uri.UriResourceEntitySet;
 import org.apache.olingo.server.core.uri.queryoption.CountOptionImpl;
 
-import jp.igapyon.simpleodata4.h2data.TinyH2EntityDataBuilder;
+import jp.igapyon.simpleodata4.h2data.TinyH2EntityCollectionBuilder;
 
 /**
  * OData 要素コレクションを処理するクラス.
@@ -79,7 +79,7 @@ public class OiyokanEntityCollectionProcessor implements EntityCollectionProcess
         // 要素セットの指定をもとに要素コレクションを取得.
         // これがデータ本体に該当.
         // ここでは h2 database のデータ構築実装を呼び出している.
-        final EntityCollection eCollection = TinyH2EntityDataBuilder.buildData(edmEntitySet, uriInfo);
+        final EntityCollection eCollection = TinyH2EntityCollectionBuilder.build(edmEntitySet, uriInfo);
 
         // 指定のレスポンスフォーマットに合致する直列化を準備.
         ODataSerializer serializer = odata.createSerializer(responseFormat);
