@@ -39,7 +39,7 @@ public class TinyH2EdmBuilder {
         final List<CsdlProperty> propertyList = new ArrayList<>();
         // SELECT * について、この箇所のみ記述を許容したい。
         try (PreparedStatement stmt = conn
-                .prepareStatement("SELECT * FROM " + localEntityInfo.getInternalDbTableName())) {
+                .prepareStatement("SELECT * FROM " + localEntityInfo.getDbTableName())) {
             ResultSetMetaData rsmeta = stmt.getMetaData();
             final int columnCount = rsmeta.getColumnCount();
             for (int column = 1; column <= columnCount; column++) {

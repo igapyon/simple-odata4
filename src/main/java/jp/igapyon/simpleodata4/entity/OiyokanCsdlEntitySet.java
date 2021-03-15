@@ -72,24 +72,20 @@ public class OiyokanCsdlEntitySet extends CsdlEntitySet {
         return entityName;
     }
 
-    public void setInternalEntityName(String entityName) {
-        this.entityName = entityName;
-    }
+  //  public void setInternalEntityName(String entityName) {
+    //    this.entityName = entityName;
+   // }
 
     public String getInternalEntitySetName() {
         return entitySetName;
     }
 
-    public void setInternalEntitySetName(String entitySetName) {
-        this.entitySetName = entitySetName;
-    }
+//    public void setInternalEntitySetName(String entitySetName) {
+  //      this.entitySetName = entitySetName;
+   // }
 
-    public String getInternalDbTableName() {
+    public String getDbTableName() {
         return dbTableName;
-    }
-
-    public void setInternalDbTableName(String dbTableName) {
-        this.dbTableName = dbTableName;
     }
 
     //////////////////////////////////
