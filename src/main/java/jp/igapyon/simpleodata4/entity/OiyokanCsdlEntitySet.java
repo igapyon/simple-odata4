@@ -5,17 +5,10 @@ import org.apache.olingo.commons.api.edm.provider.CsdlEntitySet;
 
 import jp.igapyon.simpleodata4.h2data.TinyH2EdmBuilder;
 
+/**
+ * CsdlEntitySet の Iyokan 拡張
+ */
 public class OiyokanCsdlEntitySet extends CsdlEntitySet {
-    private TinyH2EdmBuilder edmBuilder = null;
-
-    public TinyH2EdmBuilder getEdmBuilder() {
-        return edmBuilder;
-    }
-
-    public void setEdmBuilder(TinyH2EdmBuilder edmBuilder) {
-        this.edmBuilder = edmBuilder;
-    }
-
     private OiyokanCsdlEntityContainer csdlEntityContainer = null;
 
     /**
@@ -29,6 +22,8 @@ public class OiyokanCsdlEntitySet extends CsdlEntitySet {
      * データベース上のテーブル名.
      */
     private String dbTableName = null;
+
+    private TinyH2EdmBuilder edmBuilder = null;
 
     /**
      * エンティティ情報.
@@ -45,7 +40,7 @@ public class OiyokanCsdlEntitySet extends CsdlEntitySet {
         this.dbTableName = dbTableName;
 
         this.setName(entitySetName);
-        this.setType(new FullQualifiedName(containerInfo.getNamespace(), entityName));
+        this.setType(new FullQualifiedName(containerInfo.getNamespaceIyo(), entityName));
 
         this.edmBuilder = new TinyH2EdmBuilder(this);
     }
@@ -55,8 +50,17 @@ public class OiyokanCsdlEntitySet extends CsdlEntitySet {
      * 
      * @return エンティティ名. MyProduct 相当.
      */
-    public String getInternalEntityName() {
+    public String getEntityNameIyo() {
         return entityName;
+    }
+
+    /**
+     * エンティティのFQNを取得.
+     * 
+     * @return エンティティのFQN(完全修飾名).
+     */
+    public FullQualifiedName getEntityNameFqnIyo() {
+        return new FullQualifiedName(csdlEntityContainer.getNamespaceIyo(), getEntityNameIyo());
     }
 
     /**
@@ -64,19 +68,13 @@ public class OiyokanCsdlEntitySet extends CsdlEntitySet {
      * 
      * @return DBテーブル名。
      */
-    public String getDbTableName() {
+    public String getDbTableNameIyo() {
         return dbTableName;
     }
 
     //////////////////////////////////
-    //
 
-    /**
-     * 要素型のFQN(完全修飾名).
-     * 
-     * @return 要素型のFQN(完全修飾名).
-     */
-    public FullQualifiedName getInternalEntityNameFQN() {
-        return new FullQualifiedName(csdlEntityContainer.getNamespace(), getInternalEntityName());
+    public TinyH2EdmBuilder getEdmBuilder() {
+        return edmBuilder;
     }
 }

@@ -114,7 +114,7 @@ class BasicODataSampleDbTest {
         final OData odata = OData.newInstance();
 
         // EdmProvider を登録.
-        final ServiceMetadata edm = odata.createServiceMetadata(OiyokanEdmProvider.getInstance(), new ArrayList<>());
+        final ServiceMetadata edm = odata.createServiceMetadata(new OiyokanEdmProvider(), new ArrayList<>());
         final ODataHttpHandler handler = odata.createHandler(edm);
 
         // EntityCollectionProcessor を登録.
