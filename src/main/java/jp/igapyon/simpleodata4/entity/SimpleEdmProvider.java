@@ -89,7 +89,7 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
         }
 
         // 要素コンテナを作成.
-        CsdlEntityContainer entityContainer = new CsdlEntityContainer();
+        OiyokanCsdlEntityContainer entityContainer = new OiyokanCsdlEntityContainer();
         entityContainer.setName(localContainerInfo.getContainerName());
         entityContainer.setEntitySets(entitySets);
 
