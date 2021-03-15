@@ -39,7 +39,7 @@ public class OiyokanEdmProvider extends CsdlAbstractEdmProvider {
         localTemplateEntityContainer.ensureBuild();
 
         if (entityTypeName.equals(
-                localTemplateEntityContainer.getLocalEntityInfoByEntityNameFQN(entityTypeName).getInternalEntityNameFQN())) {
+                localTemplateEntityContainer.getLocalEntityInfoByEntityNameFQN(entityTypeName).getEntityNameFqnIyo())) {
             // 処理対象の型名です。
             return localTemplateEntityContainer.getLocalEntityInfoByEntityNameFQN(entityTypeName).getEdmBuilder().getEntityType();
         }
@@ -120,7 +120,7 @@ public class OiyokanEdmProvider extends CsdlAbstractEdmProvider {
         for (CsdlEntitySet localEntryInfo : localTemplateEntityContainer.getEntitySets()) {
             OiyokanCsdlEntitySet local2 = (OiyokanCsdlEntitySet) localEntryInfo;
             // TODO 増殖.
-            look.add(getEntityType(local2.getInternalEntityNameFQN()));
+            look.add(getEntityType(local2.getEntityNameFqnIyo()));
         }
 
         schema.setEntityTypes(look);

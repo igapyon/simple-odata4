@@ -55,7 +55,7 @@ public class OiyokanCsdlEntitySet extends CsdlEntitySet {
      * 
      * @return エンティティ名. MyProduct 相当.
      */
-    public String getInternalEntityName() {
+    public String getEntityNameIyo() {
         return entityName;
     }
 
@@ -64,19 +64,16 @@ public class OiyokanCsdlEntitySet extends CsdlEntitySet {
      * 
      * @return DBテーブル名。
      */
-    public String getDbTableName() {
+    public String getDbTableNameIyo() {
         return dbTableName;
     }
 
-    //////////////////////////////////
-    //
-
     /**
-     * 要素型のFQN(完全修飾名).
+     * エンティティのFQNを取得.
      * 
-     * @return 要素型のFQN(完全修飾名).
+     * @return エンティティのFQN(完全修飾名).
      */
-    public FullQualifiedName getInternalEntityNameFQN() {
-        return new FullQualifiedName(csdlEntityContainer.getNamespaceIyo(), getInternalEntityName());
+    public FullQualifiedName getEntityNameFqnIyo() {
+        return new FullQualifiedName(csdlEntityContainer.getNamespaceIyo(), getEntityNameIyo());
     }
 }

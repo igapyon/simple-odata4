@@ -57,10 +57,16 @@ public class OiyokanCsdlEntityContainer extends CsdlEntityContainer {
     ///////////////////////////////
     /////////////////
 
-    public OiyokanCsdlEntitySet getLocalEntityInfoByEntityName(String entityName) {
+    /**
+     * エンティティ名からエンティティセットを取得。
+     * 
+     * @param entitySetName エンティティ名.
+     * @return エンティティセット.
+     */
+    public OiyokanCsdlEntitySet getEntitySetByEntityNameIyo(String entitySetName) {
         for (CsdlEntitySet look : this.getEntitySets()) {
             OiyokanCsdlEntitySet look2 = (OiyokanCsdlEntitySet) look;
-            if (look2.getInternalEntityName().equals(entityName)) {
+            if (look2.getEntityNameIyo().equals(entitySetName)) {
                 return look2;
             }
         }
@@ -72,7 +78,7 @@ public class OiyokanCsdlEntityContainer extends CsdlEntityContainer {
         ensureBuild();
         for (CsdlEntitySet look : getEntitySets()) {
             OiyokanCsdlEntitySet look2 = (OiyokanCsdlEntitySet) look;
-            if (look2.getInternalEntityNameFQN().equals(entityNameFQN)) {
+            if (look2.getEntityNameFqnIyo().equals(entityNameFQN)) {
                 return look2;
             }
         }
