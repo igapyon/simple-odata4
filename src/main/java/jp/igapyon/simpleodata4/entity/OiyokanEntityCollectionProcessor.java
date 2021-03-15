@@ -31,7 +31,7 @@ import jp.igapyon.simpleodata4.h2data.TinyH2EntityDataBuilder;
  * 
  * コードの多くは olingo のための基礎的な記述に該当.
  */
-public class SimpleEntityCollectionProcessor implements EntityCollectionProcessor {
+public class OiyokanEntityCollectionProcessor implements EntityCollectionProcessor {
     /**
      * OData.
      */

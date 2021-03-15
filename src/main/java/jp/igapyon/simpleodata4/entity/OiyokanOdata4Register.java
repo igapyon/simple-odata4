@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
  * EdmProvider と EntityCollectionProcessor を OData に結びつけてパスに登録.
  */
 @RestController
-public class SimpleOdata4Register {
+public class OiyokanOdata4Register {
     /**
      * OData v4 server を Spring Boot の Servlet として動作させるエントリポイント.
      * 
@@ -47,11 +47,11 @@ public class SimpleOdata4Register {
             OData odata = OData.newInstance();
 
             // EdmProvider を登録.
-            ServiceMetadata edm = odata.createServiceMetadata(SimpleEdmProvider.getInstance(), new ArrayList<>());
+            ServiceMetadata edm = odata.createServiceMetadata(OiyokanEdmProvider.getInstance(), new ArrayList<>());
             ODataHttpHandler handler = odata.createHandler(edm);
 
             // EntityCollectionProcessor を登録.
-            handler.register(new SimpleEntityCollectionProcessor());
+            handler.register(new OiyokanEntityCollectionProcessor());
 
             // Spring と Servlet の挙動を調整.
             handler.process(new HttpServletRequestWrapper(req) {

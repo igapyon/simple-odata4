@@ -18,7 +18,7 @@ class UriInfoTest {
     @Test
     void test01() throws Exception {
         OData odata = OData.newInstance();
-        ServiceMetadata edm = odata.createServiceMetadata(SimpleEdmProvider.getInstance(), new ArrayList<>());
+        ServiceMetadata edm = odata.createServiceMetadata(OiyokanEdmProvider.getInstance(), new ArrayList<>());
 
         final Parser parser = new Parser(edm.getEdm(), odata);
         final UriInfo uriInfo = parser.parseUri("/MyProducts", "$filter=ID eq 1.0", "",
@@ -31,7 +31,7 @@ class UriInfoTest {
     @Test
     void test02() throws Exception {
         OData odata = OData.newInstance();
-        ServiceMetadata edm = odata.createServiceMetadata(SimpleEdmProvider.getInstance(), new ArrayList<>());
+        ServiceMetadata edm = odata.createServiceMetadata(OiyokanEdmProvider.getInstance(), new ArrayList<>());
 
         final Parser parser = new Parser(edm.getEdm(), odata);
         final UriInfo uriInfo = parser.parseUri("/MyProducts", "$filter=Description eq 'Mac' and ID eq 2.0", "",
@@ -44,7 +44,7 @@ class UriInfoTest {
     @Test
     void test03() throws Exception {
         OData odata = OData.newInstance();
-        ServiceMetadata edm = odata.createServiceMetadata(SimpleEdmProvider.getInstance(), new ArrayList<>());
+        ServiceMetadata edm = odata.createServiceMetadata(OiyokanEdmProvider.getInstance(), new ArrayList<>());
 
         final Parser parser = new Parser(edm.getEdm(), odata);
         final UriInfo uriInfo = parser.parseUri("/MyProducts",
