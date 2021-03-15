@@ -113,7 +113,8 @@ public class TinyH2DbSample {
             throw new IllegalArgumentException("検索失敗:" + ex.toString(), ex);
         }
 
-        // System.err.println("TRACE: 作業用サンプルデータを作成");
+        System.err.println( //
+                "OData v4: build sample data: " + " (Oiyokan: " + SimpleOdata4App.VERSION + ")");
 
         // 全文検索関連の準備.
         try {

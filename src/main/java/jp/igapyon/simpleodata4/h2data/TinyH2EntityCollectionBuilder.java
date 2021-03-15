@@ -26,8 +26,8 @@ import jp.igapyon.simpleodata4.h2data.sqlbuild.TinyH2SqlBuilder;
  * 
  * EDM要素セットを入力に実際のデータを組み上げ.
  */
-public class TinyH2EntityDataBuilder {
-    private TinyH2EntityDataBuilder() {
+public class TinyH2EntityCollectionBuilder {
+    private TinyH2EntityCollectionBuilder() {
     }
 
     /**
@@ -37,7 +37,7 @@ public class TinyH2EntityDataBuilder {
      * @param uriInfo      SQL構築のデータ構造.
      * @return 要素コレクション.
      */
-    public static EntityCollection buildData(EdmEntitySet edmEntitySet, UriInfo uriInfo) {
+    public static EntityCollection build(EdmEntitySet edmEntitySet, UriInfo uriInfo) {
         final EntityCollection eCollection = new EntityCollection();
 
         OiyokanEdmProvider provider = new OiyokanEdmProvider();

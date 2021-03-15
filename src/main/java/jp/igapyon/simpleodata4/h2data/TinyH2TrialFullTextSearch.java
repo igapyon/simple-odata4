@@ -13,6 +13,9 @@ import org.apache.olingo.commons.api.edm.EdmEntitySet;
 import org.apache.olingo.server.api.uri.UriInfo;
 import org.apache.olingo.server.core.uri.queryoption.SearchOptionImpl;
 
+/**
+ * 全文検索の実験的な実装。
+ */
 public class TinyH2TrialFullTextSearch {
     public void process(Connection conn, EdmEntitySet edmEntitySet, UriInfo uriInfo, EntityCollection eCollection) {
         try {
