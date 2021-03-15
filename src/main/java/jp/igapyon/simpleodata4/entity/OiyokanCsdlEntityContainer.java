@@ -55,16 +55,6 @@ public class OiyokanCsdlEntityContainer extends CsdlEntityContainer {
         return null;
     }
 
-    public OiyokanCsdlEntitySet getLocalEntityInfoByEntitySetName(String entitySetName) {
-        ensureInit();
-        for (OiyokanCsdlEntitySet look : localEntityInfoList) {
-            if (look.getName().equals(entitySetName)) {
-                return look;
-            }
-        }
-        return null;
-    }
-
     public OiyokanCsdlEntitySet getLocalEntityInfoByEntityNameFQN(FullQualifiedName entityNameFQN) {
         ensureInit();
         for (OiyokanCsdlEntitySet look : localEntityInfoList) {

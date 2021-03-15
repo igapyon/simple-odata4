@@ -72,8 +72,7 @@ public class OiyokanEdmProvider extends CsdlAbstractEdmProvider {
             entitySet = new OiyokanCsdlEntitySet(localContainerInfo, "ODataAppInfos", "ODataAppInfo", "ODataAppInfos");
         }
         entitySet.setName(entitySetName);
-        entitySet.setType(
-                localContainerInfo.getLocalEntityInfoByEntitySetName(entitySetName).getInternalEntityNameFQN());
+        entitySet.setType(new FullQualifiedName(localContainerInfo.getNamespace(), entitySet.getInternalEntityName()));
 
         return entitySet;
 
@@ -92,8 +91,7 @@ public class OiyokanEdmProvider extends CsdlAbstractEdmProvider {
         List<CsdlEntitySet> entitySets = new ArrayList<>();
         for (OiyokanCsdlEntitySet localEntryInfo : localContainerInfo.getLocalEntityInfoList()) {
             // TODO 増殖か?
-            entitySets.add(getEntitySet(localContainerInfo.getInternalContainerFQN(),
-                    localEntryInfo.getName()));
+            entitySets.add(getEntitySet(localContainerInfo.getInternalContainerFQN(), localEntryInfo.getName()));
         }
 
         // 要素コンテナを作成.
