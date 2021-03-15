@@ -47,7 +47,6 @@ public class OiyokanCsdlEntitySet extends CsdlEntitySet {
         this.setName(entitySetName);
         this.setType(new FullQualifiedName(containerInfo.getNamespace(), entityName));
 
-        
         this.edmBuilder = new TinyH2EdmBuilder(this);
     }
 
