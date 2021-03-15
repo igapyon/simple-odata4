@@ -27,20 +27,17 @@ public class OiyokanCsdlEntityContainer extends CsdlEntityContainer {
         }
     }
 
-    public String getInternalNamespace() {
+    /**
+     * 名前空間を取得します。これが存在するととても便利なため、これを追加。
+     * 
+     * @return 名前空間名.
+     */
+    public String getNamespace() {
         return namespace;
-    }
-
-    public void setInternalNamespace(String namespace) {
-        this.namespace = namespace;
     }
 
     public String getInternalContainerName() {
         return containerName;
-    }
-
-    public void setInternalContainerName(String containerName) {
-        this.containerName = containerName;
     }
 
     ///////////////////////////////
@@ -90,6 +87,6 @@ public class OiyokanCsdlEntityContainer extends CsdlEntityContainer {
      * @return EDMコンテナ名のFQN(完全修飾名).
      */
     public FullQualifiedName getInternalContainerFQN() {
-        return new FullQualifiedName(getInternalNamespace(), getInternalContainerName());
+        return new FullQualifiedName(getNamespace(), getInternalContainerName());
     }
 }

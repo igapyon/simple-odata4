@@ -113,7 +113,7 @@ public class OiyokanEdmProvider extends CsdlAbstractEdmProvider {
     public List<CsdlSchema> getSchemas() {
         // CSDLスキーマを作成.
         CsdlSchema schema = new CsdlSchema();
-        schema.setNamespace(localContainerInfo.getInternalNamespace());
+        schema.setNamespace(localContainerInfo.getNamespace());
 
         // 要素型を設定.
         List<CsdlEntityType> entityTypes = new ArrayList<>();
