@@ -3,12 +3,15 @@ package jp.igapyon.simpleodata4.entity;
 import org.apache.olingo.commons.api.edm.FullQualifiedName;
 import org.apache.olingo.commons.api.edm.provider.CsdlEntitySet;
 
-import jp.igapyon.simpleodata4.h2data.TinyH2EdmBuilder;
+import jp.igapyon.simpleodata4.h2data.TinyH2EntityTypeBuilder;
 
 /**
  * CsdlEntitySet の Iyokan 拡張
  */
 public class OiyokanCsdlEntitySet extends CsdlEntitySet {
+    /**
+     * コンテナに関する情報を記憶.
+     */
     private OiyokanCsdlEntityContainer csdlEntityContainer = null;
 
     /**
@@ -23,7 +26,7 @@ public class OiyokanCsdlEntitySet extends CsdlEntitySet {
      */
     private String dbTableName = null;
 
-    private TinyH2EdmBuilder edmBuilder = null;
+    private TinyH2EntityTypeBuilder edmBuilder = null;
 
     /**
      * エンティティ情報.
@@ -42,7 +45,7 @@ public class OiyokanCsdlEntitySet extends CsdlEntitySet {
         this.setName(entitySetName);
         this.setType(new FullQualifiedName(containerInfo.getNamespaceIyo(), entityName));
 
-        this.edmBuilder = new TinyH2EdmBuilder(this);
+        this.edmBuilder = new TinyH2EntityTypeBuilder(this);
     }
 
     /**
@@ -74,7 +77,7 @@ public class OiyokanCsdlEntitySet extends CsdlEntitySet {
 
     //////////////////////////////////
 
-    public TinyH2EdmBuilder getEdmBuilder() {
+    public TinyH2EntityTypeBuilder getEdmBuilder() {
         return edmBuilder;
     }
 }

@@ -17,14 +17,22 @@ import org.apache.olingo.commons.api.edm.provider.CsdlPropertyRef;
 import jp.igapyon.simpleodata4.SimpleOdata4App;
 import jp.igapyon.simpleodata4.entity.OiyokanCsdlEntitySet;
 
-public class TinyH2EdmBuilder {
-    private OiyokanCsdlEntitySet localEntityInfo = null;
+/**
+ * EntityTypeをビルド.
+ */
+public class TinyH2EntityTypeBuilder {
+    private OiyokanCsdlEntitySet entitySet = null;
 
-    public TinyH2EdmBuilder(OiyokanCsdlEntitySet localEntityInfo) {
-        System.err.println("OData v4: App: " + SimpleOdata4App.VERSION + " - " + localEntityInfo.getName());
-        this.localEntityInfo = localEntityInfo;
+    public TinyH2EntityTypeBuilder(OiyokanCsdlEntitySet entitySet) {
+        this.entitySet = entitySet;
+        System.err.println("OData v4: EntityType: " + SimpleOdata4App.VERSION + " - " + entitySet.getName());
     }
 
+    /**
+     * エンティティタイプを取得.
+     *
+     * @return エンティティタイプ.
+     */
     public CsdlEntityType getEntityType() {
         // この一覧を可変に対応できるようにしたい。
 
@@ -37,7 +45,7 @@ public class TinyH2EdmBuilder {
         // バッファ的な h2 データベースから該当情報を取得.
         final List<CsdlProperty> propertyList = new ArrayList<>();
         // SELECT * について、この箇所のみ記述を許容したい。
-        try (PreparedStatement stmt = conn.prepareStatement("SELECT * FROM " + localEntityInfo.getDbTableNameIyo())) {
+        try (PreparedStatement stmt = conn.prepareStatement("SELECT * FROM " + entitySet.getDbTableNameIyo())) {
             ResultSetMetaData rsmeta = stmt.getMetaData();
             final int columnCount = rsmeta.getColumnCount();
             for (int column = 1; column <= columnCount; column++) {
@@ -121,7 +129,7 @@ public class TinyH2EdmBuilder {
 
         // CSDL要素型として情報を組み上げ.
         CsdlEntityType entityType = new CsdlEntityType();
-        entityType.setName(localEntityInfo.getEntityNameIyo());
+        entityType.setName(entitySet.getEntityNameIyo());
         entityType.setProperties(propertyList);
         entityType.setKey(Collections.singletonList(propertyRef));
 
