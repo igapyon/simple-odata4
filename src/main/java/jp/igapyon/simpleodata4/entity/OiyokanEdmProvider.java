@@ -41,7 +41,8 @@ public class OiyokanEdmProvider extends CsdlAbstractEdmProvider {
         if (entityTypeName.equals(
                 localTemplateEntityContainer.getEntitySetByEntityNameFqnIyo(entityTypeName).getEntityNameFqnIyo())) {
             // 処理対象の型名です。
-            return localTemplateEntityContainer.getEntitySetByEntityNameFqnIyo(entityTypeName).getEdmBuilder().getEntityType();
+            return localTemplateEntityContainer.getEntitySetByEntityNameFqnIyo(entityTypeName).getEdmBuilder()
+                    .getEntityType();
         }
 
         // 該当する型名の要素型はありません.
@@ -147,7 +148,8 @@ public class OiyokanEdmProvider extends CsdlAbstractEdmProvider {
     public CsdlEntityContainerInfo getEntityContainerInfo(FullQualifiedName entityContainerName) {
         localTemplateEntityContainer.ensureBuild();
 
-        if (entityContainerName == null || entityContainerName.equals(localTemplateEntityContainer.getContainerFqnIyo())) {
+        if (entityContainerName == null
+                || entityContainerName.equals(localTemplateEntityContainer.getContainerFqnIyo())) {
             CsdlEntityContainerInfo entityContainerInfo = new CsdlEntityContainerInfo();
             entityContainerInfo.setContainerName(localTemplateEntityContainer.getContainerFqnIyo());
             return entityContainerInfo;

@@ -20,9 +20,10 @@ public class OiyokanCsdlEntityContainer extends CsdlEntityContainer {
      */
     private String containerName = "Container";
 
-    
     /**
-     * このコンテナをビルド。確実なビルドのため何度も呼び出し可。
+     * このコンテナをビルドし、紐づくエンティティセットをここで生成. このクラスの利用者は、機能呼び出し前にこのメソッドを呼ぶこと.
+     * 
+     * 確実なビルドのため何度も呼び出し可。この機能がこのクラスの主要目的。
      */
     public void ensureBuild() {
         if (getEntitySets() == null) {
@@ -54,8 +55,14 @@ public class OiyokanCsdlEntityContainer extends CsdlEntityContainer {
         return containerName;
     }
 
-    ///////////////////////////////
-    /////////////////
+    /**
+     * EDMコンテナ名のFQN(完全修飾名).
+     * 
+     * @return EDMコンテナ名のFQN(完全修飾名).
+     */
+    public FullQualifiedName getContainerFqnIyo() {
+        return new FullQualifiedName(getNamespaceIyo(), getContainerNameIyo());
+    }
 
     /**
      * エンティティ名からエンティティセットを取得。
@@ -81,7 +88,6 @@ public class OiyokanCsdlEntityContainer extends CsdlEntityContainer {
      * @return エンティティセット.
      */
     public OiyokanCsdlEntitySet getEntitySetByEntityNameFqnIyo(FullQualifiedName entityNameFQN) {
-        ensureBuild();
         for (CsdlEntitySet look : getEntitySets()) {
             OiyokanCsdlEntitySet look2 = (OiyokanCsdlEntitySet) look;
             if (look2.getEntityNameFqnIyo().equals(entityNameFQN)) {
@@ -89,14 +95,5 @@ public class OiyokanCsdlEntityContainer extends CsdlEntityContainer {
             }
         }
         return null;
-    }
-
-    /**
-     * EDMコンテナ名のFQN(完全修飾名).
-     * 
-     * @return EDMコンテナ名のFQN(完全修飾名).
-     */
-    public FullQualifiedName getContainerFqnIyo() {
-        return new FullQualifiedName(getNamespaceIyo(), getContainerNameIyo());
     }
 }
