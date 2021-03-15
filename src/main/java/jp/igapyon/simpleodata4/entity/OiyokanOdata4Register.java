@@ -51,7 +51,7 @@ public class OiyokanOdata4Register {
             ODataHttpHandler handler = odata.createHandler(edm);
 
             // EntityCollectionProcessor を登録.
-            handler.register(new SimpleEntityCollectionProcessor());
+            handler.register(new OiyokanEntityCollectionProcessor());
 
             // Spring と Servlet の挙動を調整.
             handler.process(new HttpServletRequestWrapper(req) {
