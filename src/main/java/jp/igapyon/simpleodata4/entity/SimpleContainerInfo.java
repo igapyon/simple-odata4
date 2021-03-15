@@ -54,7 +54,7 @@ public class SimpleContainerInfo {
     public SimpleEntityInfo getLocalEntityInfoByEntityName(String entityName) {
         ensureInit();
         for (SimpleEntityInfo look : localEntityInfoList) {
-            if (look.getEntityName().equals(entityName)) {
+            if (look.getInternalEntityName().equals(entityName)) {
                 return look;
             }
         }
@@ -64,7 +64,7 @@ public class SimpleContainerInfo {
     public SimpleEntityInfo getLocalEntityInfoByEntitySetName(String entitySetName) {
         ensureInit();
         for (SimpleEntityInfo look : localEntityInfoList) {
-            if (look.getEntitySetName().equals(entitySetName)) {
+            if (look.getInternalEntitySetName().equals(entitySetName)) {
                 return look;
             }
         }
@@ -74,7 +74,7 @@ public class SimpleContainerInfo {
     public SimpleEntityInfo getLocalEntityInfoByEntityNameFQN(FullQualifiedName entityNameFQN) {
         ensureInit();
         for (SimpleEntityInfo look : localEntityInfoList) {
-            if (look.getEntityNameFQN().equals(entityNameFQN)) {
+            if (look.getInternalEntityNameFQN().equals(entityNameFQN)) {
                 return look;
             }
         }

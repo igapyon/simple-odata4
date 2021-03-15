@@ -31,9 +31,6 @@ public class SimpleEntityInfo {
 
     private TinyH2EdmBuilder edmBuilder = null;
 
-    private SimpleEntityInfo() {
-    }
-
     /**
      * エンティティ情報.
      * 
@@ -52,11 +49,11 @@ public class SimpleEntityInfo {
         this.edmBuilder = new TinyH2EdmBuilder(this);
     }
 
-    public SimpleContainerInfo getContainerInfo() {
+    public SimpleContainerInfo getInternalContainerInfo() {
         return containerInfo;
     }
 
-    public void setContainerInfo(SimpleContainerInfo containerInfo) {
+    public void setInternalContainerInfo(SimpleContainerInfo containerInfo) {
         this.containerInfo = containerInfo;
     }
 
@@ -65,27 +62,27 @@ public class SimpleEntityInfo {
      * 
      * @return エンティティ名. MyProduct 相当.
      */
-    public String getEntityName() {
+    public String getInternalEntityName() {
         return entityName;
     }
 
-    public void setEntityName(String entityName) {
+    public void setInternalEntityName(String entityName) {
         this.entityName = entityName;
     }
 
-    public String getEntitySetName() {
+    public String getInternalEntitySetName() {
         return entitySetName;
     }
 
-    public void setEntitySetName(String entitySetName) {
+    public void setInternalEntitySetName(String entitySetName) {
         this.entitySetName = entitySetName;
     }
 
-    public String getDbTableName() {
+    public String getInternalDbTableName() {
         return dbTableName;
     }
 
-    public void setDbTableName(String dbTableName) {
+    public void setInternalDbTableName(String dbTableName) {
         this.dbTableName = dbTableName;
     }
 
@@ -101,7 +98,7 @@ public class SimpleEntityInfo {
      * 
      * @return 要素型のFQN(完全修飾名).
      */
-    public FullQualifiedName getEntityNameFQN() {
-        return new FullQualifiedName(containerInfo.getNamespace(), getEntityName());
+    public FullQualifiedName getInternalEntityNameFQN() {
+        return new FullQualifiedName(containerInfo.getNamespace(), getInternalEntityName());
     }
 }

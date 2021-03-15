@@ -37,7 +37,7 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
     @Override
     public CsdlEntityType getEntityType(FullQualifiedName entityTypeName) {
         if (entityTypeName
-                .equals(localContainerInfo.getLocalEntityInfoByEntityNameFQN(entityTypeName).getEntityNameFQN())) {
+                .equals(localContainerInfo.getLocalEntityInfoByEntityNameFQN(entityTypeName).getInternalEntityNameFQN())) {
             // 処理対象の型名です。
             return localContainerInfo.getLocalEntityInfoByEntityNameFQN(entityTypeName).getEdmBuilder().getEntityType();
         }
@@ -64,9 +64,9 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
 
         // 要素セット名が一致する場合.
         // CSDL要素セットとして情報を組み上げ.
-        CsdlEntitySet entitySet = new CsdlEntitySet();
+        OiyokanCsdlEntitySet entitySet = new OiyokanCsdlEntitySet();
         entitySet.setName(entitySetName);
-        entitySet.setType(localContainerInfo.getLocalEntityInfoByEntitySetName(entitySetName).getEntityNameFQN());
+        entitySet.setType(localContainerInfo.getLocalEntityInfoByEntitySetName(entitySetName).getInternalEntityNameFQN());
 
         return entitySet;
 
@@ -85,11 +85,11 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
         List<CsdlEntitySet> entitySets = new ArrayList<>();
         for (SimpleEntityInfo localEntryInfo : localContainerInfo.getLocalEntityInfoList()) {
             // TODO 増殖か?
-            entitySets.add(getEntitySet(localContainerInfo.getContainerFQN(), localEntryInfo.getEntitySetName()));
+            entitySets.add(getEntitySet(localContainerInfo.getContainerFQN(), localEntryInfo.getInternalEntitySetName()));
         }
 
         // 要素コンテナを作成.
-        CsdlEntityContainer entityContainer = new CsdlEntityContainer();
+        OiyokanCsdlEntityContainer entityContainer = new OiyokanCsdlEntityContainer();
         entityContainer.setName(localContainerInfo.getContainerName());
         entityContainer.setEntitySets(entitySets);
 
@@ -111,7 +111,7 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
         List<CsdlEntityType> entityTypes = new ArrayList<>();
         for (SimpleEntityInfo localEntryInfo : localContainerInfo.getLocalEntityInfoList()) {
             // TODO 増殖.
-            entityTypes.add(getEntityType(localEntryInfo.getEntityNameFQN()));
+            entityTypes.add(getEntityType(localEntryInfo.getInternalEntityNameFQN()));
         }
 
         schema.setEntityTypes(entityTypes);
