@@ -8,8 +8,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  */
 @SpringBootApplication
 public class SimpleOdata4App {
-    public static final String VERSION = "20210316a";
-
     /**
      * OData サーバ (Spring Boot ベース) を起動するエントリポイント.
      * 

@@ -1,4 +1,4 @@
-package jp.igapyon.simpleodata4.h2data.sqlbuild;
+package jp.igapyon.simpleodata4.oiyokan.h2.sql;
 
 import org.apache.olingo.server.api.uri.queryoption.expression.BinaryOperatorKind;
 import org.apache.olingo.server.api.uri.queryoption.expression.Expression;

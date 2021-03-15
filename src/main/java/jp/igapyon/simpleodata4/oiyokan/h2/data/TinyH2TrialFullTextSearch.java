@@ -1,4 +1,4 @@
-package jp.igapyon.simpleodata4.h2data;
+package jp.igapyon.simpleodata4.oiyokan.h2.data;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

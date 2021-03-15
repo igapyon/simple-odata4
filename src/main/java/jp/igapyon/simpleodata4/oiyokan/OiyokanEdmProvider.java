@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License. 
  */
-package jp.igapyon.simpleodata4.entity;
+package jp.igapyon.simpleodata4.oiyokan;
 
 import java.util.ArrayList;
 import java.util.List;

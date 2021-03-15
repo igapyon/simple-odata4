@@ -16,12 +16,12 @@ import org.apache.olingo.server.api.ODataResponse;
 import org.apache.olingo.server.api.ServiceMetadata;
 import org.junit.jupiter.api.Test;
 
-import jp.igapyon.simpleodata4.SimpleOdata4App;
-import jp.igapyon.simpleodata4.entity.OiyokanEdmProvider;
-import jp.igapyon.simpleodata4.entity.OiyokanEntityCollectionProcessor;
+import jp.igapyon.simpleodata4.oiyokan.OiyokanConstants;
+import jp.igapyon.simpleodata4.oiyokan.OiyokanEdmProvider;
+import jp.igapyon.simpleodata4.oiyokan.OiyokanEntityCollectionProcessor;
 
 /**
- * OData サーバについて、おおざっぱに通過させてデグレードを検知.
+ * OData サーバについて、おおざっぱな通過によるデグレードを検知.
  */
 class BasicODataSampleDbTest {
     @Test
@@ -39,7 +39,7 @@ class BasicODataSampleDbTest {
         final String result = stream2String(resp.getContent());
         // System.err.println("result: " + result);
         assertEquals("{\"@odata.context\":\"$metadata#ODataAppInfos\",\"value\":[{\"ID\":1,\"Ver\":\""
-                + SimpleOdata4App.VERSION + "\"}]}", result);
+                + OiyokanConstants.VERSION + "\"}]}", result);
     }
 
     @Test

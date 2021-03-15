@@ -1,4 +1,4 @@
-package jp.igapyon.simpleodata4.entity;
+package jp.igapyon.simpleodata4.oiyokan.h2.sql;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -10,10 +10,12 @@ import org.apache.olingo.server.api.uri.UriInfo;
 import org.apache.olingo.server.core.uri.parser.Parser;
 import org.junit.jupiter.api.Test;
 
-import jp.igapyon.simpleodata4.h2data.sqlbuild.TinyH2SqlExprExpander;
-import jp.igapyon.simpleodata4.h2data.sqlbuild.TinySqlBuildInfo;
+import jp.igapyon.simpleodata4.oiyokan.OiyokanEdmProvider;
 
-class UriInfoTest {
+/**
+ * TinyH2SqlExprExpanderのテスト.
+ */
+class TinyH2SqlExprExpanderTest {
 
     @Test
     void test01() throws Exception {

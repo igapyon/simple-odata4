@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License. 
  */
-package jp.igapyon.simpleodata4.h2data;
+package jp.igapyon.simpleodata4.oiyokan.h2.data;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -32,8 +32,8 @@ import org.apache.olingo.commons.api.edm.provider.CsdlEntityType;
 import org.apache.olingo.commons.api.edm.provider.CsdlProperty;
 import org.apache.olingo.commons.api.edm.provider.CsdlPropertyRef;
 
-import jp.igapyon.simpleodata4.SimpleOdata4App;
-import jp.igapyon.simpleodata4.entity.OiyokanCsdlEntitySet;
+import jp.igapyon.simpleodata4.oiyokan.OiyokanConstants;
+import jp.igapyon.simpleodata4.oiyokan.OiyokanCsdlEntitySet;
 
 /**
  * EntityTypeをビルド.
@@ -44,7 +44,7 @@ public class TinyH2EntityTypeBuilder {
     public TinyH2EntityTypeBuilder(OiyokanCsdlEntitySet entitySet) {
         this.entitySet = entitySet;
         System.err.println( //
-                "OData v4: EntityType: " + entitySet.getName() + " (Oiyokan: " + SimpleOdata4App.VERSION + ")");
+                "OData v4: EntityType: " + entitySet.getName() + " (Oiyokan: " + OiyokanConstants.VERSION + ")");
     }
 
     /**

@@ -16,12 +16,12 @@
  * specific language governing permissions and limitations
  * under the License. 
  */
-package jp.igapyon.simpleodata4.entity;
+package jp.igapyon.simpleodata4.oiyokan;
 
 import org.apache.olingo.commons.api.edm.FullQualifiedName;
 import org.apache.olingo.commons.api.edm.provider.CsdlEntitySet;
 
-import jp.igapyon.simpleodata4.h2data.TinyH2EntityTypeBuilder;
+import jp.igapyon.simpleodata4.oiyokan.h2.data.TinyH2EntityTypeBuilder;
 
 /**
  * CsdlEntitySet の Iyokan 拡張
