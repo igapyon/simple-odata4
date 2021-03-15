@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License. 
  */
-package jp.igapyon.simpleodata4.entity;
+package jp.igapyon.simpleodata4.oiyokan;
 
 import java.util.List;
 
@@ -42,7 +42,7 @@ import org.apache.olingo.server.api.uri.UriResource;
 import org.apache.olingo.server.api.uri.UriResourceEntitySet;
 import org.apache.olingo.server.core.uri.queryoption.CountOptionImpl;
 
-import jp.igapyon.simpleodata4.h2data.TinyH2EntityCollectionBuilder;
+import jp.igapyon.simpleodata4.oiyokan.h2.data.TinyH2EntityCollectionBuilder;
 
 /**
  * OData 要素コレクションを処理するクラス.

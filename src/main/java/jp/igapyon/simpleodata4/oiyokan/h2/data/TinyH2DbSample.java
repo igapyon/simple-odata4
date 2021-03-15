@@ -1,10 +1,10 @@
-package jp.igapyon.simpleodata4.h2data;
+package jp.igapyon.simpleodata4.oiyokan.h2.data;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import jp.igapyon.simpleodata4.SimpleOdata4App;
+import jp.igapyon.simpleodata4.oiyokan.OiyokanConstants;
 
 /**
  * 実際に返却するデータ本体を組み上げるクラス.
@@ -12,8 +12,8 @@ import jp.igapyon.simpleodata4.SimpleOdata4App;
  * このクラスには、テスト用データを構築する処理も含む.
  */
 public class TinyH2DbSample {
-    // 増殖カウント. 最終的に 5000を目標にしたい.
-    private static final int ZOUSYOKU = 5000;
+    // 増殖カウント. 負荷確認したい場合は 5000程度に増やす.
+    private static final int ZOUSYOKU = 100;
 
     private TinyH2DbSample() {
     }
@@ -114,7 +114,7 @@ public class TinyH2DbSample {
         }
 
         System.err.println( //
-                "OData v4: build sample data: " + " (Oiyokan: " + SimpleOdata4App.VERSION + ")");
+                "OData v4: build sample data: " + " (Oiyokan: " + OiyokanConstants.VERSION + ")");
 
         // 全文検索関連の準備.
         try {
@@ -135,7 +135,7 @@ public class TinyH2DbSample {
                 "INSERT INTO ODataAppInfos (ID, Ver) VALUES (" + TinyH2Util.getQueryPlaceholderString(2) + ")")) {
             int idCounter = 1;
             stmt.setInt(1, idCounter++);
-            stmt.setString(2, SimpleOdata4App.VERSION);
+            stmt.setString(2, OiyokanConstants.VERSION);
             stmt.executeUpdate();
 
             conn.commit();

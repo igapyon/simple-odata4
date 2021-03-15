@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License. 
  */
-package jp.igapyon.simpleodata4.h2data;
+package jp.igapyon.simpleodata4.oiyokan.h2.data;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -36,8 +36,8 @@ import org.apache.olingo.commons.api.edm.provider.CsdlEntitySet;
 import org.apache.olingo.commons.api.ex.ODataRuntimeException;
 import org.apache.olingo.server.api.uri.UriInfo;
 
-import jp.igapyon.simpleodata4.entity.OiyokanEdmProvider;
-import jp.igapyon.simpleodata4.h2data.sqlbuild.TinyH2SqlBuilder;
+import jp.igapyon.simpleodata4.oiyokan.OiyokanEdmProvider;
+import jp.igapyon.simpleodata4.oiyokan.h2.sql.TinyH2SqlBuilder;
 
 /**
  * 実際に返却するデータ本体を組み上げるクラス.
