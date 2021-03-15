@@ -15,13 +15,14 @@ import org.apache.olingo.commons.api.edm.provider.CsdlProperty;
 import org.apache.olingo.commons.api.edm.provider.CsdlPropertyRef;
 
 import jp.igapyon.simpleodata4.SimpleOdata4App;
-import jp.igapyon.simpleodata4.entity.SimpleEntityInfo;
+import jp.igapyon.simpleodata4.entity.OiyokanCsdlEntitySet;
 
 public class TinyH2EdmBuilder {
-    private SimpleEntityInfo localEntityInfo = null;
+    private OiyokanCsdlEntitySet localEntityInfo = null;
 
-    public TinyH2EdmBuilder(SimpleEntityInfo localEntityInfo) {
-        System.err.println("OData v4: App: " + SimpleOdata4App.VERSION + " - " + localEntityInfo.getInternalEntitySetName());
+    public TinyH2EdmBuilder(OiyokanCsdlEntitySet localEntityInfo) {
+        System.err.println(
+                "OData v4: App: " + SimpleOdata4App.VERSION + " - " + localEntityInfo.getInternalEntitySetName());
         this.localEntityInfo = localEntityInfo;
     }
 
@@ -37,7 +38,8 @@ public class TinyH2EdmBuilder {
         // バッファ的な h2 データベースから該当情報を取得.
         final List<CsdlProperty> propertyList = new ArrayList<>();
         // SELECT * について、この箇所のみ記述を許容したい。
-        try (PreparedStatement stmt = conn.prepareStatement("SELECT * FROM " + localEntityInfo.getInternalDbTableName())) {
+        try (PreparedStatement stmt = conn
+                .prepareStatement("SELECT * FROM " + localEntityInfo.getInternalDbTableName())) {
             ResultSetMetaData rsmeta = stmt.getMetaData();
             final int columnCount = rsmeta.getColumnCount();
             for (int column = 1; column <= columnCount; column++) {
