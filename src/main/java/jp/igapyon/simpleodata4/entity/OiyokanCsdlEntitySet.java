@@ -44,7 +44,10 @@ public class OiyokanCsdlEntitySet extends CsdlEntitySet {
      */
     private String dbTableName = null;
 
-    private TinyH2EntityTypeBuilder edmBuilder = null;
+    /**
+     * EntityType生成ツール.
+     */
+    private TinyH2EntityTypeBuilder entityTypeBuilder = null;
 
     /**
      * エンティティ情報.
@@ -63,7 +66,7 @@ public class OiyokanCsdlEntitySet extends CsdlEntitySet {
         this.setName(entitySetName);
         this.setType(new FullQualifiedName(containerInfo.getNamespaceIyo(), entityName));
 
-        this.edmBuilder = new TinyH2EntityTypeBuilder(this);
+        this.entityTypeBuilder = new TinyH2EntityTypeBuilder(this);
     }
 
     /**
@@ -95,7 +98,12 @@ public class OiyokanCsdlEntitySet extends CsdlEntitySet {
 
     //////////////////////////////////
 
+    /**
+     * EntityType生成ツールを取得.
+     * 
+     * @return EntityType生成ツール.
+     */
     public TinyH2EntityTypeBuilder getEdmBuilder() {
-        return edmBuilder;
+        return entityTypeBuilder;
     }
 }
