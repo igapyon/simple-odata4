@@ -5,17 +5,10 @@ import org.apache.olingo.commons.api.edm.provider.CsdlEntitySet;
 
 import jp.igapyon.simpleodata4.h2data.TinyH2EdmBuilder;
 
+/**
+ * CsdlEntitySet の Iyokan 拡張
+ */
 public class OiyokanCsdlEntitySet extends CsdlEntitySet {
-    private TinyH2EdmBuilder edmBuilder = null;
-
-    public TinyH2EdmBuilder getEdmBuilder() {
-        return edmBuilder;
-    }
-
-    public void setEdmBuilder(TinyH2EdmBuilder edmBuilder) {
-        this.edmBuilder = edmBuilder;
-    }
-
     private OiyokanCsdlEntityContainer csdlEntityContainer = null;
 
     /**
@@ -29,6 +22,8 @@ public class OiyokanCsdlEntitySet extends CsdlEntitySet {
      * データベース上のテーブル名.
      */
     private String dbTableName = null;
+
+    private TinyH2EdmBuilder edmBuilder = null;
 
     /**
      * エンティティ情報.
@@ -60,6 +55,15 @@ public class OiyokanCsdlEntitySet extends CsdlEntitySet {
     }
 
     /**
+     * エンティティのFQNを取得.
+     * 
+     * @return エンティティのFQN(完全修飾名).
+     */
+    public FullQualifiedName getEntityNameFqnIyo() {
+        return new FullQualifiedName(csdlEntityContainer.getNamespaceIyo(), getEntityNameIyo());
+    }
+
+    /**
      * 独自に追加した項目。
      * 
      * @return DBテーブル名。
@@ -68,12 +72,9 @@ public class OiyokanCsdlEntitySet extends CsdlEntitySet {
         return dbTableName;
     }
 
-    /**
-     * エンティティのFQNを取得.
-     * 
-     * @return エンティティのFQN(完全修飾名).
-     */
-    public FullQualifiedName getEntityNameFqnIyo() {
-        return new FullQualifiedName(csdlEntityContainer.getNamespaceIyo(), getEntityNameIyo());
+    //////////////////////////////////
+
+    public TinyH2EdmBuilder getEdmBuilder() {
+        return edmBuilder;
     }
 }

@@ -30,6 +30,7 @@ public class OiyokanCsdlEntityContainer extends CsdlEntityContainer {
             setEntitySets(new ArrayList<CsdlEntitySet>());
         }
 
+        // テンプレートとそれから生成された複写物と2種類あるため、フラグではなくサイズで判定が必要だった.
         if (getEntitySets().size() == 0) {
             // EntitySet の初期セットを実施。
             getEntitySets().add(new OiyokanCsdlEntitySet(this, "MyProducts", "MyProduct", "MyProducts"));
@@ -94,6 +95,7 @@ public class OiyokanCsdlEntityContainer extends CsdlEntityContainer {
                 return look2;
             }
         }
+
         return null;
     }
 }
