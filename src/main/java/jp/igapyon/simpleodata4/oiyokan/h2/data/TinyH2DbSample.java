@@ -170,8 +170,8 @@ public class TinyH2DbSample {
             for (int index = 0; index < ZOUSYOKU; index++) {
                 stmt.clearParameters();
                 stmt.setInt(1, idCounter++);
-                stmt.setString(2, "PopTablet" + idCounter);
-                stmt.setString(3, "増殖タブレット Laptop Intel Core" + idCounter);
+                stmt.setString(2, "PopTablet" + index);
+                stmt.setString(3, "増殖タブレット Laptop Intel Core" + index);
                 stmt.executeUpdate();
             }
             conn.commit();
@@ -179,8 +179,8 @@ public class TinyH2DbSample {
             for (int index = 0; index < ZOUSYOKU; index++) {
                 stmt.clearParameters();
                 stmt.setInt(1, idCounter++);
-                stmt.setString(2, "DummyPC" + idCounter);
-                stmt.setString(3, "ダミーなPC" + idCounter);
+                stmt.setString(2, "DummyPC" + index);
+                stmt.setString(3, "ダミーなPC" + index);
                 stmt.executeUpdate();
             }
             conn.commit();

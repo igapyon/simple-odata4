@@ -87,7 +87,7 @@ class BasicODataSampleDbTest {
         final ODataResponse resp = handler.process(req);
         assertEquals(200, resp.getStatusCode());
         assertEquals(
-                "{\"@odata.context\":\"$metadata#MyProducts\",\"@odata.count\":1,\"value\":[{\"ID\":5,\"Name\":\"PopTablet6\"}]}",
+                "{\"@odata.context\":\"$metadata#MyProducts\",\"@odata.count\":1,\"value\":[{\"ID\":5,\"Name\":\"PopTablet1\"}]}",
                 stream2String(resp.getContent()));
     }
 
