@@ -101,6 +101,6 @@ public class OiyokanCsdlEntitySet extends CsdlEntitySet {
      * @return 要素型のFQN(完全修飾名).
      */
     public FullQualifiedName getInternalEntityNameFQN() {
-        return new FullQualifiedName(containerInfo.getNamespace(), getInternalEntityName());
+        return new FullQualifiedName(containerInfo.getInternalNamespace(), getInternalEntityName());
     }
 }

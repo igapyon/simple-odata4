@@ -28,22 +28,22 @@ public class SimpleContainerInfo {
         }
     }
 
-    public String getNamespace() {
+    public String getInternalNamespace() {
         ensureInit();
         return namespace;
     }
 
-    public void setNamespace(String namespace) {
+    public void setInternalNamespace(String namespace) {
         ensureInit();
         this.namespace = namespace;
     }
 
-    public String getContainerName() {
+    public String getInternalContainerName() {
         ensureInit();
         return containerName;
     }
 
-    public void setContainerName(String containerName) {
+    public void setInternalContainerName(String containerName) {
         ensureInit();
         this.containerName = containerName;
     }
@@ -93,8 +93,8 @@ public class SimpleContainerInfo {
      * 
      * @return EDMコンテナ名のFQN(完全修飾名).
      */
-    public FullQualifiedName getContainerFQN() {
+    public FullQualifiedName getInternalContainerFQN() {
         ensureInit();
-        return new FullQualifiedName(getNamespace(), getContainerName());
+        return new FullQualifiedName(getInternalNamespace(), getInternalContainerName());
     }
 }

@@ -55,7 +55,7 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
      */
     @Override
     public CsdlEntitySet getEntitySet(FullQualifiedName entityContainer, String entitySetName) {
-        if (!entityContainer.equals(localContainerInfo.getContainerFQN())) {
+        if (!entityContainer.equals(localContainerInfo.getInternalContainerFQN())) {
             // 該当する型名の要素セットはありません.
             return null;
         }
@@ -93,12 +93,12 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
         for (OiyokanCsdlEntitySet localEntryInfo : localContainerInfo.getLocalEntityInfoList()) {
             // TODO 増殖か?
             entitySets
-                    .add(getEntitySet(localContainerInfo.getContainerFQN(), localEntryInfo.getInternalEntitySetName()));
+                    .add(getEntitySet(localContainerInfo.getInternalContainerFQN(), localEntryInfo.getInternalEntitySetName()));
         }
 
         // 要素コンテナを作成.
         OiyokanCsdlEntityContainer entityContainer = new OiyokanCsdlEntityContainer();
-        entityContainer.setName(localContainerInfo.getContainerName());
+        entityContainer.setName(localContainerInfo.getInternalContainerName());
         entityContainer.setEntitySets(entitySets);
 
         return entityContainer;
@@ -113,7 +113,7 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
     public List<CsdlSchema> getSchemas() {
         // CSDLスキーマを作成.
         CsdlSchema schema = new CsdlSchema();
-        schema.setNamespace(localContainerInfo.getNamespace());
+        schema.setNamespace(localContainerInfo.getInternalNamespace());
 
         // 要素型を設定.
         List<CsdlEntityType> entityTypes = new ArrayList<>();
@@ -144,9 +144,9 @@ public class SimpleEdmProvider extends CsdlAbstractEdmProvider {
      */
     @Override
     public CsdlEntityContainerInfo getEntityContainerInfo(FullQualifiedName entityContainerName) {
-        if (entityContainerName == null || entityContainerName.equals(localContainerInfo.getContainerFQN())) {
+        if (entityContainerName == null || entityContainerName.equals(localContainerInfo.getInternalContainerFQN())) {
             CsdlEntityContainerInfo entityContainerInfo = new CsdlEntityContainerInfo();
-            entityContainerInfo.setContainerName(localContainerInfo.getContainerFQN());
+            entityContainerInfo.setContainerName(localContainerInfo.getInternalContainerFQN());
             return entityContainerInfo;
         }
 
