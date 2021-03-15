@@ -93,7 +93,7 @@ public class OiyokanEdmProvider extends CsdlAbstractEdmProvider {
         for (OiyokanCsdlEntitySet localEntryInfo : localContainerInfo.getLocalEntityInfoList()) {
             // TODO 増殖か?
             entitySets.add(getEntitySet(localContainerInfo.getInternalContainerFQN(),
-                    localEntryInfo.getInternalEntitySetName()));
+                    localEntryInfo.getName()));
         }
 
         // 要素コンテナを作成.

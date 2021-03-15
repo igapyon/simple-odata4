@@ -56,7 +56,7 @@ public class OiyokanCsdlEntityContainer extends CsdlEntityContainer {
     public OiyokanCsdlEntitySet getLocalEntityInfoByEntitySetName(String entitySetName) {
         ensureInit();
         for (OiyokanCsdlEntitySet look : localEntityInfoList) {
-            if (look.getInternalEntitySetName().equals(entitySetName)) {
+            if (look.getName().equals(entitySetName)) {
                 return look;
             }
         }

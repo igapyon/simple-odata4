@@ -19,13 +19,6 @@ public class OiyokanCsdlEntitySet extends CsdlEntitySet {
     private OiyokanCsdlEntityContainer csdlEntityContainer = null;
 
     /**
-     * 要素型名の複数形. さしあたりはリレーショナルデータベースのテーブル名に相当するものに「s」をつけたものと考えて差し支えない. URIにも影響がある.
-     * 
-     * MyProducts 相当.
-     */
-    private String entitySetName = null;
-
-    /**
      * 要素型名. さしあたりはリレーショナルデータベースのテーブル名に相当するものと考えて差し支えない.
      * 
      * MyProduct 相当.
@@ -48,10 +41,10 @@ public class OiyokanCsdlEntitySet extends CsdlEntitySet {
     public OiyokanCsdlEntitySet(OiyokanCsdlEntityContainer containerInfo, String entitySetName, String entityName,
             String dbTableName) {
         this.csdlEntityContainer = containerInfo;
-        this.entitySetName = entitySetName;
         this.entityName = entityName;
         this.dbTableName = dbTableName;
 
+        this.setName(entitySetName);
         this.edmBuilder = new TinyH2EdmBuilder(this);
     }
 
@@ -62,10 +55,6 @@ public class OiyokanCsdlEntitySet extends CsdlEntitySet {
      */
     public String getInternalEntityName() {
         return entityName;
-    }
-
-    public String getInternalEntitySetName() {
-        return entitySetName;
     }
 
     /**
