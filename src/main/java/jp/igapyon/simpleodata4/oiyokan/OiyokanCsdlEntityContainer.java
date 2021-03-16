@@ -51,10 +51,10 @@ public class OiyokanCsdlEntityContainer extends CsdlEntityContainer {
         // テンプレートとそれから生成された複写物と2種類あるため、フラグではなくサイズで判定が必要だった.
         if (getEntitySets().size() == 0) {
             // EntitySet の初期セットを実施。
-            getEntitySets().add(new OiyokanCsdlEntitySet(this, "ODataAppInfos", "ODataAppInfo", "ODataAppInfos", null));
-            getEntitySets().add(new OiyokanCsdlEntitySet(this, "MyProducts", "MyProduct", "MyProducts", null));
-
-            // TODO to add BigQuery
+            getEntitySets().add(new OiyokanCsdlEntitySet(this, "ODataAppInfos", "ODataAppInfo",
+                    OiyokanCsdlEntitySet.DatabaseType.H2, "ODataAppInfos", null));
+            getEntitySets().add(new OiyokanCsdlEntitySet(this, "MyProducts", "MyProduct",
+                    OiyokanCsdlEntitySet.DatabaseType.H2, "MyProducts", null));
         }
     }
 

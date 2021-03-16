@@ -51,6 +51,7 @@ public class TinyH2TrialFullTextSearch {
                     final Entity ent = new Entity();
 
                     // TODO たぶんこれだとだめ。検索結果のIDから、select から与えられた指定の項目を取る必要あり。
+                    // ただし、h2としての故記述は正しい。
                     try (PreparedStatement stmt2 = conn.prepareStatement("SELECT ID FROM " + valQuery)) {
                         ResultSet rset2 = stmt2.executeQuery();
                         // TODO 戻り値チェック.

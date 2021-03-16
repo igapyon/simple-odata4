@@ -29,6 +29,7 @@ import org.apache.olingo.commons.api.data.EntityCollection;
 import org.apache.olingo.commons.api.data.Property;
 import org.apache.olingo.commons.api.edm.EdmEntitySet;
 import org.apache.olingo.commons.api.edm.provider.CsdlEntitySet;
+import org.apache.olingo.commons.api.edm.provider.CsdlPropertyRef;
 import org.apache.olingo.commons.api.ex.ODataRuntimeException;
 import org.apache.olingo.server.api.uri.UriInfo;
 
@@ -143,8 +144,20 @@ public class TinyH2EntityCollectionBuilder {
                     Property prop = BasicDbUtil.resultSet2Property(rset, rsmeta, column);
                     ent.addProperty(prop);
                 }
-                // TODO FIXME IDを可変にすること。
-                ent.setId(createId(eSetTarget.getName(), rset.getInt("ID")));
+
+                // IDを設定。
+                {
+                    OiyokanCsdlEntitySet iyoEntitySet = (OiyokanCsdlEntitySet) eSetTarget;
+                    String keyValue = "";
+                    for (CsdlPropertyRef look : iyoEntitySet.getEntityType().getKey()) {
+                        if (keyValue.length() > 0) {
+                            keyValue += "-";
+                        }
+                        keyValue += rset.getString(look.getName());
+                    }
+                    ent.setId(createId(eSetTarget.getName(), keyValue));
+                }
+
                 eCollection.getEntities().add(ent);
             }
         } catch (SQLException ex) {

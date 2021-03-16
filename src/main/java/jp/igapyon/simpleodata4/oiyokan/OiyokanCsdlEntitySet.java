@@ -28,10 +28,20 @@ import jp.igapyon.simpleodata4.oiyokan.basic.BasicJdbcEntityTypeBuilder;
  * CsdlEntitySet の Iyokan 拡張
  */
 public class OiyokanCsdlEntitySet extends CsdlEntitySet {
+    public enum DatabaseType {
+        H2
+    };
+
     /**
      * コンテナに関する情報を記憶.
      */
     private OiyokanCsdlEntityContainer csdlEntityContainer = null;
+
+    private DatabaseType dbType = DatabaseType.H2;
+
+    public DatabaseType getDatabaseType() {
+        return dbType;
+    }
 
     private CsdlEntityType entityType = null;
 
@@ -71,13 +81,15 @@ public class OiyokanCsdlEntitySet extends CsdlEntitySet {
      * @param containerInfo     コンテナ情報.
      * @param entitySetName     MyProducts 相当.
      * @param entityName        MyProduct 相当.
+     * @param dbType            データベースタイプ.
      * @param dbTableName       データベース上のテーブル名.
      * @param dbTableNameTarget ターゲットのデータベース上のテーブル名. 通常は null指定.
      */
     public OiyokanCsdlEntitySet(OiyokanCsdlEntityContainer containerInfo, String entitySetName, String entityName,
-            String dbTableName, String dbTableNameTarget) {
+            DatabaseType dbType, String dbTableName, String dbTableNameTarget) {
         this.csdlEntityContainer = containerInfo;
         this.entityName = entityName;
+        this.dbType = dbType;
         this.dbTableName = dbTableName;
         this.dbTableNameTarget = dbTableNameTarget;
 

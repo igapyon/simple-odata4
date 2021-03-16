@@ -1,9 +1,11 @@
 package jp.igapyon.simpleodata4.oiyokan.h2.sql;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.olingo.commons.api.edm.provider.CsdlEntityType;
 import org.apache.olingo.commons.api.edm.provider.CsdlProperty;
+import org.apache.olingo.commons.api.edm.provider.CsdlPropertyRef;
 import org.apache.olingo.server.api.uri.UriInfo;
 import org.apache.olingo.server.api.uri.UriResource;
 import org.apache.olingo.server.api.uri.queryoption.OrderByItem;
@@ -66,22 +68,28 @@ public class TinyH2SqlBuilder {
             }
             sqlInfo.getSqlBuilder().append(strColumns);
         } else {
-            boolean isIDExists = false;
+            final OiyokanCsdlEntitySet iyoEntitySet = (OiyokanCsdlEntitySet) sqlInfo.getEntitySet();
+            final List<String> keyTarget = new ArrayList<>();
+            for (CsdlPropertyRef propRef : iyoEntitySet.getEntityType().getKey()) {
+                keyTarget.add(propRef.getName());
+            }
             int itemCount = 0;
             for (SelectItem item : uriInfo.getSelectOption().getSelectItems()) {
-                // TODO STAR未対応.
                 for (UriResource res : item.getResourcePath().getUriResourceParts()) {
                     sqlInfo.getSqlBuilder().append(itemCount++ == 0 ? "" : ",");
                     sqlInfo.getSqlBuilder().append("[" + res.toString() + "]");
-                    if (res.toString().equals("ID")) {
-                        isIDExists = true;
+                    for (int index = 0; index < keyTarget.size(); index++) {
+                        if (keyTarget.get(index).equals(res.toString())) {
+                            keyTarget.remove(index);
+                            break;
+                        }
                     }
                 }
             }
-            if (!isIDExists) {
+            for (int index = 0; index < keyTarget.size(); index++) {
                 // レコードを一位に表すID項目が必須。検索対象にない場合は追加.
                 sqlInfo.getSqlBuilder().append(itemCount++ == 0 ? "" : ",");
-                sqlInfo.getSqlBuilder().append("[ID]");
+                sqlInfo.getSqlBuilder().append("[" + keyTarget.get(index) + "]");
             }
         }
 
@@ -93,7 +101,7 @@ public class TinyH2SqlBuilder {
 
         if (uriInfo.getFilterOption() != null) {
             FilterOptionImpl filterOpt = (FilterOptionImpl) uriInfo.getFilterOption();
-            // TODO WHERE部分についてはパラメータクエリ化が望ましい.
+            // WHERE部分についてはパラメータクエリで処理するのを基本とする.
             sqlInfo.getSqlBuilder().append(" WHERE ");
             new TinyH2SqlExprExpander(sqlInfo).expand(filterOpt.getExpression());
         }

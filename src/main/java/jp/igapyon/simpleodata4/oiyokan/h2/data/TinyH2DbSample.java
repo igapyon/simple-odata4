@@ -29,9 +29,9 @@ public class TinyH2DbSample {
 
         try (var stmt = conn.prepareStatement("CREATE TABLE IF NOT EXISTS " //
                 + "ODataAppInfos (" //
-                + "ID INT NOT NULL" // primary key. これほんとは Key とかにして Key = version とかで分岐したい.
-                + ",Ver VARCHAR(20) NOT NULL" //
-                + ",PRIMARY KEY(ID)" //
+                + "KeyName VARCHAR(20) NOT NULL" // primary key. これほんとは Key とかにして Key = version とかで分岐したい.
+                + ",KeyValue VARCHAR(255)" //
+                + ",PRIMARY KEY(KeyName)" //
                 + ")")) {
             stmt.executeUpdate();
         } catch (SQLException ex) {
@@ -103,7 +103,7 @@ public class TinyH2DbSample {
      * @param conn データベース接続。
      */
     public static void setupTableData(final Connection conn) {
-        try (var stmt = conn.prepareStatement("SELECT COUNT(ID) FROM ODataAppInfos")) {
+        try (var stmt = conn.prepareStatement("SELECT COUNT(*) FROM ODataAppInfos")) {
             stmt.executeQuery();
             var rset = stmt.getResultSet();
             rset.next();
@@ -132,10 +132,10 @@ public class TinyH2DbSample {
 
         ///////////////////////////////////////////
         // バージョン情報に関するデータの追加
-        try (var stmt = conn.prepareStatement(
-                "INSERT INTO ODataAppInfos (ID, Ver) VALUES (" + BasicDbUtil.getQueryPlaceholderString(2) + ")")) {
+        try (var stmt = conn.prepareStatement("INSERT INTO ODataAppInfos (KeyName, KeyValue) VALUES ("
+                + BasicDbUtil.getQueryPlaceholderString(2) + ")")) {
             int idCounter = 1;
-            stmt.setInt(1, idCounter++);
+            stmt.setString(1, "Version");
             stmt.setString(2, OiyokanConstants.VERSION);
             stmt.executeUpdate();
 

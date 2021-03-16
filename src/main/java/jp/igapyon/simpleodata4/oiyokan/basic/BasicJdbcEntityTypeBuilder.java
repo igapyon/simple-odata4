@@ -19,12 +19,13 @@
 package jp.igapyon.simpleodata4.oiyokan.basic;
 
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.apache.olingo.commons.api.edm.EdmPrimitiveTypeKind;
@@ -65,8 +66,14 @@ public class BasicJdbcEntityTypeBuilder {
         // テーブルをセットアップ.
         TinyH2DbSample.createTable(conn);
 
+        // CSDL要素型として情報を組み上げ.
+        CsdlEntityType entityType = new CsdlEntityType();
+        entityType.setName(entitySet.getEntityNameIyo());
+
         // 基本的な動作: バッファ的な h2 データベースから該当情報を取得.
         final List<CsdlProperty> propertyList = new ArrayList<>();
+        entityType.setProperties(propertyList);
+
         // SELECT * について、この箇所のみ記述を許容したい。
         try (PreparedStatement stmt = conn.prepareStatement("SELECT * FROM " + entitySet.getDbTableNameIyo())) {
             ResultSetMetaData rsmeta = stmt.getMetaData();
@@ -138,28 +145,30 @@ public class BasicJdbcEntityTypeBuilder {
                 }
 
                 // TODO デフォルト値の取得???
+
             }
 
+            // テーブルのキー情報
+            final List<CsdlPropertyRef> keyRefList = new ArrayList<>();
+            final DatabaseMetaData dbmeta = conn.getMetaData();
+            final ResultSet rsKey = dbmeta.getPrimaryKeys(null, null, entitySet.getDbTableNameIyo());
+            for (; rsKey.next();) {
+                // キー名は利用しない: rsKey.getString("PK_NAME");
+                String colName = rsKey.getString("COLUMN_NAME");
+
+                CsdlPropertyRef propertyRef = new CsdlPropertyRef();
+                propertyRef.setName(colName);
+                keyRefList.add(propertyRef);
+            }
+
+            entityType.setKey(keyRefList);
         } catch (SQLException ex) {
             ex.printStackTrace();
             throw new IllegalArgumentException("DB meta 取得失敗:" + ex.toString(), ex);
         }
 
-        // キー要素を CsdlPropertyRef として設定.
-        CsdlPropertyRef propertyRef = new CsdlPropertyRef();
-        // TODO キー項目を可変に変更。
-        // TODO FIXME 実装が必要.
-        propertyRef.setName("ID");
-
-        // CSDL要素型として情報を組み上げ.
-        CsdlEntityType entityType = new CsdlEntityType();
-        entityType.setName(entitySet.getEntityNameIyo());
-        entityType.setProperties(propertyList);
-        entityType.setKey(Collections.singletonList(propertyRef));
-
         // 構築結果を記憶。
         entitySet.setEntityType(entityType);
-
         return entityType;
     }
 }

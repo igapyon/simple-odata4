@@ -98,7 +98,6 @@ public class OiyokanEdmProvider extends CsdlAbstractEdmProvider {
         List<CsdlEntitySet> newEntitySetList = new ArrayList<>();
         for (CsdlEntitySet look : localTemplateEntityContainer.getEntitySets()) {
             OiyokanCsdlEntitySet look2 = (OiyokanCsdlEntitySet) look;
-            // TODO 増殖か?
             newEntitySetList.add(getEntitySet(localTemplateEntityContainer.getContainerFqnIyo(), look2.getName()));
         }
 
