@@ -2,12 +2,16 @@ package jp.igapyon.simpleodata4.oiyokan.h2.sql;
 
 import java.util.List;
 
+import org.apache.olingo.commons.api.edm.provider.CsdlEntityType;
+import org.apache.olingo.commons.api.edm.provider.CsdlProperty;
 import org.apache.olingo.server.api.uri.UriInfo;
 import org.apache.olingo.server.api.uri.UriResource;
 import org.apache.olingo.server.api.uri.queryoption.OrderByItem;
 import org.apache.olingo.server.api.uri.queryoption.SelectItem;
 import org.apache.olingo.server.core.uri.queryoption.FilterOptionImpl;
 import org.apache.olingo.server.core.uri.queryoption.expression.MemberImpl;
+
+import jp.igapyon.simpleodata4.oiyokan.OiyokanCsdlEntitySet;
 
 /**
  * SQL文を構築するための簡易クラス.
@@ -50,7 +54,17 @@ public class TinyH2SqlBuilder {
         sqlInfo.getSqlBuilder().append("SELECT ");
 
         if (uriInfo.getSelectOption() == null) {
-            sqlInfo.getSqlBuilder().append("*");
+            // アスタリスクは利用せず、項目を指定する。
+            OiyokanCsdlEntitySet entitySet = (OiyokanCsdlEntitySet) sqlInfo.getEntitySet();
+            CsdlEntityType entityType = entitySet.getEntityType();
+            String strColumns = "";
+            for (CsdlProperty prop : entityType.getProperties()) {
+                if (strColumns.length() > 0) {
+                    strColumns += ",";
+                }
+                strColumns += prop.getName();
+            }
+            sqlInfo.getSqlBuilder().append(strColumns);
         } else {
             boolean isIDExists = false;
             int itemCount = 0;
