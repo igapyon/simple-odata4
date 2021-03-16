@@ -28,6 +28,8 @@ import java.sql.Types;
 
 import org.apache.olingo.commons.api.data.Property;
 import org.apache.olingo.commons.api.data.ValueType;
+import org.apache.olingo.commons.api.edm.EdmPrimitiveTypeKind;
+import org.apache.olingo.commons.api.edm.provider.CsdlProperty;
 
 /**
  * h2 database 用の小さなユーティリティクラス
@@ -79,6 +81,77 @@ public class BasicDbUtil {
         }
 
         return queryPlaceholder;
+    }
+
+    public static CsdlProperty resultSetMetaData2CsdlProperty(ResultSetMetaData rsmeta, int column)
+            throws SQLException {
+        final CsdlProperty csdlProp = new CsdlProperty().setName(rsmeta.getColumnName(column));
+        switch (rsmeta.getColumnType(column)) {
+        case Types.TINYINT:
+            csdlProp.setType(EdmPrimitiveTypeKind.SByte.getFullQualifiedName());
+            break;
+        case Types.SMALLINT:
+            csdlProp.setType(EdmPrimitiveTypeKind.Int16.getFullQualifiedName());
+            break;
+        case Types.INTEGER: /* INT */
+            csdlProp.setType(EdmPrimitiveTypeKind.Int32.getFullQualifiedName());
+            break;
+        case Types.BIGINT:
+            csdlProp.setType(EdmPrimitiveTypeKind.Int64.getFullQualifiedName());
+            break;
+        case Types.DECIMAL:
+            csdlProp.setType(EdmPrimitiveTypeKind.Decimal.getFullQualifiedName());
+            csdlProp.setScale(rsmeta.getScale(column));
+            csdlProp.setPrecision(rsmeta.getPrecision(column));
+            break;
+        case Types.BOOLEAN:
+            csdlProp.setType(EdmPrimitiveTypeKind.Boolean.getFullQualifiedName());
+            break;
+        case Types.REAL:
+            csdlProp.setType(EdmPrimitiveTypeKind.Single.getFullQualifiedName());
+            break;
+        case Types.DOUBLE:
+            csdlProp.setType(EdmPrimitiveTypeKind.Double.getFullQualifiedName());
+            break;
+        case Types.DATE:
+            csdlProp.setType(EdmPrimitiveTypeKind.Date.getFullQualifiedName());
+            break;
+        case Types.TIMESTAMP:
+            csdlProp.setType(EdmPrimitiveTypeKind.DateTimeOffset.getFullQualifiedName());
+            break;
+        case Types.TIME:
+            csdlProp.setType(EdmPrimitiveTypeKind.TimeOfDay.getFullQualifiedName());
+            break;
+        case Types.CHAR:
+        case Types.VARCHAR:
+            csdlProp.setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
+            csdlProp.setMaxLength(rsmeta.getColumnDisplaySize(column));
+            break;
+        default:
+            // TODO なにか手当が必要。あるいは、この場合はログ吐いたうえで処理対象から外すのが無難かも。
+            csdlProp.setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
+            break;
+        }
+
+        if (false) {
+            // TODO FIXME いまここを有効にすると、なんとエラーが出てしまう。
+            // NULL許容かどうか。不明な場合は設定しない。
+            switch (rsmeta.isNullable(column)) {
+            case ResultSetMetaData.columnNullable:
+                csdlProp.setNullable(true);
+                break;
+            case ResultSetMetaData.columnNoNulls:
+                csdlProp.setNullable(false);
+                break;
+            default:
+                // なにもしない.
+                break;
+            }
+        }
+
+        // TODO デフォルト値の取得???
+
+        return csdlProp;
     }
 
     /**

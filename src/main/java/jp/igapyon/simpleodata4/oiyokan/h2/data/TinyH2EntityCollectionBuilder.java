@@ -79,100 +79,93 @@ public class TinyH2EntityCollectionBuilder {
         }
 
         // インメモリ作業データベースに接続.
-        Connection conn = BasicDbUtil.getH2Connection();
+        try (Connection conn = BasicDbUtil.getH2Connection()) {
+            // テーブルをセットアップ.
+            TinyH2DbSample.createTable(conn);
 
-        // テーブルをセットアップ.
-        TinyH2DbSample.createTable(conn);
+            // テーブルデータをセットアップ.
+            // サンプルデータを格納.
+            TinyH2DbSample.setupTableData(conn);
 
-        // テーブルデータをセットアップ.
-        // サンプルデータを格納.
-        TinyH2DbSample.setupTableData(conn);
+            if (uriInfo.getSearchOption() != null) {
+                // $search.
+                new TinyH2TrialFullTextSearch().process(conn, edmEntitySet, uriInfo, eCollection);
+                return eCollection;
+            }
 
-        if (uriInfo.getSearchOption() != null) {
-            // $search.
-            new TinyH2TrialFullTextSearch().process(conn, edmEntitySet, uriInfo, eCollection);
-            return eCollection;
-        }
+            {
+                // 件数をカウントして設定。
+                TinyH2SqlBuilder tinySql = new TinyH2SqlBuilder();
+                tinySql.getSqlInfo().setEntitySet((OiyokanCsdlEntitySet) eSetTarget);
+                tinySql.getSelectCountQuery(uriInfo);
+                final String sql = tinySql.getSqlInfo().getSqlBuilder().toString();
 
-        {
-            // 件数をカウントして設定。
+                System.err.println("OData v4: TRACE: SQL: " + sql);
+                int countWithWhere = 0;
+                try (var stmt = conn.prepareStatement(sql)) {
+                    int column = 1;
+                    for (Object look : tinySql.getSqlInfo().getSqlParamList()) {
+                        BasicDbUtil.bindPreparedParameter(stmt, column++, look);
+                    }
+
+                    stmt.executeQuery();
+                    var rset = stmt.getResultSet();
+                    rset.next();
+                    countWithWhere = rset.getInt(1);
+                } catch (SQLException ex) {
+                    throw new IllegalArgumentException("検索失敗:" + ex.toString(), ex);
+                }
+                eCollection.setCount(countWithWhere);
+            }
+
             TinyH2SqlBuilder tinySql = new TinyH2SqlBuilder();
             tinySql.getSqlInfo().setEntitySet((OiyokanCsdlEntitySet) eSetTarget);
-            tinySql.getSelectCountQuery(uriInfo);
+
+            tinySql.getSelectQuery(uriInfo);
             final String sql = tinySql.getSqlInfo().getSqlBuilder().toString();
 
             System.err.println("OData v4: TRACE: SQL: " + sql);
-            int countWithWhere = 0;
             try (var stmt = conn.prepareStatement(sql)) {
-                int column = 1;
+                int idxColumn = 1;
                 for (Object look : tinySql.getSqlInfo().getSqlParamList()) {
-                    BasicDbUtil.bindPreparedParameter(stmt, column++, look);
+                    BasicDbUtil.bindPreparedParameter(stmt, idxColumn++, look);
                 }
 
                 stmt.executeQuery();
                 var rset = stmt.getResultSet();
-                rset.next();
-                countWithWhere = rset.getInt(1);
-            } catch (SQLException ex) {
-                throw new IllegalArgumentException("検索失敗:" + ex.toString(), ex);
-            }
-            eCollection.setCount(countWithWhere);
-        }
-
-        TinyH2SqlBuilder tinySql = new TinyH2SqlBuilder();
-        tinySql.getSqlInfo().setEntitySet((OiyokanCsdlEntitySet) eSetTarget);
-
-        tinySql.getSelectQuery(uriInfo);
-        final String sql = tinySql.getSqlInfo().getSqlBuilder().toString();
-
-        System.err.println("OData v4: TRACE: SQL: " + sql);
-        try (var stmt = conn.prepareStatement(sql)) {
-            int idxColumn = 1;
-            for (Object look : tinySql.getSqlInfo().getSqlParamList()) {
-                BasicDbUtil.bindPreparedParameter(stmt, idxColumn++, look);
-            }
-
-            stmt.executeQuery();
-            var rset = stmt.getResultSet();
-            ResultSetMetaData rsmeta = null;
-            for (; rset.next();) {
-                if (rsmeta == null) {
-                    rsmeta = rset.getMetaData();
-                }
-                final Entity ent = new Entity();
-                for (int column = 1; column <= rsmeta.getColumnCount(); column++) {
-                    Property prop = BasicDbUtil.resultSet2Property(rset, rsmeta, column);
-                    ent.addProperty(prop);
-                }
-
-                // IDを設定。
-                {
-                    OiyokanCsdlEntitySet iyoEntitySet = (OiyokanCsdlEntitySet) eSetTarget;
-                    String keyValue = "";
-                    for (CsdlPropertyRef look : iyoEntitySet.getEntityType().getKey()) {
-                        if (keyValue.length() > 0) {
-                            keyValue += "-";
-                        }
-                        keyValue += rset.getString(look.getName());
+                ResultSetMetaData rsmeta = null;
+                for (; rset.next();) {
+                    if (rsmeta == null) {
+                        rsmeta = rset.getMetaData();
                     }
-                    ent.setId(createId(eSetTarget.getName(), keyValue));
+                    final Entity ent = new Entity();
+                    for (int column = 1; column <= rsmeta.getColumnCount(); column++) {
+                        Property prop = BasicDbUtil.resultSet2Property(rset, rsmeta, column);
+                        ent.addProperty(prop);
+                    }
+
+                    // IDを設定。
+                    {
+                        OiyokanCsdlEntitySet iyoEntitySet = (OiyokanCsdlEntitySet) eSetTarget;
+                        String keyValue = "";
+                        for (CsdlPropertyRef look : iyoEntitySet.getEntityType().getKey()) {
+                            if (keyValue.length() > 0) {
+                                keyValue += "-";
+                            }
+                            keyValue += rset.getString(look.getName());
+                        }
+                        ent.setId(createId(eSetTarget.getName(), keyValue));
+                    }
+
+                    eCollection.getEntities().add(ent);
                 }
-
-                eCollection.getEntities().add(ent);
             }
+
+            return eCollection;
         } catch (SQLException ex) {
             ex.printStackTrace();
             throw new IllegalArgumentException("検索失敗:" + ex.toString(), ex);
         }
-
-        try {
-            conn.close();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-            throw new IllegalArgumentException("検索失敗:" + ex.toString(), ex);
-        }
-
-        return eCollection;
     }
 
     /**
