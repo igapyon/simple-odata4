@@ -145,12 +145,16 @@ public class TinyH2EntityTypeBuilder {
         // キー要素を CsdlPropertyRef として設定.
         CsdlPropertyRef propertyRef = new CsdlPropertyRef();
         propertyRef.setName("ID");
+        // TODO キー項目を可変に変更。
 
         // CSDL要素型として情報を組み上げ.
         CsdlEntityType entityType = new CsdlEntityType();
         entityType.setName(entitySet.getEntityNameIyo());
         entityType.setProperties(propertyList);
         entityType.setKey(Collections.singletonList(propertyRef));
+
+        // 構築結果を記憶。
+        entitySet.setEntityType(entityType);
 
         return entityType;
     }

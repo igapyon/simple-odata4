@@ -36,6 +36,7 @@ import org.apache.olingo.commons.api.edm.provider.CsdlEntitySet;
 import org.apache.olingo.commons.api.ex.ODataRuntimeException;
 import org.apache.olingo.server.api.uri.UriInfo;
 
+import jp.igapyon.simpleodata4.oiyokan.OiyokanCsdlEntitySet;
 import jp.igapyon.simpleodata4.oiyokan.OiyokanEdmProvider;
 import jp.igapyon.simpleodata4.oiyokan.h2.sql.TinyH2SqlBuilder;
 
@@ -98,7 +99,7 @@ public class TinyH2EntityCollectionBuilder {
         {
             // 件数をカウントして設定。
             TinyH2SqlBuilder tinySql = new TinyH2SqlBuilder();
-            tinySql.getSqlInfo().setEntityName(targetEntityName);
+            tinySql.getSqlInfo().setEntitySet((OiyokanCsdlEntitySet) eSetTarget);
             tinySql.getSelectCountQuery(uriInfo);
             final String sql = tinySql.getSqlInfo().getSqlBuilder().toString();
 
@@ -121,7 +122,7 @@ public class TinyH2EntityCollectionBuilder {
         }
 
         TinyH2SqlBuilder tinySql = new TinyH2SqlBuilder();
-        tinySql.getSqlInfo().setEntityName(targetEntityName);
+        tinySql.getSqlInfo().setEntitySet((OiyokanCsdlEntitySet) eSetTarget);
 
         tinySql.getSelectQuery(uriInfo);
         final String sql = tinySql.getSqlInfo().getSqlBuilder().toString();

@@ -33,7 +33,7 @@ public class TinyH2SqlBuilder {
      * @param uriInfo URI情報.
      */
     public void getSelectCountQuery(UriInfo uriInfo) {
-        sqlInfo.getSqlBuilder().append("SELECT COUNT(*) FROM " + sqlInfo.getEntityName());
+        sqlInfo.getSqlBuilder().append("SELECT COUNT(*) FROM " + sqlInfo.getEntitySet().getDbTableNameIyo());
         if (uriInfo.getFilterOption() != null) {
             FilterOptionImpl filterOpt = (FilterOptionImpl) uriInfo.getFilterOption();
             sqlInfo.getSqlBuilder().append(" WHERE ");
@@ -72,7 +72,7 @@ public class TinyH2SqlBuilder {
         }
 
         // 取得元のテーブル.
-        sqlInfo.getSqlBuilder().append(" FROM " + sqlInfo.getEntityName());
+        sqlInfo.getSqlBuilder().append(" FROM " + sqlInfo.getEntitySet().getDbTableNameIyo());
 
         // uriInfo.getCountOption は明示的には記載しない.
         // 現状の実装では指定があろうがなかろうが件数はカウントする実装となっている.
