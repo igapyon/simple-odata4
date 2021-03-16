@@ -21,16 +21,12 @@ package jp.igapyon.simpleodata4.oiyokan.h2.data;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Types;
 
 import org.apache.olingo.commons.api.data.Entity;
 import org.apache.olingo.commons.api.data.EntityCollection;
 import org.apache.olingo.commons.api.data.Property;
-import org.apache.olingo.commons.api.data.ValueType;
 import org.apache.olingo.commons.api.edm.EdmEntitySet;
 import org.apache.olingo.commons.api.edm.provider.CsdlEntitySet;
 import org.apache.olingo.commons.api.ex.ODataRuntimeException;
@@ -38,6 +34,7 @@ import org.apache.olingo.server.api.uri.UriInfo;
 
 import jp.igapyon.simpleodata4.oiyokan.OiyokanCsdlEntitySet;
 import jp.igapyon.simpleodata4.oiyokan.OiyokanEdmProvider;
+import jp.igapyon.simpleodata4.oiyokan.basic.BasicDbUtil;
 import jp.igapyon.simpleodata4.oiyokan.h2.sql.TinyH2SqlBuilder;
 
 /**
@@ -81,7 +78,7 @@ public class TinyH2EntityCollectionBuilder {
         }
 
         // インメモリ作業データベースに接続.
-        Connection conn = TinyH2Util.getH2Connection();
+        Connection conn = BasicDbUtil.getH2Connection();
 
         // テーブルをセットアップ.
         TinyH2DbSample.createTable(conn);
@@ -108,7 +105,7 @@ public class TinyH2EntityCollectionBuilder {
             try (var stmt = conn.prepareStatement(sql)) {
                 int column = 1;
                 for (Object look : tinySql.getSqlInfo().getSqlParamList()) {
-                    bindPreparedParameter(look, stmt, column++);
+                    BasicDbUtil.bindPreparedParameter(stmt, column++, look);
                 }
 
                 stmt.executeQuery();
@@ -131,7 +128,7 @@ public class TinyH2EntityCollectionBuilder {
         try (var stmt = conn.prepareStatement(sql)) {
             int idxColumn = 1;
             for (Object look : tinySql.getSqlInfo().getSqlParamList()) {
-                bindPreparedParameter(look, stmt, idxColumn++);
+                BasicDbUtil.bindPreparedParameter(stmt, idxColumn++, look);
             }
 
             stmt.executeQuery();
@@ -143,9 +140,10 @@ public class TinyH2EntityCollectionBuilder {
                 }
                 final Entity ent = new Entity();
                 for (int column = 1; column <= rsmeta.getColumnCount(); column++) {
-                    Property prop = resultSet2Property(rset, rsmeta, column);
+                    Property prop = BasicDbUtil.resultSet2Property(rset, rsmeta, column);
                     ent.addProperty(prop);
                 }
+                // TODO FIXME IDを可変にすること。
                 ent.setId(createId(eSetTarget.getName(), rset.getInt("ID")));
                 eCollection.getEntities().add(ent);
             }
@@ -182,59 +180,4 @@ public class TinyH2EntityCollectionBuilder {
     ///////////////////
     // Mapping
 
-    private static Property resultSet2Property(ResultSet rset, ResultSetMetaData rsmeta, int column)
-            throws SQLException {
-        Property prop = null;
-        final String columnName = rsmeta.getColumnName(column);
-        switch (rsmeta.getColumnType(column)) {
-        case Types.TINYINT:
-            prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getByte(column));
-            break;
-        case Types.SMALLINT:
-            prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getShort(column));
-            break;
-        case Types.INTEGER:
-            prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getInt(column));
-            break;
-        case Types.BIGINT:
-            prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getLong(column));
-            break;
-        case Types.DECIMAL:
-            prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getBigDecimal(column));
-            break;
-        case Types.BOOLEAN:
-            prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getBoolean(column));
-            break;
-        case Types.REAL:
-            prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getFloat(column));
-            break;
-        case Types.DOUBLE:
-            prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getDouble(column));
-            break;
-        case Types.DATE:
-            prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getDate(column));
-            break;
-        case Types.TIMESTAMP:
-            prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getTimestamp(column));
-            break;
-        case Types.TIME:
-            prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getTime(column));
-            break;
-        case Types.CHAR:
-        case Types.VARCHAR:
-        default:
-            prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getString(column));
-            break;
-        }
-        return prop;
-    }
-
-    private static void bindPreparedParameter(Object look, PreparedStatement stmt, int column) throws SQLException {
-        if (look instanceof Integer) {
-            stmt.setInt(column, (Integer) look);
-        } else {
-            // TODO 他の型への対応を追加。
-            stmt.setString(column, (String) look);
-        }
-    }
 }
