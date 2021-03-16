@@ -4,5 +4,5 @@ public class OiyokanConstants {
     /**
      * Oiyokanのバージョン番号
      */
-    public static final String VERSION = "20210316d";
+    public static final String VERSION = "20210316e";
 }
