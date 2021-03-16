@@ -101,7 +101,7 @@ public class TinyH2SqlBuilder {
 
         if (uriInfo.getFilterOption() != null) {
             FilterOptionImpl filterOpt = (FilterOptionImpl) uriInfo.getFilterOption();
-            // TODO WHERE部分についてはパラメータクエリ化が望ましい.
+            // WHERE部分についてはパラメータクエリで処理するのを基本とする.
             sqlInfo.getSqlBuilder().append(" WHERE ");
             new TinyH2SqlExprExpander(sqlInfo).expand(filterOpt.getExpression());
         }
