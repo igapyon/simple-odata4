@@ -38,8 +38,10 @@ class BasicODataSampleDbTest {
         assertEquals(200, resp.getStatusCode());
         final String result = stream2String(resp.getContent());
         // System.err.println("result: " + result);
-        assertEquals("{\"@odata.context\":\"$metadata#ODataAppInfos\",\"value\":[{\"ID\":1,\"Ver\":\""
-                + OiyokanConstants.VERSION + "\"}]}", result);
+        assertEquals(
+                "{\"@odata.context\":\"$metadata#ODataAppInfos\",\"value\":[{\"KeyName\":\"Version\",\"KeyValue\":\""
+                        + OiyokanConstants.VERSION + "\"}]}",
+                result);
     }
 
     @Test
