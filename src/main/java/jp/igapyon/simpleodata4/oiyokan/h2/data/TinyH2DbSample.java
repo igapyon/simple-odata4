@@ -102,7 +102,7 @@ public class TinyH2DbSample {
      * @param conn データベース接続。
      */
     public static void setupTableData(final Connection conn) {
-        try (var stmt = conn.prepareStatement("SELECT COUNT(ID) FROM MyProducts")) {
+        try (var stmt = conn.prepareStatement("SELECT COUNT(ID) FROM ODataAppInfos")) {
             stmt.executeQuery();
             var rset = stmt.getResultSet();
             rset.next();

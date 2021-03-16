@@ -3,6 +3,8 @@ package jp.igapyon.simpleodata4.oiyokan.h2.sql;
 import java.util.ArrayList;
 import java.util.List;
 
+import jp.igapyon.simpleodata4.oiyokan.OiyokanCsdlEntitySet;
+
 /**
  * SQL文を構築するための簡易クラスの、SQL構築のデータ構造.
  * 
@@ -11,7 +13,7 @@ import java.util.List;
  * 当面は、このクラスはSQL文とパラメータを蓄える。
  */
 public class TinySqlBuildInfo {
-    private String entityName = null;
+    private OiyokanCsdlEntitySet entitySet = null;
     private final StringBuilder sqlBuilder = new StringBuilder();
     private final List<Object> sqlParamList = new ArrayList<>();
 
@@ -20,12 +22,12 @@ public class TinySqlBuildInfo {
      * 
      * @return 処理対象のエンティティ名.
      */
-    public String getEntityName() {
-        return entityName;
+    public OiyokanCsdlEntitySet getEntitySet() {
+        return entitySet;
     }
 
-    public void setEntityName(String entityName) {
-        this.entityName = entityName;
+    public void setEntitySet(OiyokanCsdlEntitySet entitySet) {
+        this.entitySet = entitySet;
     }
 
     /**

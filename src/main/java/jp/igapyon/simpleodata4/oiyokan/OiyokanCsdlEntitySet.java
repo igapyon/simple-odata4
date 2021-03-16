@@ -20,6 +20,7 @@ package jp.igapyon.simpleodata4.oiyokan;
 
 import org.apache.olingo.commons.api.edm.FullQualifiedName;
 import org.apache.olingo.commons.api.edm.provider.CsdlEntitySet;
+import org.apache.olingo.commons.api.edm.provider.CsdlEntityType;
 
 import jp.igapyon.simpleodata4.oiyokan.h2.data.TinyH2EntityTypeBuilder;
 
@@ -31,6 +32,16 @@ public class OiyokanCsdlEntitySet extends CsdlEntitySet {
      * コンテナに関する情報を記憶.
      */
     private OiyokanCsdlEntityContainer csdlEntityContainer = null;
+
+    private CsdlEntityType entityType = null;
+
+    public void setEntityType(CsdlEntityType entityType) {
+        this.entityType = entityType;
+    }
+
+    public CsdlEntityType getEntityType() {
+        return entityType;
+    }
 
     /**
      * 要素型名. さしあたりはリレーショナルデータベースのテーブル名に相当するものと考えて差し支えない.
@@ -45,6 +56,11 @@ public class OiyokanCsdlEntitySet extends CsdlEntitySet {
     private String dbTableName = null;
 
     /**
+     * データベース上のテーブル名.
+     */
+    private String dbTableNameTarget = null;
+
+    /**
      * EntityType生成ツール.
      */
     private TinyH2EntityTypeBuilder entityTypeBuilder = null;
@@ -52,16 +68,18 @@ public class OiyokanCsdlEntitySet extends CsdlEntitySet {
     /**
      * エンティティ情報.
      * 
-     * @param containerInfo コンテナ情報.
-     * @param entitySetName MyProducts 相当.
-     * @param entityName    MyProduct 相当.
-     * @param dbTableName   データベース上のテーブル名.
+     * @param containerInfo     コンテナ情報.
+     * @param entitySetName     MyProducts 相当.
+     * @param entityName        MyProduct 相当.
+     * @param dbTableName       データベース上のテーブル名.
+     * @param dbTableNameTarget ターゲットのデータベース上のテーブル名. 通常は null指定.
      */
     public OiyokanCsdlEntitySet(OiyokanCsdlEntityContainer containerInfo, String entitySetName, String entityName,
-            String dbTableName) {
+            String dbTableName, String dbTableNameTarget) {
         this.csdlEntityContainer = containerInfo;
         this.entityName = entityName;
         this.dbTableName = dbTableName;
+        this.dbTableNameTarget = dbTableNameTarget;
 
         this.setName(entitySetName);
         this.setType(new FullQualifiedName(containerInfo.getNamespaceIyo(), entityName));
@@ -94,6 +112,15 @@ public class OiyokanCsdlEntitySet extends CsdlEntitySet {
      */
     public String getDbTableNameIyo() {
         return dbTableName;
+    }
+
+    /**
+     * 独自に追加した項目。
+     * 
+     * @return ターゲットのDBテーブル名。指定がある場合は実データ取得の際にはこちらを利用.
+     */
+    public String getDbTableNameTargetIyo() {
+        return dbTableNameTarget;
     }
 
     //////////////////////////////////
