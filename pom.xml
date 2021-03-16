@@ -9,7 +9,7 @@
 	</parent>
 	<groupId>jp.igapyon</groupId>
 	<artifactId>simpleodata4</artifactId>
-	<version>0.20210316.4</version>
+	<version>0.20210316.5</version>
 	<name>simpleodata4</name>
 	<description>Simple Odata4 sample.</description>
 	<properties>
