@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import jp.igapyon.simpleodata4.oiyokan.OiyokanConstants;
+import jp.igapyon.simpleodata4.oiyokan.basic.BasicDbUtil;
 
 /**
  * 実際に返却するデータ本体を組み上げるクラス.
@@ -132,7 +133,7 @@ public class TinyH2DbSample {
         ///////////////////////////////////////////
         // バージョン情報に関するデータの追加
         try (var stmt = conn.prepareStatement(
-                "INSERT INTO ODataAppInfos (ID, Ver) VALUES (" + TinyH2Util.getQueryPlaceholderString(2) + ")")) {
+                "INSERT INTO ODataAppInfos (ID, Ver) VALUES (" + BasicDbUtil.getQueryPlaceholderString(2) + ")")) {
             int idCounter = 1;
             stmt.setInt(1, idCounter++);
             stmt.setString(2, OiyokanConstants.VERSION);
@@ -146,7 +147,7 @@ public class TinyH2DbSample {
         ///////////////////////
         // ダミーなデータの追加
         try (var stmt = conn.prepareStatement("INSERT INTO MyProducts (ID, Name, Description) VALUES ("
-                + TinyH2Util.getQueryPlaceholderString(3) + ")")) {
+                + BasicDbUtil.getQueryPlaceholderString(3) + ")")) {
             int idCounter = 1;
             stmt.setInt(1, idCounter++);
             stmt.setString(2, "MacBookPro16,2");

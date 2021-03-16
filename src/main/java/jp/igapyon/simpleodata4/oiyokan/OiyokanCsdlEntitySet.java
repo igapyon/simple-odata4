@@ -22,7 +22,7 @@ import org.apache.olingo.commons.api.edm.FullQualifiedName;
 import org.apache.olingo.commons.api.edm.provider.CsdlEntitySet;
 import org.apache.olingo.commons.api.edm.provider.CsdlEntityType;
 
-import jp.igapyon.simpleodata4.oiyokan.h2.data.TinyH2EntityTypeBuilder;
+import jp.igapyon.simpleodata4.oiyokan.basic.BasicJdbcEntityTypeBuilder;
 
 /**
  * CsdlEntitySet の Iyokan 拡張
@@ -63,7 +63,7 @@ public class OiyokanCsdlEntitySet extends CsdlEntitySet {
     /**
      * EntityType生成ツール.
      */
-    private TinyH2EntityTypeBuilder entityTypeBuilder = null;
+    private BasicJdbcEntityTypeBuilder entityTypeBuilder = null;
 
     /**
      * エンティティ情報.
@@ -84,7 +84,7 @@ public class OiyokanCsdlEntitySet extends CsdlEntitySet {
         this.setName(entitySetName);
         this.setType(new FullQualifiedName(containerInfo.getNamespaceIyo(), entityName));
 
-        this.entityTypeBuilder = new TinyH2EntityTypeBuilder(this);
+        this.entityTypeBuilder = new BasicJdbcEntityTypeBuilder(this);
     }
 
     /**
@@ -130,7 +130,7 @@ public class OiyokanCsdlEntitySet extends CsdlEntitySet {
      * 
      * @return EntityType生成ツール.
      */
-    public TinyH2EntityTypeBuilder getEdmBuilder() {
+    public BasicJdbcEntityTypeBuilder getEdmBuilder() {
         return entityTypeBuilder;
     }
 }

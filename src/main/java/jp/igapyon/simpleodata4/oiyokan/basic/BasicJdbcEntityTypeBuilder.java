@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License. 
  */
-package jp.igapyon.simpleodata4.oiyokan.h2.data;
+package jp.igapyon.simpleodata4.oiyokan.basic;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -34,34 +34,38 @@ import org.apache.olingo.commons.api.edm.provider.CsdlPropertyRef;
 
 import jp.igapyon.simpleodata4.oiyokan.OiyokanConstants;
 import jp.igapyon.simpleodata4.oiyokan.OiyokanCsdlEntitySet;
+import jp.igapyon.simpleodata4.oiyokan.h2.data.TinyH2DbSample;
 
 /**
- * EntityTypeをビルド.
+ * 典型的で基本的な JDBC処理を用いて EntityType を構築します。
  */
-public class TinyH2EntityTypeBuilder {
+public class BasicJdbcEntityTypeBuilder {
+    /**
+     * 処理対象となる EntitySet.
+     */
     private OiyokanCsdlEntitySet entitySet = null;
 
-    public TinyH2EntityTypeBuilder(OiyokanCsdlEntitySet entitySet) {
+    public BasicJdbcEntityTypeBuilder(OiyokanCsdlEntitySet entitySet) {
         this.entitySet = entitySet;
         System.err.println( //
                 "OData v4: EntityType: " + entitySet.getName() + " (Oiyokan: " + OiyokanConstants.VERSION + ")");
     }
 
     /**
-     * エンティティタイプを取得.
+     * EntityType を取得.
      *
-     * @return エンティティタイプ.
+     * @return 取得された EntityType.
      */
     public CsdlEntityType getEntityType() {
         // この一覧を可変に対応できるようにしたい。
 
         // インメモリ作業データベースに接続.
-        Connection conn = TinyH2Util.getH2Connection();
+        Connection conn = BasicDbUtil.getH2Connection();
 
         // テーブルをセットアップ.
         TinyH2DbSample.createTable(conn);
 
-        // バッファ的な h2 データベースから該当情報を取得.
+        // 基本的な動作: バッファ的な h2 データベースから該当情報を取得.
         final List<CsdlProperty> propertyList = new ArrayList<>();
         // SELECT * について、この箇所のみ記述を許容したい。
         try (PreparedStatement stmt = conn.prepareStatement("SELECT * FROM " + entitySet.getDbTableNameIyo())) {
@@ -110,7 +114,6 @@ public class TinyH2EntityTypeBuilder {
                 case Types.VARCHAR:
                     prop.setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
                     prop.setMaxLength(rsmeta.getColumnDisplaySize(column));
-                    // TODO 桁数の取得方法不明.
                     break;
                 default:
                     // TODO なにか手当が必要。あるいは、この場合はログ吐いたうえで処理対象から外すのが無難かも。
@@ -144,8 +147,9 @@ public class TinyH2EntityTypeBuilder {
 
         // キー要素を CsdlPropertyRef として設定.
         CsdlPropertyRef propertyRef = new CsdlPropertyRef();
-        propertyRef.setName("ID");
         // TODO キー項目を可変に変更。
+        // TODO FIXME 実装が必要.
+        propertyRef.setName("ID");
 
         // CSDL要素型として情報を組み上げ.
         CsdlEntityType entityType = new CsdlEntityType();

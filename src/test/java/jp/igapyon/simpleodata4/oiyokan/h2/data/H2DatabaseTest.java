@@ -6,13 +6,15 @@ import java.sql.Connection;
 
 import org.junit.jupiter.api.Test;
 
+import jp.igapyon.simpleodata4.oiyokan.basic.BasicDbUtil;
+
 /**
  * そもそも内部 h2 database への接続性を確認
  */
 class H2DatabaseTest {
     @Test
     void test01() throws Exception {
-        Connection conn = TinyH2Util.getH2Connection();
+        Connection conn = BasicDbUtil.getH2Connection();
 
         // テーブルをセットアップ.
         TinyH2DbSample.createTable(conn);

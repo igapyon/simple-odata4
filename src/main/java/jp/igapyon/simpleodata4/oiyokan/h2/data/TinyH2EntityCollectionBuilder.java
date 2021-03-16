@@ -38,6 +38,7 @@ import org.apache.olingo.server.api.uri.UriInfo;
 
 import jp.igapyon.simpleodata4.oiyokan.OiyokanCsdlEntitySet;
 import jp.igapyon.simpleodata4.oiyokan.OiyokanEdmProvider;
+import jp.igapyon.simpleodata4.oiyokan.basic.BasicDbUtil;
 import jp.igapyon.simpleodata4.oiyokan.h2.sql.TinyH2SqlBuilder;
 
 /**
@@ -81,7 +82,7 @@ public class TinyH2EntityCollectionBuilder {
         }
 
         // インメモリ作業データベースに接続.
-        Connection conn = TinyH2Util.getH2Connection();
+        Connection conn = BasicDbUtil.getH2Connection();
 
         // テーブルをセットアップ.
         TinyH2DbSample.createTable(conn);
@@ -146,6 +147,7 @@ public class TinyH2EntityCollectionBuilder {
                     Property prop = resultSet2Property(rset, rsmeta, column);
                     ent.addProperty(prop);
                 }
+                // TODO FIXME IDを可変にすること。
                 ent.setId(createId(eSetTarget.getName(), rset.getInt("ID")));
                 eCollection.getEntities().add(ent);
             }

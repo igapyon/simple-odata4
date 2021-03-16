@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License. 
  */
-package jp.igapyon.simpleodata4.oiyokan.h2.data;
+package jp.igapyon.simpleodata4.oiyokan.basic;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -25,8 +25,8 @@ import java.sql.SQLException;
 /**
  * h2 database 用の小さなユーティリティクラス
  */
-public class TinyH2Util {
-    private TinyH2Util() {
+public class BasicDbUtil {
+    private BasicDbUtil() {
     }
 
     /**
