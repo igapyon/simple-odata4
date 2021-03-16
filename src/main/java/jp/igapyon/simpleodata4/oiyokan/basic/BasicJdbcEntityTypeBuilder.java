@@ -58,117 +58,115 @@ public class BasicJdbcEntityTypeBuilder {
      * @return 取得された EntityType.
      */
     public CsdlEntityType getEntityType() {
-        // この一覧を可変に対応できるようにしたい。
-
         // インメモリ作業データベースに接続.
-        Connection conn = BasicDbUtil.getH2Connection();
+        try (Connection conn = BasicDbUtil.getH2Connection()) {
+            // テーブルをセットアップ.
+            TinyH2DbSample.createTable(conn);
 
-        // テーブルをセットアップ.
-        TinyH2DbSample.createTable(conn);
+            // CSDL要素型として情報を組み上げ.
+            CsdlEntityType entityType = new CsdlEntityType();
+            entityType.setName(entitySet.getEntityNameIyo());
 
-        // CSDL要素型として情報を組み上げ.
-        CsdlEntityType entityType = new CsdlEntityType();
-        entityType.setName(entitySet.getEntityNameIyo());
+            // 基本的な動作: バッファ的な h2 データベースから該当情報を取得.
+            final List<CsdlProperty> propertyList = new ArrayList<>();
+            entityType.setProperties(propertyList);
 
-        // 基本的な動作: バッファ的な h2 データベースから該当情報を取得.
-        final List<CsdlProperty> propertyList = new ArrayList<>();
-        entityType.setProperties(propertyList);
-
-        // SELECT * について、この箇所のみ記述を許容したい。
-        try (PreparedStatement stmt = conn.prepareStatement("SELECT * FROM " + entitySet.getDbTableNameIyo())) {
-            ResultSetMetaData rsmeta = stmt.getMetaData();
-            final int columnCount = rsmeta.getColumnCount();
-            for (int column = 1; column <= columnCount; column++) {
-                final CsdlProperty prop = new CsdlProperty().setName(rsmeta.getColumnName(column));
-                propertyList.add(prop);
-                switch (rsmeta.getColumnType(column)) {
-                case Types.TINYINT:
-                    prop.setType(EdmPrimitiveTypeKind.SByte.getFullQualifiedName());
-                    break;
-                case Types.SMALLINT:
-                    prop.setType(EdmPrimitiveTypeKind.Int16.getFullQualifiedName());
-                    break;
-                case Types.INTEGER: /* INT */
-                    prop.setType(EdmPrimitiveTypeKind.Int32.getFullQualifiedName());
-                    break;
-                case Types.BIGINT:
-                    prop.setType(EdmPrimitiveTypeKind.Int64.getFullQualifiedName());
-                    break;
-                case Types.DECIMAL:
-                    prop.setType(EdmPrimitiveTypeKind.Decimal.getFullQualifiedName());
-                    prop.setScale(rsmeta.getScale(column));
-                    prop.setPrecision(rsmeta.getPrecision(column));
-                    break;
-                case Types.BOOLEAN:
-                    prop.setType(EdmPrimitiveTypeKind.Boolean.getFullQualifiedName());
-                    break;
-                case Types.REAL:
-                    prop.setType(EdmPrimitiveTypeKind.Single.getFullQualifiedName());
-                    break;
-                case Types.DOUBLE:
-                    prop.setType(EdmPrimitiveTypeKind.Double.getFullQualifiedName());
-                    break;
-                case Types.DATE:
-                    prop.setType(EdmPrimitiveTypeKind.Date.getFullQualifiedName());
-                    break;
-                case Types.TIMESTAMP:
-                    prop.setType(EdmPrimitiveTypeKind.DateTimeOffset.getFullQualifiedName());
-                    break;
-                case Types.TIME:
-                    prop.setType(EdmPrimitiveTypeKind.TimeOfDay.getFullQualifiedName());
-                    break;
-                case Types.CHAR:
-                case Types.VARCHAR:
-                    prop.setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
-                    prop.setMaxLength(rsmeta.getColumnDisplaySize(column));
-                    break;
-                default:
-                    // TODO なにか手当が必要。あるいは、この場合はログ吐いたうえで処理対象から外すのが無難かも。
-                    prop.setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
-                    break;
-                }
-
-                if (false) {
-                    // TODO FIXME いまここを有効にすると、なんとエラーが出てしまう。
-                    // NULL許容かどうか。不明な場合は設定しない。
-                    switch (rsmeta.isNullable(column)) {
-                    case ResultSetMetaData.columnNullable:
-                        prop.setNullable(true);
+            // SELECT * について、この箇所のみ記述を許容したい。
+            try (PreparedStatement stmt = conn.prepareStatement("SELECT * FROM " + entitySet.getDbTableNameIyo())) {
+                ResultSetMetaData rsmeta = stmt.getMetaData();
+                final int columnCount = rsmeta.getColumnCount();
+                for (int column = 1; column <= columnCount; column++) {
+                    final CsdlProperty prop = new CsdlProperty().setName(rsmeta.getColumnName(column));
+                    propertyList.add(prop);
+                    switch (rsmeta.getColumnType(column)) {
+                    case Types.TINYINT:
+                        prop.setType(EdmPrimitiveTypeKind.SByte.getFullQualifiedName());
                         break;
-                    case ResultSetMetaData.columnNoNulls:
-                        prop.setNullable(false);
+                    case Types.SMALLINT:
+                        prop.setType(EdmPrimitiveTypeKind.Int16.getFullQualifiedName());
+                        break;
+                    case Types.INTEGER: /* INT */
+                        prop.setType(EdmPrimitiveTypeKind.Int32.getFullQualifiedName());
+                        break;
+                    case Types.BIGINT:
+                        prop.setType(EdmPrimitiveTypeKind.Int64.getFullQualifiedName());
+                        break;
+                    case Types.DECIMAL:
+                        prop.setType(EdmPrimitiveTypeKind.Decimal.getFullQualifiedName());
+                        prop.setScale(rsmeta.getScale(column));
+                        prop.setPrecision(rsmeta.getPrecision(column));
+                        break;
+                    case Types.BOOLEAN:
+                        prop.setType(EdmPrimitiveTypeKind.Boolean.getFullQualifiedName());
+                        break;
+                    case Types.REAL:
+                        prop.setType(EdmPrimitiveTypeKind.Single.getFullQualifiedName());
+                        break;
+                    case Types.DOUBLE:
+                        prop.setType(EdmPrimitiveTypeKind.Double.getFullQualifiedName());
+                        break;
+                    case Types.DATE:
+                        prop.setType(EdmPrimitiveTypeKind.Date.getFullQualifiedName());
+                        break;
+                    case Types.TIMESTAMP:
+                        prop.setType(EdmPrimitiveTypeKind.DateTimeOffset.getFullQualifiedName());
+                        break;
+                    case Types.TIME:
+                        prop.setType(EdmPrimitiveTypeKind.TimeOfDay.getFullQualifiedName());
+                        break;
+                    case Types.CHAR:
+                    case Types.VARCHAR:
+                        prop.setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
+                        prop.setMaxLength(rsmeta.getColumnDisplaySize(column));
                         break;
                     default:
-                        // なにもしない.
+                        // TODO なにか手当が必要。あるいは、この場合はログ吐いたうえで処理対象から外すのが無難かも。
+                        prop.setType(EdmPrimitiveTypeKind.String.getFullQualifiedName());
                         break;
                     }
+
+                    if (false) {
+                        // TODO FIXME いまここを有効にすると、なんとエラーが出てしまう。
+                        // NULL許容かどうか。不明な場合は設定しない。
+                        switch (rsmeta.isNullable(column)) {
+                        case ResultSetMetaData.columnNullable:
+                            prop.setNullable(true);
+                            break;
+                        case ResultSetMetaData.columnNoNulls:
+                            prop.setNullable(false);
+                            break;
+                        default:
+                            // なにもしない.
+                            break;
+                        }
+                    }
+
+                    // TODO デフォルト値の取得???
+
                 }
 
-                // TODO デフォルト値の取得???
+                // テーブルのキー情報
+                final List<CsdlPropertyRef> keyRefList = new ArrayList<>();
+                final DatabaseMetaData dbmeta = conn.getMetaData();
+                final ResultSet rsKey = dbmeta.getPrimaryKeys(null, null, entitySet.getDbTableNameIyo());
+                for (; rsKey.next();) {
+                    // キー名は利用しない: rsKey.getString("PK_NAME");
+                    String colName = rsKey.getString("COLUMN_NAME");
 
+                    CsdlPropertyRef propertyRef = new CsdlPropertyRef();
+                    propertyRef.setName(colName);
+                    keyRefList.add(propertyRef);
+                }
+
+                entityType.setKey(keyRefList);
             }
 
-            // テーブルのキー情報
-            final List<CsdlPropertyRef> keyRefList = new ArrayList<>();
-            final DatabaseMetaData dbmeta = conn.getMetaData();
-            final ResultSet rsKey = dbmeta.getPrimaryKeys(null, null, entitySet.getDbTableNameIyo());
-            for (; rsKey.next();) {
-                // キー名は利用しない: rsKey.getString("PK_NAME");
-                String colName = rsKey.getString("COLUMN_NAME");
-
-                CsdlPropertyRef propertyRef = new CsdlPropertyRef();
-                propertyRef.setName(colName);
-                keyRefList.add(propertyRef);
-            }
-
-            entityType.setKey(keyRefList);
+            // 構築結果を記憶。
+            entitySet.setEntityType(entityType);
+            return entityType;
         } catch (SQLException ex) {
             ex.printStackTrace();
             throw new IllegalArgumentException("DB meta 取得失敗:" + ex.toString(), ex);
         }
-
-        // 構築結果を記憶。
-        entitySet.setEntityType(entityType);
-        return entityType;
     }
 }
