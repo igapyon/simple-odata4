@@ -21,7 +21,7 @@ http://localhost:8080/simple.svc/$metadata
 ### $orderby
 
 ```sh
-http://localhost:8080/simple.svc/MyProducts?$orderby=ID&$top=20
+http://localhost:8080/simple.svc/MyProducts?$orderby=ID&$top=20&$count=true
 ```
 
 ### $filter

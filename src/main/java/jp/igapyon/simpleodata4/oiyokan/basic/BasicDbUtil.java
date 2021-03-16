@@ -20,7 +20,14 @@ package jp.igapyon.simpleodata4.oiyokan.basic;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Types;
+
+import org.apache.olingo.commons.api.data.Property;
+import org.apache.olingo.commons.api.data.ValueType;
 
 /**
  * h2 database 用の小さなユーティリティクラス
@@ -72,5 +79,78 @@ public class BasicDbUtil {
         }
 
         return queryPlaceholder;
+    }
+
+    /**
+     * ResultSet から Property を作成.
+     * 
+     * @param rset   結果セット.
+     * @param rsmeta 結果セットメタデータ.
+     * @param column 項目番号. 1オリジン.
+     * @return 作成された Property
+     * @throws SQLException SQL例外が発生した場合.
+     */
+    public static Property resultSet2Property(ResultSet rset, ResultSetMetaData rsmeta, int column)
+            throws SQLException {
+        Property prop = null;
+        final String columnName = rsmeta.getColumnName(column);
+        switch (rsmeta.getColumnType(column)) {
+        case Types.TINYINT:
+            prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getByte(column));
+            break;
+        case Types.SMALLINT:
+            prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getShort(column));
+            break;
+        case Types.INTEGER:
+            prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getInt(column));
+            break;
+        case Types.BIGINT:
+            prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getLong(column));
+            break;
+        case Types.DECIMAL:
+            prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getBigDecimal(column));
+            break;
+        case Types.BOOLEAN:
+            prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getBoolean(column));
+            break;
+        case Types.REAL:
+            prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getFloat(column));
+            break;
+        case Types.DOUBLE:
+            prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getDouble(column));
+            break;
+        case Types.DATE:
+            prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getDate(column));
+            break;
+        case Types.TIMESTAMP:
+            prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getTimestamp(column));
+            break;
+        case Types.TIME:
+            prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getTime(column));
+            break;
+        case Types.CHAR:
+        case Types.VARCHAR:
+        default:
+            prop = new Property(null, columnName, ValueType.PRIMITIVE, rset.getString(column));
+            break;
+        }
+        return prop;
+    }
+
+    /**
+     * PreparedStatement のバインドパラメータを設定.
+     * 
+     * @param stmt   PreparedStatement のインスタンス.
+     * @param column 項目番号. 1オリジン.
+     * @param value  セットしたい値.
+     * @throws SQLException SQL例外が発生した場合.
+     */
+    public static void bindPreparedParameter(PreparedStatement stmt, int column, Object value) throws SQLException {
+        if (value instanceof Integer) {
+            stmt.setInt(column, (Integer) value);
+        } else {
+            // TODO 他の型への対応を追加。
+            stmt.setString(column, (String) value);
+        }
     }
 }
