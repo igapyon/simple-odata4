@@ -36,6 +36,18 @@ http://localhost:8080/simple.svc/MyProducts?$top=2001&$filter=Description eq 'Ma
 http://localhost:8080/simple.svc/MyProducts?$top=6&$search=macbook&$count=true&$select=ID
 ```
 
+### root
+
+```sh
+http://localhost:8080/simple.svc/
+```
+
+### internal version
+
+```sh
+http://localhost:8080/simple.svc/ODataAppInfos
+```
+
 # 中身を理解するために役立つ情報源
 
 ## 最も大切な OData v4 server チュートリアル
