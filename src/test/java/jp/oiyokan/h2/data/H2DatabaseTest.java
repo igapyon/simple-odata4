@@ -29,7 +29,7 @@ import jp.oiyokan.basic.BasicDbUtil;
 class H2DatabaseTest {
     @Test
     void test01() throws Exception {
-        Connection conn = BasicDbUtil.getH2Connection();
+        Connection conn = BasicDbUtil.getInternalConnection();
 
         // テーブルをセットアップ.
         TinyH2DbSample.createTable(conn);

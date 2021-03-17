@@ -11,7 +11,7 @@
 	</parent>
 	<groupId>jp.oiyokan</groupId>
 	<artifactId>oiyokan</artifactId>
-	<version>0.20210317.2</version>
+	<version>0.20210318.1</version>
 	<name>oiyokan</name>
 	<description>Simple OData v4 server.</description>
 	<properties>

@@ -19,13 +19,15 @@ import org.apache.olingo.commons.api.edm.FullQualifiedName;
 import org.apache.olingo.commons.api.edm.provider.CsdlEntitySet;
 import org.apache.olingo.commons.api.edm.provider.CsdlEntityType;
 
-import jp.oiyokan.basic.BasicJdbcEntityTypeBuilder;
-
 /**
  * CsdlEntitySet の Iyokan 拡張
  */
 public class OiyokanCsdlEntitySet extends CsdlEntitySet {
+    /**
+     * Databaseの型の列挙.
+     */
     public enum DatabaseType {
+        /** h2 database */
         H2
     };
 
@@ -36,16 +38,31 @@ public class OiyokanCsdlEntitySet extends CsdlEntitySet {
 
     private DatabaseType dbType = DatabaseType.H2;
 
+    /**
+     * データベース型を取得.
+     * 
+     * @return データベースの型.
+     */
     public DatabaseType getDatabaseType() {
         return dbType;
     }
 
     private CsdlEntityType entityType = null;
 
+    /**
+     * CsdlEntityType を設定.
+     * 
+     * @param entityType CsdlEntityTypeインスタンス.
+     */
     public void setEntityType(CsdlEntityType entityType) {
         this.entityType = entityType;
     }
 
+    /**
+     * CsdlEntityType を取得。
+     * 
+     * @return CsdlEntityTypeインスタンス.
+     */
     public CsdlEntityType getEntityType() {
         return entityType;
     }
@@ -60,17 +77,12 @@ public class OiyokanCsdlEntitySet extends CsdlEntitySet {
     /**
      * データベース上のテーブル名.
      */
-    private String dbTableName = null;
+    private String dbTableNameLocal = null;
 
     /**
      * データベース上のテーブル名.
      */
     private String dbTableNameTarget = null;
-
-    /**
-     * EntityType生成ツール.
-     */
-    private BasicJdbcEntityTypeBuilder entityTypeBuilder = null;
 
     /**
      * エンティティ情報.
@@ -79,21 +91,19 @@ public class OiyokanCsdlEntitySet extends CsdlEntitySet {
      * @param entitySetName     MyProducts 相当.
      * @param entityName        MyProduct 相当.
      * @param dbType            データベースタイプ.
-     * @param dbTableName       データベース上のテーブル名.
-     * @param dbTableNameTarget ターゲットのデータベース上のテーブル名. 通常は null指定.
+     * @param dbTableNameLocal  ローカルのデータベース上のテーブル名.
+     * @param dbTableNameTarget ターゲットのデータベース上のテーブル名. 通常は dbTableNameLocalと一致.
      */
     public OiyokanCsdlEntitySet(OiyokanCsdlEntityContainer containerInfo, String entitySetName, String entityName,
-            DatabaseType dbType, String dbTableName, String dbTableNameTarget) {
+            DatabaseType dbType, String dbTableNameLocal, String dbTableNameTarget) {
         this.csdlEntityContainer = containerInfo;
         this.entityName = entityName;
         this.dbType = dbType;
-        this.dbTableName = dbTableName;
+        this.dbTableNameLocal = dbTableNameLocal;
         this.dbTableNameTarget = dbTableNameTarget;
 
         this.setName(entitySetName);
         this.setType(new FullQualifiedName(containerInfo.getNamespaceIyo(), entityName));
-
-        this.entityTypeBuilder = new BasicJdbcEntityTypeBuilder(this);
     }
 
     /**
@@ -115,31 +125,20 @@ public class OiyokanCsdlEntitySet extends CsdlEntitySet {
     }
 
     /**
-     * 独自に追加した項目。
+     * ローカル上のテーブル名。
      * 
-     * @return DBテーブル名。
+     * @return ローカルのDBテーブル名.
      */
-    public String getDbTableNameIyo() {
-        return dbTableName;
+    public String getDbTableNameLocalIyo() {
+        return dbTableNameLocal;
     }
 
     /**
-     * 独自に追加した項目。
+     * ターゲット上のテーブル名.。
      * 
-     * @return ターゲットのDBテーブル名。指定がある場合は実データ取得の際にはこちらを利用.
+     * @return ターゲットのDBテーブル名.
      */
     public String getDbTableNameTargetIyo() {
         return dbTableNameTarget;
-    }
-
-    //////////////////////////////////
-
-    /**
-     * EntityType生成ツールを取得.
-     * 
-     * @return EntityType生成ツール.
-     */
-    public BasicJdbcEntityTypeBuilder getEdmBuilder() {
-        return entityTypeBuilder;
     }
 }

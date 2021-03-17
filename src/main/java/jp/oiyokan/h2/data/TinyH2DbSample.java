@@ -129,8 +129,9 @@ public class TinyH2DbSample {
             throw new IllegalArgumentException("検索失敗:" + ex.toString(), ex);
         }
 
-        System.err.println( //
-                "OData v4: build sample data: " + " (Oiyokan: " + OiyokanConstants.VERSION + ")");
+        if (OiyokanConstants.IS_TRACE_ODATA_V4)
+            System.err.println( //
+                    "OData v4: build sample data: " + " (Oiyokan: " + OiyokanConstants.VERSION + ")");
 
         // 全文検索関連の準備.
         try {
@@ -149,9 +150,13 @@ public class TinyH2DbSample {
         // バージョン情報に関するデータの追加
         try (var stmt = conn.prepareStatement("INSERT INTO ODataAppInfos (KeyName, KeyValue) VALUES ("
                 + BasicDbUtil.getQueryPlaceholderString(2) + ")")) {
-            int idCounter = 1;
             stmt.setString(1, "Version");
             stmt.setString(2, OiyokanConstants.VERSION);
+            stmt.executeUpdate();
+
+            stmt.clearParameters();
+            stmt.setString(1, "Provider");
+            stmt.setString(2, OiyokanConstants.NAME);
             stmt.executeUpdate();
 
             conn.commit();

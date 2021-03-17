@@ -33,6 +33,11 @@ import org.apache.olingo.commons.api.edm.provider.CsdlSchema;
  */
 public class OiyokanEdmProvider extends CsdlAbstractEdmProvider {
     /**
+     * デバッグ出力の有無.
+     */
+    private static final boolean IS_DEBUG = false;
+
+    /**
      * Oiyokan実装のキモ。シングルトンなコンテナ.
      */
     private static final OiyokanCsdlEntityContainer localTemplateEntityContainer = new OiyokanCsdlEntityContainer();
@@ -45,18 +50,18 @@ public class OiyokanEdmProvider extends CsdlAbstractEdmProvider {
      */
     @Override
     public CsdlEntityType getEntityType(FullQualifiedName entityTypeName) {
-        // テンプレートを念押しビルド.
-        localTemplateEntityContainer.ensureBuild();
+        try {
+            if (IS_DEBUG)
+                System.err.println("OiyokanEdmProvider#getEntityType(" + entityTypeName + ")");
 
-        if (entityTypeName.equals(
-                localTemplateEntityContainer.getEntitySetByEntityNameFqnIyo(entityTypeName).getEntityNameFqnIyo())) {
-            // 処理対象の型名です。
-            return localTemplateEntityContainer.getEntitySetByEntityNameFqnIyo(entityTypeName).getEdmBuilder()
-                    .getEntityType();
+            // テンプレートを念押しビルド.
+            localTemplateEntityContainer.ensureBuild();
+
+            return localTemplateEntityContainer.getEntityType(entityTypeName);
+        } catch (RuntimeException ex) {
+            ex.printStackTrace();
+            throw ex;
         }
-
-        // 該当する型名の要素型はありません.
-        return null;
     }
 
     /**
@@ -68,17 +73,26 @@ public class OiyokanEdmProvider extends CsdlAbstractEdmProvider {
      */
     @Override
     public CsdlEntitySet getEntitySet(FullQualifiedName entityContainer, String entitySetName) {
-        // テンプレートを念押しビルド.
-        localTemplateEntityContainer.ensureBuild();
+        try {
+            if (IS_DEBUG)
+                System.err.println("OiyokanEdmProvider#getEntitySet(" //
+                        + entityContainer + ", " + entitySetName + ")");
 
-        // コンテナが一致する場合のみ処理対象.
-        if (!entityContainer.equals(localTemplateEntityContainer.getContainerFqnIyo())) {
-            return null;
+            // テンプレートを念押しビルド.
+            localTemplateEntityContainer.ensureBuild();
+
+            // コンテナが一致する場合のみ処理対象.
+            if (!entityContainer.equals(localTemplateEntityContainer.getContainerFqnIyo())) {
+                return null;
+            }
+
+            // 要素セット名が一致する場合はそれを返却.
+            // ヒットしない場合は対象外。その場合は null返却.
+            return localTemplateEntityContainer.getEntitySet(entitySetName);
+        } catch (RuntimeException ex) {
+            ex.printStackTrace();
+            throw ex;
         }
-
-        // 要素セット名が一致する場合はそれを返却.
-        // ヒットしない場合は対象外。その場合は null返却.
-        return localTemplateEntityContainer.getEntitySet(entitySetName);
     }
 
     /**
@@ -88,24 +102,32 @@ public class OiyokanEdmProvider extends CsdlAbstractEdmProvider {
      */
     @Override
     public CsdlEntityContainer getEntityContainer() {
-        // テンプレートを念押しビルド.
-        localTemplateEntityContainer.ensureBuild();
+        try {
+            if (IS_DEBUG)
+                System.err.println("OiyokanEdmProvider#getEntityContainer()");
 
-        // 要素セットを作成.
-        List<CsdlEntitySet> newEntitySetList = new ArrayList<>();
-        for (CsdlEntitySet look : localTemplateEntityContainer.getEntitySets()) {
-            OiyokanCsdlEntitySet look2 = (OiyokanCsdlEntitySet) look;
-            newEntitySetList.add(getEntitySet(localTemplateEntityContainer.getContainerFqnIyo(), look2.getName()));
+            // テンプレートを念押しビルド.
+            localTemplateEntityContainer.ensureBuild();
+
+            // 要素セットを作成.
+            List<CsdlEntitySet> newEntitySetList = new ArrayList<>();
+            for (CsdlEntitySet look : localTemplateEntityContainer.getEntitySets()) {
+                OiyokanCsdlEntitySet look2 = (OiyokanCsdlEntitySet) look;
+                newEntitySetList.add(getEntitySet(localTemplateEntityContainer.getContainerFqnIyo(), look2.getName()));
+            }
+
+            // 要素コンテナを作成.
+            final OiyokanCsdlEntityContainer newEntityContainer = new OiyokanCsdlEntityContainer();
+            newEntityContainer.setName(localTemplateEntityContainer.getContainerNameIyo());
+            newEntityContainer.setEntitySets(newEntitySetList);
+
+            newEntityContainer.ensureBuild();
+
+            return newEntityContainer;
+        } catch (RuntimeException ex) {
+            ex.printStackTrace();
+            throw ex;
         }
-
-        // 要素コンテナを作成.
-        final OiyokanCsdlEntityContainer newEntityContainer = new OiyokanCsdlEntityContainer();
-        newEntityContainer.setName(localTemplateEntityContainer.getContainerNameIyo());
-        newEntityContainer.setEntitySets(newEntitySetList);
-
-        newEntityContainer.ensureBuild();
-
-        return newEntityContainer;
     }
 
     /**
@@ -115,30 +137,38 @@ public class OiyokanEdmProvider extends CsdlAbstractEdmProvider {
      */
     @Override
     public List<CsdlSchema> getSchemas() {
-        // テンプレートを念押しビルド.
-        localTemplateEntityContainer.ensureBuild();
+        try {
+            if (IS_DEBUG)
+                System.err.println("OiyokanEdmProvider#getSchemas()");
 
-        // CSDLスキーマを作成.
-        final CsdlSchema newSchema = new CsdlSchema();
-        newSchema.setNamespace(localTemplateEntityContainer.getNamespaceIyo());
+            // テンプレートを念押しビルド.
+            localTemplateEntityContainer.ensureBuild();
 
-        // 要素型を設定.
-        final List<CsdlEntityType> newEntityTypeList = new ArrayList<>();
-        for (CsdlEntitySet look : localTemplateEntityContainer.getEntitySets()) {
-            OiyokanCsdlEntitySet local2 = (OiyokanCsdlEntitySet) look;
-            // エンティティタイプを設定.
-            newEntityTypeList.add(getEntityType(local2.getEntityNameFqnIyo()));
+            // CSDLスキーマを作成.
+            final CsdlSchema newSchema = new CsdlSchema();
+            newSchema.setNamespace(localTemplateEntityContainer.getNamespaceIyo());
+
+            // 要素型を設定.
+            final List<CsdlEntityType> newEntityTypeList = new ArrayList<>();
+            for (CsdlEntitySet look : localTemplateEntityContainer.getEntitySets()) {
+                OiyokanCsdlEntitySet local2 = (OiyokanCsdlEntitySet) look;
+                // エンティティタイプを設定.
+                newEntityTypeList.add(getEntityType(local2.getEntityNameFqnIyo()));
+            }
+            newSchema.setEntityTypes(newEntityTypeList);
+
+            // 要素コンテナを設定.
+            newSchema.setEntityContainer(getEntityContainer());
+
+            // CSDLスキーマを設定.
+            final List<CsdlSchema> newSchemaList = new ArrayList<>();
+            newSchemaList.add(newSchema);
+
+            return newSchemaList;
+        } catch (RuntimeException ex) {
+            ex.printStackTrace();
+            throw ex;
         }
-        newSchema.setEntityTypes(newEntityTypeList);
-
-        // 要素コンテナを設定.
-        newSchema.setEntityContainer(getEntityContainer());
-
-        // CSDLスキーマを設定.
-        final List<CsdlSchema> newSchemaList = new ArrayList<>();
-        newSchemaList.add(newSchema);
-
-        return newSchemaList;
     }
 
     /**
@@ -151,16 +181,24 @@ public class OiyokanEdmProvider extends CsdlAbstractEdmProvider {
      */
     @Override
     public CsdlEntityContainerInfo getEntityContainerInfo(FullQualifiedName entityContainerName) {
-        // テンプレートを念押しビルド.
-        localTemplateEntityContainer.ensureBuild();
+        try {
+            if (IS_DEBUG)
+                System.err.println("OiyokanEdmProvider#getEntityContainerInfo(" + entityContainerName + ")");
 
-        if (entityContainerName == null
-                || entityContainerName.equals(localTemplateEntityContainer.getContainerFqnIyo())) {
-            final CsdlEntityContainerInfo entityContainerInfo = new CsdlEntityContainerInfo();
-            entityContainerInfo.setContainerName(localTemplateEntityContainer.getContainerFqnIyo());
-            return entityContainerInfo;
+            // テンプレートを念押しビルド.
+            localTemplateEntityContainer.ensureBuild();
+
+            if (entityContainerName == null
+                    || entityContainerName.equals(localTemplateEntityContainer.getContainerFqnIyo())) {
+                final CsdlEntityContainerInfo entityContainerInfo = new CsdlEntityContainerInfo();
+                entityContainerInfo.setContainerName(localTemplateEntityContainer.getContainerFqnIyo());
+                return entityContainerInfo;
+            }
+
+            return null;
+        } catch (RuntimeException ex) {
+            ex.printStackTrace();
+            throw ex;
         }
-
-        return null;
     }
 }

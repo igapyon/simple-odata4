@@ -16,10 +16,15 @@
 package jp.oiyokan;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.olingo.commons.api.edm.FullQualifiedName;
 import org.apache.olingo.commons.api.edm.provider.CsdlEntityContainer;
 import org.apache.olingo.commons.api.edm.provider.CsdlEntitySet;
+import org.apache.olingo.commons.api.edm.provider.CsdlEntityType;
+
+import jp.oiyokan.basic.BasicJdbcEntityTypeBuilder;
 
 /**
  * CsdlEntityContainer の Iyokan 拡張
@@ -28,12 +33,17 @@ public class OiyokanCsdlEntityContainer extends CsdlEntityContainer {
     /**
      * ネームスペース名. CsdlEntityContainer の上位の概念をここで記述。
      */
-    private String namespace = "Igapyon.Simple";
+    private String namespace = "Oiyokan";
 
     /**
      * コンテナ名. CsdlEntityContainer の名前そのもの.
      */
     private String containerName = "Container";
+
+    /**
+     * CsdlEntityTypeをすでに取得済みであればそれをキャッシュから返却する場合に利用.
+     */
+    private Map<String, CsdlEntityType> cachedCsdlEntityTypeMap = new HashMap<>();
 
     /**
      * このコンテナをビルドし、紐づくエンティティセットをここで生成. このクラスの利用者は、機能呼び出し前にこのメソッドを呼ぶこと.
@@ -49,9 +59,9 @@ public class OiyokanCsdlEntityContainer extends CsdlEntityContainer {
         if (getEntitySets().size() == 0) {
             // EntitySet の初期セットを実施。
             getEntitySets().add(new OiyokanCsdlEntitySet(this, "ODataAppInfos", "ODataAppInfo",
-                    OiyokanCsdlEntitySet.DatabaseType.H2, "ODataAppInfos", null));
+                    OiyokanCsdlEntitySet.DatabaseType.H2, "ODataAppInfos", "ODataAppInfos"));
             getEntitySets().add(new OiyokanCsdlEntitySet(this, "MyProducts", "MyProduct",
-                    OiyokanCsdlEntitySet.DatabaseType.H2, "MyProducts", null));
+                    OiyokanCsdlEntitySet.DatabaseType.H2, "MyProducts", "MyProducts"));
         }
     }
 
@@ -114,5 +124,29 @@ public class OiyokanCsdlEntityContainer extends CsdlEntityContainer {
         }
 
         return null;
+    }
+
+    /**
+     * 指定の型名の CsdlEntityType を取得
+     * 
+     * @param entityTypeName 型名.
+     * @return 指定の型名の CsdlEntityType.
+     */
+    public CsdlEntityType getEntityType(FullQualifiedName entityTypeName) {
+        if (getEntitySetByEntityNameFqnIyo(entityTypeName) == null) {
+            return null;
+        }
+
+        // CsdlEntityTypeをすでに取得済みであればそれをキャッシュから返却する場合に利用.
+        if (cachedCsdlEntityTypeMap.get(entityTypeName.getFullQualifiedNameAsString()) != null) {
+            return cachedCsdlEntityTypeMap.get(entityTypeName.getFullQualifiedNameAsString());
+        }
+
+        BasicJdbcEntityTypeBuilder entityTypeBuilder = new BasicJdbcEntityTypeBuilder(
+                getEntitySetByEntityNameFqnIyo(entityTypeName));
+        // キャッシュに記憶.
+        CsdlEntityType newEntityType = entityTypeBuilder.getEntityType();
+        cachedCsdlEntityTypeMap.put(entityTypeName.getFullQualifiedNameAsString(), newEntityType);
+        return newEntityType;
     }
 }

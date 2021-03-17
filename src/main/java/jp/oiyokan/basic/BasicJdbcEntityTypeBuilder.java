@@ -33,7 +33,7 @@ import jp.oiyokan.OiyokanCsdlEntitySet;
 import jp.oiyokan.h2.data.TinyH2DbSample;
 
 /**
- * 典型的で基本的な JDBC処理を用いて EntityType を構築します。
+ * 典型的で基本的な JDBC処理を利用した EntityType を構築します。
  */
 public class BasicJdbcEntityTypeBuilder {
     /**
@@ -41,10 +41,16 @@ public class BasicJdbcEntityTypeBuilder {
      */
     private OiyokanCsdlEntitySet entitySet = null;
 
+    /**
+     * コンストラクタ。
+     * 
+     * @param entitySet OiyokanCsdlEntitySetのインスタンス.
+     */
     public BasicJdbcEntityTypeBuilder(OiyokanCsdlEntitySet entitySet) {
         this.entitySet = entitySet;
-        System.err.println( //
-                "OData v4: EntityType: " + entitySet.getName() + " (Oiyokan: " + OiyokanConstants.VERSION + ")");
+        if (OiyokanConstants.IS_TRACE_ODATA_V4)
+            System.err.println( //
+                    "OData v4: EntityType: " + entitySet.getName() + " (Oiyokan: " + OiyokanConstants.VERSION + ")");
     }
 
     /**
@@ -54,7 +60,7 @@ public class BasicJdbcEntityTypeBuilder {
      */
     public CsdlEntityType getEntityType() {
         // インメモリ作業データベースに接続.
-        try (Connection conn = BasicDbUtil.getH2Connection()) {
+        try (Connection conn = BasicDbUtil.getInternalConnection()) {
             // テーブルをセットアップ.
             TinyH2DbSample.createTable(conn);
 
@@ -69,7 +75,7 @@ public class BasicJdbcEntityTypeBuilder {
             // SELECT * について、この箇所のみ記述を許容。
             // DatabaseMetaData では取りづらい情報があるためこちらを採用。
             try (PreparedStatement stmt = conn
-                    .prepareStatement("SELECT * FROM " + entitySet.getDbTableNameIyo() + " LIMIT 1")) {
+                    .prepareStatement("SELECT * FROM " + entitySet.getDbTableNameLocalIyo() + " LIMIT 1")) {
                 ResultSetMetaData rsmeta = stmt.getMetaData();
                 final int columnCount = rsmeta.getColumnCount();
                 for (int column = 1; column <= columnCount; column++) {
@@ -79,7 +85,7 @@ public class BasicJdbcEntityTypeBuilder {
                 // テーブルのキー情報
                 final List<CsdlPropertyRef> keyRefList = new ArrayList<>();
                 final DatabaseMetaData dbmeta = conn.getMetaData();
-                final ResultSet rsKey = dbmeta.getPrimaryKeys(null, null, entitySet.getDbTableNameIyo());
+                final ResultSet rsKey = dbmeta.getPrimaryKeys(null, null, entitySet.getDbTableNameLocalIyo());
                 for (; rsKey.next();) {
                     // キー名は利用しない: rsKey.getString("PK_NAME");
                     String colName = rsKey.getString("COLUMN_NAME");
