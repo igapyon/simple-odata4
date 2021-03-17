@@ -55,7 +55,7 @@ public class BasicJdbcEntityTypeBuilder {
      */
     public CsdlEntityType getEntityType() {
         // インメモリ作業データベースに接続.
-        try (Connection conn = BasicDbUtil.getH2Connection()) {
+        try (Connection conn = BasicDbUtil.getInternalConnection()) {
             // テーブルをセットアップ.
             TinyH2DbSample.createTable(conn);
 

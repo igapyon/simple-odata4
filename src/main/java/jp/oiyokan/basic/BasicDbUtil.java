@@ -36,11 +36,11 @@ public class BasicDbUtil {
     }
 
     /**
-     * h2 データベースへのDB接続を取得します。
+     * 内部データベースへのDB接続を取得します。
      * 
      * @return データベース接続。
      */
-    public static Connection getH2Connection() {
+    public static Connection getInternalConnection() {
         Connection conn;
         try {
             Class.forName("org.h2.Driver");
@@ -49,7 +49,7 @@ public class BasicDbUtil {
             throw new IllegalArgumentException(e);
         }
         // SQL Server 互換モードで動作させる.
-        final var jdbcConnStr = "jdbc:h2:mem:localmetainfo;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=FALSE;CASE_INSENSITIVE_IDENTIFIERS=TRUE;MODE=MSSQLServer";
+        final var jdbcConnStr = "jdbc:h2:mem:oiyokan;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=FALSE;CASE_INSENSITIVE_IDENTIFIERS=TRUE;MODE=MSSQLServer";
         // System.err.println("TRACE: DEMO: [connect jdbc] " + jdbcConnStr);
         try {
             conn = DriverManager.getConnection(//
@@ -80,6 +80,14 @@ public class BasicDbUtil {
         return queryPlaceholder;
     }
 
+    /**
+     * CsdlEntityType 生成時にテーブル情報からプロパティを生成.
+     * 
+     * @param rsmeta ResultSetMetaDataインスタンス.
+     * @param column 項目番号.
+     * @return CsdlProperty 情報.
+     * @throws SQLException SQL例外が発生した場合.
+     */
     public static CsdlProperty resultSetMetaData2CsdlProperty(ResultSetMetaData rsmeta, int column)
             throws SQLException {
         final CsdlProperty csdlProp = new CsdlProperty().setName(rsmeta.getColumnName(column));
@@ -152,7 +160,7 @@ public class BasicDbUtil {
     }
 
     /**
-     * ResultSet から Property を作成.
+     * 実際の EntityCollection 生成時に、ResultSet から Property を作成.
      * 
      * @param rset   結果セット.
      * @param rsmeta 結果セットメタデータ.
