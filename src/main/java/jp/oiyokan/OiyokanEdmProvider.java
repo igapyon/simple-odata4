@@ -57,15 +57,7 @@ public class OiyokanEdmProvider extends CsdlAbstractEdmProvider {
             // テンプレートを念押しビルド.
             localTemplateEntityContainer.ensureBuild();
 
-            if (entityTypeName.equals(localTemplateEntityContainer.getEntitySetByEntityNameFqnIyo(entityTypeName)
-                    .getEntityNameFqnIyo())) {
-                // 処理対象の型名です。
-                return localTemplateEntityContainer.getEntitySetByEntityNameFqnIyo(entityTypeName).getEdmBuilder()
-                        .getEntityType();
-            }
-
-            // 該当する型名の要素型はありません.
-            return null;
+            return localTemplateEntityContainer.getEntityType(entityTypeName);
         } catch (RuntimeException ex) {
             ex.printStackTrace();
             throw ex;

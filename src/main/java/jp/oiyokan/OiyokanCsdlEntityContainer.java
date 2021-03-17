@@ -20,6 +20,9 @@ import java.util.ArrayList;
 import org.apache.olingo.commons.api.edm.FullQualifiedName;
 import org.apache.olingo.commons.api.edm.provider.CsdlEntityContainer;
 import org.apache.olingo.commons.api.edm.provider.CsdlEntitySet;
+import org.apache.olingo.commons.api.edm.provider.CsdlEntityType;
+
+import jp.oiyokan.basic.BasicJdbcEntityTypeBuilder;
 
 /**
  * CsdlEntityContainer の Iyokan 拡張
@@ -114,5 +117,15 @@ public class OiyokanCsdlEntityContainer extends CsdlEntityContainer {
         }
 
         return null;
+    }
+
+    public CsdlEntityType getEntityType(FullQualifiedName entityTypeName) {
+        if (getEntitySetByEntityNameFqnIyo(entityTypeName) == null) {
+            return null;
+        }
+
+        BasicJdbcEntityTypeBuilder entityTypeBuilder = new BasicJdbcEntityTypeBuilder(
+                getEntitySetByEntityNameFqnIyo(entityTypeName));
+        return entityTypeBuilder.getEntityType();
     }
 }

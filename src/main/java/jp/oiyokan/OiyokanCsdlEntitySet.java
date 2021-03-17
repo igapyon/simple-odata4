@@ -19,8 +19,6 @@ import org.apache.olingo.commons.api.edm.FullQualifiedName;
 import org.apache.olingo.commons.api.edm.provider.CsdlEntitySet;
 import org.apache.olingo.commons.api.edm.provider.CsdlEntityType;
 
-import jp.oiyokan.basic.BasicJdbcEntityTypeBuilder;
-
 /**
  * CsdlEntitySet の Iyokan 拡張
  */
@@ -68,11 +66,6 @@ public class OiyokanCsdlEntitySet extends CsdlEntitySet {
     private String dbTableNameTarget = null;
 
     /**
-     * EntityType生成ツール.
-     */
-    private BasicJdbcEntityTypeBuilder entityTypeBuilder = null;
-
-    /**
      * エンティティ情報.
      * 
      * @param containerInfo     コンテナ情報.
@@ -92,8 +85,6 @@ public class OiyokanCsdlEntitySet extends CsdlEntitySet {
 
         this.setName(entitySetName);
         this.setType(new FullQualifiedName(containerInfo.getNamespaceIyo(), entityName));
-
-        this.entityTypeBuilder = new BasicJdbcEntityTypeBuilder(this);
     }
 
     /**
@@ -130,16 +121,5 @@ public class OiyokanCsdlEntitySet extends CsdlEntitySet {
      */
     public String getDbTableNameTargetIyo() {
         return dbTableNameTarget;
-    }
-
-    //////////////////////////////////
-
-    /**
-     * EntityType生成ツールを取得.
-     * 
-     * @return EntityType生成ツール.
-     */
-    public BasicJdbcEntityTypeBuilder getEdmBuilder() {
-        return entityTypeBuilder;
     }
 }
