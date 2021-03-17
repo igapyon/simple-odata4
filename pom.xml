@@ -9,11 +9,11 @@
 		<version>2.4.3</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>jp.igapyon</groupId>
-	<artifactId>simpleodata4</artifactId>
-	<version>0.20210317.1</version>
-	<name>simpleodata4</name>
-	<description>Simple Odata4 sample.</description>
+	<groupId>jp.oiyokan</groupId>
+	<artifactId>oiyokan</artifactId>
+	<version>0.20210317.2</version>
+	<name>oiyokan</name>
+	<description>Simple OData v4 server.</description>
 	<properties>
 		<java.version>11</java.version>
 	</properties>

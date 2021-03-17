@@ -1,8 +1,8 @@
-# simple-odata4
+# oiyokan
 
-Simple OData v4 server usage sample. (with Apache Olingo / Spring Boot / h2 database)
+Oiyokan is a simple OData v4 Server. (based on Apache Olingo / Spring Boot / h2 database)
 
-# Try to run simple sample
+# Try to run oiyokan
 
 ## Spring Boot Web Server
 
@@ -15,37 +15,37 @@ mvn clean install spring-boot:run
 ### $metadata
 
 ```sh
-http://localhost:8080/simple.svc/$metadata
+http://localhost:8080/odata4.svc/$metadata
 ```
 
 ### $orderby
 
 ```sh
-http://localhost:8080/simple.svc/MyProducts?$orderby=ID&$top=20&$count=true
+http://localhost:8080/odata4.svc/MyProducts?$orderby=ID&$top=20&$count=true
 ```
 
 ### $filter
 
 ```sh
-http://localhost:8080/simple.svc/MyProducts?$top=2001&$filter=Description eq 'MacBook Pro (13-inch, 2020, Thunderbolt 3ポートx 4)' and ID eq 1.0&$count=true&$select=ID,Name
+http://localhost:8080/odata4.svc/MyProducts?$top=2001&$filter=Description eq 'MacBook Pro (13-inch, 2020, Thunderbolt 3ポートx 4)' and ID eq 1.0&$count=true&$select=ID,Name
 ```
 
 ### $search
 
 ```sh
-http://localhost:8080/simple.svc/MyProducts?$top=6&$search=macbook&$count=true&$select=ID
+http://localhost:8080/odata4.svc/MyProducts?$top=6&$search=macbook&$count=true&$select=ID
 ```
 
 ### root
 
 ```sh
-http://localhost:8080/simple.svc/
+http://localhost:8080/odata4.svc/
 ```
 
 ### internal version
 
 ```sh
-http://localhost:8080/simple.svc/ODataAppInfos
+http://localhost:8080/odata4.svc/ODataAppInfos
 ```
 
 # 中身を理解するために役立つ情報源
