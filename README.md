@@ -64,18 +64,12 @@ http://localhost:8080/odata4.svc/ODataAppInfos
 
 # 作業メモ
 
-## 更新内容
-
-- ODataの自動テストを組み込んだ。
-
 ## TODO
 
-- Container や Entity のローカル情報体を観察していると、これは CsdlEntitySet などとほぼ一致することに気がつき始めた。extends でカスタムクラスを作成する方向性を考察開始。
-- IDについてPrimaryKeyで動作するようにする。データベース項目名も可変にしたい。ただし当面は単一項目でユニークと期待。
 - PreparedStatementの入力の型対応に先立ち、引数の型バリエーションを追加。特に日付・日時絡みは調整が必要な見込み。
 - PreparedStatementの入力の型対応の追加.
 - 実行時エラーを調整すること。現在 IllegalArgumentExceptionでそのまま500になったうえにエラー内容が見えてしまう。ODataApplicationException に対応することが第一案.
 - 対応しない命令の場合、適切に例外で異常停止。ODataApplicationExceptionの利用を想定。
 - 認証の実験。
 - 実験的に全文検索である `$search` をサポートしたものの、もう少し詳しいところが調べられていない。また全文検索で有効なのはアルファベットのみ。h2 database でここを深掘りしても不毛か?
-- ($search対応の後続となるため、しばらく対応できない) TODO Null の対応。
+- ($search対応の後続となるため、しばらく対応できない) TODO Null (nullable) の対応。現在はコメントアウト.
