@@ -15,6 +15,9 @@
  */
 package jp.oiyokan;
 
+/**
+ * Oiyokan の定数.
+ */
 public class OiyokanConstants {
     /**
      * Oiyokanのバージョン番号

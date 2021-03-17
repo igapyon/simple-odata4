@@ -34,6 +34,14 @@ import jp.oiyokan.OiyokanConstants;
  * 全文検索の実験的な実装。
  */
 public class TinyH2TrialFullTextSearch {
+    /**
+     * 全文検索を処理.
+     * 
+     * @param conn         データベース接続.
+     * @param edmEntitySet EdmEntitySet情報.
+     * @param uriInfo      URI情報.
+     * @param eCollection  検索結果の出力先.
+     */
     public void process(Connection conn, EdmEntitySet edmEntitySet, UriInfo uriInfo, EntityCollection eCollection) {
         try {
             SearchOptionImpl searchOpt = (SearchOptionImpl) uriInfo.getSearchOption();

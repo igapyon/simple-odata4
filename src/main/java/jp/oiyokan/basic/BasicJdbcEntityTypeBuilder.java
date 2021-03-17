@@ -41,6 +41,11 @@ public class BasicJdbcEntityTypeBuilder {
      */
     private OiyokanCsdlEntitySet entitySet = null;
 
+    /**
+     * コンストラクタ。
+     * 
+     * @param entitySet OiyokanCsdlEntitySetのインスタンス.
+     */
     public BasicJdbcEntityTypeBuilder(OiyokanCsdlEntitySet entitySet) {
         this.entitySet = entitySet;
         if (OiyokanConstants.IS_TRACE_ODATA_V4)

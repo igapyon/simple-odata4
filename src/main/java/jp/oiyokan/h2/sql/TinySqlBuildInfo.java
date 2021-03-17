@@ -41,6 +41,11 @@ public class TinySqlBuildInfo {
         return entitySet;
     }
 
+    /**
+     * EntitySet を指定.
+     * 
+     * @param entitySet OiyokanCsdlEntitySet のインスタンス.
+     */
     public void setEntitySet(OiyokanCsdlEntitySet entitySet) {
         this.entitySet = entitySet;
     }

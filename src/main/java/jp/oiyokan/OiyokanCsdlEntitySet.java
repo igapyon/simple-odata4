@@ -23,7 +23,11 @@ import org.apache.olingo.commons.api.edm.provider.CsdlEntityType;
  * CsdlEntitySet の Iyokan 拡張
  */
 public class OiyokanCsdlEntitySet extends CsdlEntitySet {
+    /**
+     * Databaseの型の列挙.
+     */
     public enum DatabaseType {
+        /** h2 database */
         H2
     };
 
@@ -34,16 +38,31 @@ public class OiyokanCsdlEntitySet extends CsdlEntitySet {
 
     private DatabaseType dbType = DatabaseType.H2;
 
+    /**
+     * データベース型を取得.
+     * 
+     * @return データベースの型.
+     */
     public DatabaseType getDatabaseType() {
         return dbType;
     }
 
     private CsdlEntityType entityType = null;
 
+    /**
+     * CsdlEntityType を設定.
+     * 
+     * @param entityType CsdlEntityTypeインスタンス.
+     */
     public void setEntityType(CsdlEntityType entityType) {
         this.entityType = entityType;
     }
 
+    /**
+     * CsdlEntityType を取得。
+     * 
+     * @return CsdlEntityTypeインスタンス.
+     */
     public CsdlEntityType getEntityType() {
         return entityType;
     }
