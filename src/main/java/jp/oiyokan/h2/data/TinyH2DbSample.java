@@ -149,9 +149,13 @@ public class TinyH2DbSample {
         // バージョン情報に関するデータの追加
         try (var stmt = conn.prepareStatement("INSERT INTO ODataAppInfos (KeyName, KeyValue) VALUES ("
                 + BasicDbUtil.getQueryPlaceholderString(2) + ")")) {
-            int idCounter = 1;
             stmt.setString(1, "Version");
             stmt.setString(2, OiyokanConstants.VERSION);
+            stmt.executeUpdate();
+
+            stmt.clearParameters();
+            stmt.setString(1, "Provider");
+            stmt.setString(2, "Oiyokan");
             stmt.executeUpdate();
 
             conn.commit();

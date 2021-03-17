@@ -28,7 +28,7 @@ public class OiyokanCsdlEntityContainer extends CsdlEntityContainer {
     /**
      * ネームスペース名. CsdlEntityContainer の上位の概念をここで記述。
      */
-    private String namespace = "Igapyon.Simple";
+    private String namespace = "Oiyokan";
 
     /**
      * コンテナ名. CsdlEntityContainer の名前そのもの.

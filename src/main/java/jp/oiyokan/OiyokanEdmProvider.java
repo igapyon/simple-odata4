@@ -32,7 +32,10 @@ import org.apache.olingo.commons.api.edm.provider.CsdlSchema;
  * コードの多くは olingo のための基礎的な記述に該当.
  */
 public class OiyokanEdmProvider extends CsdlAbstractEdmProvider {
-    private static final boolean IS_DEBUG = true;
+    /**
+     * デバッグ出力の有無.
+     */
+    private static final boolean IS_DEBUG = false;
 
     /**
      * Oiyokan実装のキモ。シングルトンなコンテナ.
