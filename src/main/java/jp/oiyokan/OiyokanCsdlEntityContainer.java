@@ -16,6 +16,8 @@
 package jp.oiyokan;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.olingo.commons.api.edm.FullQualifiedName;
 import org.apache.olingo.commons.api.edm.provider.CsdlEntityContainer;
@@ -37,6 +39,11 @@ public class OiyokanCsdlEntityContainer extends CsdlEntityContainer {
      * コンテナ名. CsdlEntityContainer の名前そのもの.
      */
     private String containerName = "Container";
+
+    /**
+     * CsdlEntityTypeをすでに取得済みであればそれをキャッシュから返却する場合に利用.
+     */
+    private Map<String, CsdlEntityType> cachedCsdlEntityTypeMap = new HashMap<>();
 
     /**
      * このコンテナをビルドし、紐づくエンティティセットをここで生成. このクラスの利用者は、機能呼び出し前にこのメソッドを呼ぶこと.
@@ -130,8 +137,16 @@ public class OiyokanCsdlEntityContainer extends CsdlEntityContainer {
             return null;
         }
 
+        // CsdlEntityTypeをすでに取得済みであればそれをキャッシュから返却する場合に利用.
+        if (cachedCsdlEntityTypeMap.get(entityTypeName.getFullQualifiedNameAsString()) != null) {
+            return cachedCsdlEntityTypeMap.get(entityTypeName.getFullQualifiedNameAsString());
+        }
+
         BasicJdbcEntityTypeBuilder entityTypeBuilder = new BasicJdbcEntityTypeBuilder(
                 getEntitySetByEntityNameFqnIyo(entityTypeName));
-        return entityTypeBuilder.getEntityType();
+        // キャッシュに記憶.
+        CsdlEntityType newEntityType = entityTypeBuilder.getEntityType();
+        cachedCsdlEntityTypeMap.put(entityTypeName.getFullQualifiedNameAsString(), newEntityType);
+        return newEntityType;
     }
 }
