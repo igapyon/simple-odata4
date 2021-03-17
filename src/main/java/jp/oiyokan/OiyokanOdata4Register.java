@@ -44,7 +44,7 @@ public class OiyokanOdata4Register {
      * @param resp HTTPレスポンス.
      * @throws ServletException サーブレット例外.
      */
-    @RequestMapping("/simple.svc/*")
+    @RequestMapping("/odata4.svc/*")
     private void serv(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException {
         String uri = req.getRequestURI();
         if (req.getQueryString() != null) {
@@ -72,7 +72,7 @@ public class OiyokanOdata4Register {
             handler.process(new HttpServletRequestWrapper(req) {
                 @Override
                 public String getServletPath() {
-                    return "/simple.svc";
+                    return "/odata4.svc";
                 }
             }, resp);
         } catch (RuntimeException ex) {
