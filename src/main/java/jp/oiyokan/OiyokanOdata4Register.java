@@ -33,7 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * OData v4 server を Spring Boot の Servlet として動作させるクラス.
  *
- * EdmProvider と EntityCollectionProcessor を OData に結びつけてパスに登録.
+ * Oiyokan 関連処理を OData に結びつけてパスに登録.
  */
 @RestController
 public class OiyokanOdata4Register {

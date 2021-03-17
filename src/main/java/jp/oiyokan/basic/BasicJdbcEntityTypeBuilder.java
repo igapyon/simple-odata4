@@ -33,7 +33,7 @@ import jp.oiyokan.OiyokanCsdlEntitySet;
 import jp.oiyokan.h2.data.TinyH2DbSample;
 
 /**
- * 典型的で基本的な JDBC処理を用いて EntityType を構築します。
+ * 典型的で基本的な JDBC処理を利用した EntityType を構築します。
  */
 public class BasicJdbcEntityTypeBuilder {
     /**

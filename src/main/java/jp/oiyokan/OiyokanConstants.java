@@ -19,7 +19,7 @@ public class OiyokanConstants {
     /**
      * Oiyokanのバージョン番号
      */
-    public static final String VERSION = "20210317b";
+    public static final String VERSION = "20210318a";
 
     /**
      * OData v4 からはじまるトレースを出力するかどうか。
