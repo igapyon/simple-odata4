@@ -77,7 +77,7 @@ public class OiyokanCsdlEntitySet extends CsdlEntitySet {
     /**
      * データベース上のテーブル名.
      */
-    private String dbTableName = null;
+    private String dbTableNameLocal = null;
 
     /**
      * データベース上のテーブル名.
@@ -91,15 +91,15 @@ public class OiyokanCsdlEntitySet extends CsdlEntitySet {
      * @param entitySetName     MyProducts 相当.
      * @param entityName        MyProduct 相当.
      * @param dbType            データベースタイプ.
-     * @param dbTableName       データベース上のテーブル名.
-     * @param dbTableNameTarget ターゲットのデータベース上のテーブル名. 通常は null指定.
+     * @param dbTableNameLocal  ローカルのデータベース上のテーブル名.
+     * @param dbTableNameTarget ターゲットのデータベース上のテーブル名. 通常は dbTableNameLocalと一致.
      */
     public OiyokanCsdlEntitySet(OiyokanCsdlEntityContainer containerInfo, String entitySetName, String entityName,
-            DatabaseType dbType, String dbTableName, String dbTableNameTarget) {
+            DatabaseType dbType, String dbTableNameLocal, String dbTableNameTarget) {
         this.csdlEntityContainer = containerInfo;
         this.entityName = entityName;
         this.dbType = dbType;
-        this.dbTableName = dbTableName;
+        this.dbTableNameLocal = dbTableNameLocal;
         this.dbTableNameTarget = dbTableNameTarget;
 
         this.setName(entitySetName);
@@ -125,18 +125,18 @@ public class OiyokanCsdlEntitySet extends CsdlEntitySet {
     }
 
     /**
-     * 独自に追加した項目。
+     * ローカル上のテーブル名。
      * 
-     * @return DBテーブル名。
+     * @return ローカルのDBテーブル名.
      */
-    public String getDbTableNameIyo() {
-        return dbTableName;
+    public String getDbTableNameLocalIyo() {
+        return dbTableNameLocal;
     }
 
     /**
-     * 独自に追加した項目。
+     * ターゲット上のテーブル名.。
      * 
-     * @return ターゲットのDBテーブル名。指定がある場合は実データ取得の際にはこちらを利用.
+     * @return ターゲットのDBテーブル名.
      */
     public String getDbTableNameTargetIyo() {
         return dbTableNameTarget;

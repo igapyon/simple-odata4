@@ -75,7 +75,7 @@ public class BasicJdbcEntityTypeBuilder {
             // SELECT * について、この箇所のみ記述を許容。
             // DatabaseMetaData では取りづらい情報があるためこちらを採用。
             try (PreparedStatement stmt = conn
-                    .prepareStatement("SELECT * FROM " + entitySet.getDbTableNameIyo() + " LIMIT 1")) {
+                    .prepareStatement("SELECT * FROM " + entitySet.getDbTableNameLocalIyo() + " LIMIT 1")) {
                 ResultSetMetaData rsmeta = stmt.getMetaData();
                 final int columnCount = rsmeta.getColumnCount();
                 for (int column = 1; column <= columnCount; column++) {
@@ -85,7 +85,7 @@ public class BasicJdbcEntityTypeBuilder {
                 // テーブルのキー情報
                 final List<CsdlPropertyRef> keyRefList = new ArrayList<>();
                 final DatabaseMetaData dbmeta = conn.getMetaData();
-                final ResultSet rsKey = dbmeta.getPrimaryKeys(null, null, entitySet.getDbTableNameIyo());
+                final ResultSet rsKey = dbmeta.getPrimaryKeys(null, null, entitySet.getDbTableNameLocalIyo());
                 for (; rsKey.next();) {
                     // キー名は利用しない: rsKey.getString("PK_NAME");
                     String colName = rsKey.getString("COLUMN_NAME");

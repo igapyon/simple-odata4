@@ -29,7 +29,7 @@ import org.apache.olingo.commons.api.edm.EdmPrimitiveTypeKind;
 import org.apache.olingo.commons.api.edm.provider.CsdlProperty;
 
 /**
- *Oiyokan 関連のDBまわりユーティリティクラス.
+ * Oiyokan 関連のDBまわりユーティリティクラス.
  */
 public class BasicDbUtil {
     private BasicDbUtil() {

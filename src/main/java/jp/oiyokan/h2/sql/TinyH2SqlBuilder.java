@@ -54,7 +54,7 @@ public class TinyH2SqlBuilder {
      * @param uriInfo URI情報.
      */
     public void getSelectCountQuery(UriInfo uriInfo) {
-        sqlInfo.getSqlBuilder().append("SELECT COUNT(*) FROM " + sqlInfo.getEntitySet().getDbTableNameIyo());
+        sqlInfo.getSqlBuilder().append("SELECT COUNT(*) FROM " + sqlInfo.getEntitySet().getDbTableNameTargetIyo());
         if (uriInfo.getFilterOption() != null) {
             FilterOptionImpl filterOpt = (FilterOptionImpl) uriInfo.getFilterOption();
             sqlInfo.getSqlBuilder().append(" WHERE ");
@@ -92,7 +92,7 @@ public class TinyH2SqlBuilder {
             for (SelectItem item : uriInfo.getSelectOption().getSelectItems()) {
                 for (UriResource res : item.getResourcePath().getUriResourceParts()) {
                     sqlInfo.getSqlBuilder().append(itemCount++ == 0 ? "" : ",");
-                    sqlInfo.getSqlBuilder().append("[" + res.toString() + "]");
+                    sqlInfo.getSqlBuilder().append(unescapeKakkoFieldName(res.toString()));
                     for (int index = 0; index < keyTarget.size(); index++) {
                         if (keyTarget.get(index).equals(res.toString())) {
                             keyTarget.remove(index);
@@ -104,12 +104,12 @@ public class TinyH2SqlBuilder {
             for (int index = 0; index < keyTarget.size(); index++) {
                 // レコードを一位に表すID項目が必須。検索対象にない場合は追加.
                 sqlInfo.getSqlBuilder().append(itemCount++ == 0 ? "" : ",");
-                sqlInfo.getSqlBuilder().append("[" + keyTarget.get(index) + "]");
+                sqlInfo.getSqlBuilder().append(unescapeKakkoFieldName(keyTarget.get(index)));
             }
         }
 
         // 取得元のテーブル.
-        sqlInfo.getSqlBuilder().append(" FROM " + sqlInfo.getEntitySet().getDbTableNameIyo());
+        sqlInfo.getSqlBuilder().append(" FROM " + sqlInfo.getEntitySet().getDbTableNameTargetIyo());
 
         // uriInfo.getCountOption は明示的には記載しない.
         // 現状の実装では指定があろうがなかろうが件数はカウントする実装となっている.
@@ -131,9 +131,8 @@ public class TinyH2SqlBuilder {
                     sqlInfo.getSqlBuilder().append(",");
                 }
 
-                // 項目名を SQL Serverクオート付きで指定.
-                // SQL Server 互換モードで h2 を動作させているから可能になる指定方法.
-                sqlInfo.getSqlBuilder().append((MemberImpl) orderByItem.getExpression()).toString();
+                sqlInfo.getSqlBuilder()
+                        .append(unescapeKakkoFieldName(((MemberImpl) orderByItem.getExpression()).toString()));
 
                 if (orderByItem.isDescending()) {
                     sqlInfo.getSqlBuilder().append(" DESC");
@@ -150,5 +149,18 @@ public class TinyH2SqlBuilder {
             sqlInfo.getSqlBuilder().append(" OFFSET ");
             sqlInfo.getSqlBuilder().append(uriInfo.getSkipOption().getValue());
         }
+    }
+
+    /**
+     * かっこつき項目名のかっこを除去.
+     * 
+     * @param escapedFieldName かっこ付き項目名.
+     * @return かっこなし項目名.
+     */
+    public static String unescapeKakkoFieldName(String escapedFieldName) {
+        String normalName = escapedFieldName;
+        normalName = normalName.replaceAll("^\\[", "");
+        normalName = normalName.replaceAll("\\]$", "");
+        return normalName;
     }
 }

@@ -59,9 +59,9 @@ public class OiyokanCsdlEntityContainer extends CsdlEntityContainer {
         if (getEntitySets().size() == 0) {
             // EntitySet の初期セットを実施。
             getEntitySets().add(new OiyokanCsdlEntitySet(this, "ODataAppInfos", "ODataAppInfo",
-                    OiyokanCsdlEntitySet.DatabaseType.H2, "ODataAppInfos", null));
+                    OiyokanCsdlEntitySet.DatabaseType.H2, "ODataAppInfos", "ODataAppInfos"));
             getEntitySets().add(new OiyokanCsdlEntitySet(this, "MyProducts", "MyProduct",
-                    OiyokanCsdlEntitySet.DatabaseType.H2, "MyProducts", null));
+                    OiyokanCsdlEntitySet.DatabaseType.H2, "MyProducts", "MyProducts"));
         }
     }
 
