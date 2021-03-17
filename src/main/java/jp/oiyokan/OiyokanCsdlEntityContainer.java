@@ -119,6 +119,12 @@ public class OiyokanCsdlEntityContainer extends CsdlEntityContainer {
         return null;
     }
 
+    /**
+     * 指定の型名の CsdlEntityType を取得
+     * 
+     * @param entityTypeName 型名.
+     * @return 指定の型名の CsdlEntityType.
+     */
     public CsdlEntityType getEntityType(FullQualifiedName entityTypeName) {
         if (getEntitySetByEntityNameFqnIyo(entityTypeName) == null) {
             return null;
