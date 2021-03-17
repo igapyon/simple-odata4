@@ -57,7 +57,9 @@ public class OiyokanOdata4Register {
             }
         }
 
-        System.err.println("OData v4: URI: " + uri);
+        if (OiyokanConstants.IS_TRACE_ODATA_V4)
+            System.err.println("OData v4: URI: " + uri);
+
         try {
             OData odata = OData.newInstance();
 
@@ -76,7 +78,9 @@ public class OiyokanOdata4Register {
                 }
             }, resp);
         } catch (RuntimeException ex) {
-            System.err.println("OData v4: Unexpected Server Error: " + ex.toString());
+            if (OiyokanConstants.IS_TRACE_ODATA_V4)
+                System.err.println("OData v4: Unexpected Server Error: " + ex.toString());
+            ex.printStackTrace();
             throw new ServletException(ex);
         }
     }

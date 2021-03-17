@@ -30,6 +30,7 @@ import org.apache.olingo.commons.api.edm.provider.CsdlPropertyRef;
 import org.apache.olingo.commons.api.ex.ODataRuntimeException;
 import org.apache.olingo.server.api.uri.UriInfo;
 
+import jp.oiyokan.OiyokanConstants;
 import jp.oiyokan.OiyokanCsdlEntitySet;
 import jp.oiyokan.OiyokanEdmProvider;
 import jp.oiyokan.basic.BasicDbUtil;
@@ -97,7 +98,9 @@ public class TinyH2EntityCollectionBuilder {
                 tinySql.getSelectCountQuery(uriInfo);
                 final String sql = tinySql.getSqlInfo().getSqlBuilder().toString();
 
-                System.err.println("OData v4: TRACE: SQL: " + sql);
+                if (OiyokanConstants.IS_TRACE_ODATA_V4)
+                    System.err.println("OData v4: TRACE: SQL: " + sql);
+
                 int countWithWhere = 0;
                 try (var stmt = conn.prepareStatement(sql)) {
                     int column = 1;
@@ -121,7 +124,9 @@ public class TinyH2EntityCollectionBuilder {
             tinySql.getSelectQuery(uriInfo);
             final String sql = tinySql.getSqlInfo().getSqlBuilder().toString();
 
-            System.err.println("OData v4: TRACE: SQL: " + sql);
+            if (OiyokanConstants.IS_TRACE_ODATA_V4)
+                System.err.println("OData v4: TRACE: SQL: " + sql);
+
             try (var stmt = conn.prepareStatement(sql)) {
                 int idxColumn = 1;
                 for (Object look : tinySql.getSqlInfo().getSqlParamList()) {

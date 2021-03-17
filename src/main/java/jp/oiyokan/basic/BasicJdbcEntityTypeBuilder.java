@@ -43,8 +43,9 @@ public class BasicJdbcEntityTypeBuilder {
 
     public BasicJdbcEntityTypeBuilder(OiyokanCsdlEntitySet entitySet) {
         this.entitySet = entitySet;
-        System.err.println( //
-                "OData v4: EntityType: " + entitySet.getName() + " (Oiyokan: " + OiyokanConstants.VERSION + ")");
+        if (OiyokanConstants.IS_TRACE_ODATA_V4)
+            System.err.println( //
+                    "OData v4: EntityType: " + entitySet.getName() + " (Oiyokan: " + OiyokanConstants.VERSION + ")");
     }
 
     /**

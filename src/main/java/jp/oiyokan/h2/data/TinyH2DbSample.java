@@ -129,8 +129,9 @@ public class TinyH2DbSample {
             throw new IllegalArgumentException("検索失敗:" + ex.toString(), ex);
         }
 
-        System.err.println( //
-                "OData v4: build sample data: " + " (Oiyokan: " + OiyokanConstants.VERSION + ")");
+        if (OiyokanConstants.IS_TRACE_ODATA_V4)
+            System.err.println( //
+                    "OData v4: build sample data: " + " (Oiyokan: " + OiyokanConstants.VERSION + ")");
 
         // 全文検索関連の準備.
         try {
@@ -155,7 +156,7 @@ public class TinyH2DbSample {
 
             stmt.clearParameters();
             stmt.setString(1, "Provider");
-            stmt.setString(2, "Oiyokan");
+            stmt.setString(2, OiyokanConstants.NAME);
             stmt.executeUpdate();
 
             conn.commit();

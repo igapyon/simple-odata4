@@ -28,6 +28,8 @@ import org.apache.olingo.commons.api.edm.EdmEntitySet;
 import org.apache.olingo.server.api.uri.UriInfo;
 import org.apache.olingo.server.core.uri.queryoption.SearchOptionImpl;
 
+import jp.oiyokan.OiyokanConstants;
+
 /**
  * 全文検索の実験的な実装。
  */
@@ -51,7 +53,8 @@ public class TinyH2TrialFullTextSearch {
 
             String sql = "SELECT QUERY,SCORE FROM FT_SEARCH(?, " + topValue + ", " + offsetValue + ")";
             try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-                System.err.println("OData v4: TRACE: $search: SQL: " + sql);
+                if (OiyokanConstants.IS_TRACE_ODATA_V4)
+                    System.err.println("OData v4: TRACE: $search: SQL: " + sql);
 
                 stmt.setString(1, searchOpt.getText());
                 ResultSet rset = stmt.executeQuery();
