@@ -1,4 +1,19 @@
-package jp.igapyon.simpleodata4.entity;
+/*
+ * Copyright 2021 Toshiki Iga
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package jp.oiyokan;
 
 import java.util.List;
 
@@ -24,14 +39,14 @@ import org.apache.olingo.server.api.uri.UriResource;
 import org.apache.olingo.server.api.uri.UriResourceEntitySet;
 import org.apache.olingo.server.core.uri.queryoption.CountOptionImpl;
 
-import jp.igapyon.simpleodata4.h2data.TinyH2EntityDataBuilder;
+import jp.oiyokan.h2.data.TinyH2EntityCollectionBuilder;
 
 /**
  * OData 要素コレクションを処理するクラス.
  * 
  * コードの多くは olingo のための基礎的な記述に該当.
  */
-public class SimpleEntityCollectionProcessor implements EntityCollectionProcessor {
+public class OiyokanEntityCollectionProcessor implements EntityCollectionProcessor {
     /**
      * OData.
      */
@@ -66,6 +81,7 @@ public class SimpleEntityCollectionProcessor implements EntityCollectionProcesso
     public void readEntityCollection(ODataRequest request, ODataResponse response, //
             UriInfo uriInfo, ContentType responseFormat) //
             throws ODataApplicationException, SerializerException {
+        // System.err.println("TRACE: rawQueryPath: " + request.getRawQueryPath());
 
         // URI情報からURIリソースの指定を取得.
         List<UriResource> resourcePaths = uriInfo.getUriResourceParts();
@@ -78,7 +94,7 @@ public class SimpleEntityCollectionProcessor implements EntityCollectionProcesso
         // 要素セットの指定をもとに要素コレクションを取得.
         // これがデータ本体に該当.
         // ここでは h2 database のデータ構築実装を呼び出している.
-        final EntityCollection eCollection = TinyH2EntityDataBuilder.buildData(edmEntitySet, uriInfo);
+        final EntityCollection eCollection = TinyH2EntityCollectionBuilder.build(edmEntitySet, uriInfo);
 
         // 指定のレスポンスフォーマットに合致する直列化を準備.
         ODataSerializer serializer = odata.createSerializer(responseFormat);
@@ -89,13 +105,23 @@ public class SimpleEntityCollectionProcessor implements EntityCollectionProcesso
 
         // 要素のIdを作成.
         final String id = request.getRawBaseUri() + "/" + edmEntitySet.getName();
-        final CountOptionImpl copt = new CountOptionImpl();
-        copt.setValue(true);
+
         // 直列化の処理.
-        EntityCollectionSerializerOptions opts = EntityCollectionSerializerOptions.with() //
-                .id(id).count(copt).contextURL(conUrl).build();
+        EntityCollectionSerializerOptions.Builder builder = EntityCollectionSerializerOptions.with() //
+                .id(id).contextURL(conUrl);
+        if (uriInfo.getCountOption() != null) {
+            // $count あり.
+            final CountOptionImpl copt = new CountOptionImpl();
+            copt.setValue(true);
+            builder.count(copt);
+        }
+        if (uriInfo.getSelectOption() != null) {
+            // $select あり.
+            builder.select(uriInfo.getSelectOption());
+        }
+
         SerializerResult serResult = serializer.entityCollection( //
-                serviceMetadata, edmEntityType, eCollection, opts);
+                serviceMetadata, edmEntityType, eCollection, builder.build());
 
         // OData レスポンスを返却.
         response.setContent(serResult.getContent());

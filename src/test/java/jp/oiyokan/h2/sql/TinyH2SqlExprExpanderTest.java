@@ -1,4 +1,19 @@
-package jp.igapyon.simpleodata4.entity;
+/*
+ * Copyright 2021 Toshiki Iga
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package jp.oiyokan.h2.sql;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -10,15 +25,17 @@ import org.apache.olingo.server.api.uri.UriInfo;
 import org.apache.olingo.server.core.uri.parser.Parser;
 import org.junit.jupiter.api.Test;
 
-import jp.igapyon.simpleodata4.h2data.sqlbuild.TinyH2SqlExprExpander;
-import jp.igapyon.simpleodata4.h2data.sqlbuild.TinySqlBuildInfo;
+import jp.oiyokan.OiyokanEdmProvider;
 
-class UriInfoTest {
+/**
+ * TinyH2SqlExprExpanderのテスト.
+ */
+class TinyH2SqlExprExpanderTest {
 
     @Test
     void test01() throws Exception {
         OData odata = OData.newInstance();
-        ServiceMetadata edm = odata.createServiceMetadata(new SimpleEdmProvider(), new ArrayList<>());
+        ServiceMetadata edm = odata.createServiceMetadata(new OiyokanEdmProvider(), new ArrayList<>());
 
         final Parser parser = new Parser(edm.getEdm(), odata);
         final UriInfo uriInfo = parser.parseUri("/MyProducts", "$filter=ID eq 1.0", "",
@@ -31,7 +48,7 @@ class UriInfoTest {
     @Test
     void test02() throws Exception {
         OData odata = OData.newInstance();
-        ServiceMetadata edm = odata.createServiceMetadata(new SimpleEdmProvider(), new ArrayList<>());
+        ServiceMetadata edm = odata.createServiceMetadata(new OiyokanEdmProvider(), new ArrayList<>());
 
         final Parser parser = new Parser(edm.getEdm(), odata);
         final UriInfo uriInfo = parser.parseUri("/MyProducts", "$filter=Description eq 'Mac' and ID eq 2.0", "",
@@ -44,7 +61,7 @@ class UriInfoTest {
     @Test
     void test03() throws Exception {
         OData odata = OData.newInstance();
-        ServiceMetadata edm = odata.createServiceMetadata(new SimpleEdmProvider(), new ArrayList<>());
+        ServiceMetadata edm = odata.createServiceMetadata(new OiyokanEdmProvider(), new ArrayList<>());
 
         final Parser parser = new Parser(edm.getEdm(), odata);
         final UriInfo uriInfo = parser.parseUri("/MyProducts",

@@ -1,8 +1,13 @@
 # simple-odata4
 
-Simple OData v4 server usage sample. (with Apache Olingo / Spring Boot / h2 database)
+このリポジトリ(https://github.com/igapyon/simple-odata4) の内容は Oiyokanプロジェクト(https://github.com/igapyon/oiyokan) に昇級(promotion)しました。
+以降の更新は基本的に Oiyokan 側に適用する予定です。
 
-# Try to run simple sample
+# oiyokan
+
+Oiyokan is a simple OData v4 Server. (based on Apache Olingo / Spring Boot / h2 database)
+
+# Try to run oiyokan
 
 ## Spring Boot Web Server
 
@@ -15,25 +20,37 @@ mvn clean install spring-boot:run
 ### $metadata
 
 ```sh
-http://localhost:8080/simple.svc/$metadata
+http://localhost:8080/odata4.svc/$metadata
 ```
 
 ### $orderby
 
 ```sh
-http://localhost:8080/simple.svc/MyProducts?$orderby=ID&$top=20
+http://localhost:8080/odata4.svc/MyProducts?$orderby=ID&$top=20&$count=true
 ```
 
 ### $filter
 
 ```sh
-http://localhost:8080/simple.svc/MyProducts?$top=2001&$filter=Description eq 'MacBook Pro (13-inch, 2020, Thunderbolt 3ポートx 4)' and ID eq 1.0&$count=true&$select=ID,Name
+http://localhost:8080/odata4.svc/MyProducts?$top=2001&$filter=Description eq 'MacBook Pro (13-inch, 2020, Thunderbolt 3ポートx 4)' and ID eq 1.0&$count=true&$select=ID,Name
 ```
 
 ### $search
 
 ```sh
-http://localhost:8080/simple.svc/MyProducts?$top=6&$search=macbook&$count=true&$select=ID
+http://localhost:8080/odata4.svc/MyProducts?$top=6&$search=macbook&$count=true&$select=ID
+```
+
+### root
+
+```sh
+http://localhost:8080/odata4.svc/
+```
+
+### internal version
+
+```sh
+http://localhost:8080/odata4.svc/ODataAppInfos
 ```
 
 # 中身を理解するために役立つ情報源
@@ -50,9 +67,14 @@ http://localhost:8080/simple.svc/MyProducts?$top=6&$search=macbook&$count=true&$
 
 - http://www.h2database.com/html/functions.html
 
-# TODO
+# 作業メモ
 
-- TODO 実行時エラーを調整すること。現在 IllegalArgumentExceptionでそのまま500になったうえにエラー内容が見えてしまう。
-- 日時型、日付型の対応実装。
+## TODO
+
+- PreparedStatementの入力の型対応に先立ち、引数の型バリエーションを追加。特に日付・日時絡みは調整が必要な見込み。
+- PreparedStatementの入力の型対応の追加.
+- 実行時エラーを調整すること。現在 IllegalArgumentExceptionでそのまま500になったうえにエラー内容が見えてしまう。ODataApplicationException に対応することが第一案.
+- 対応しない命令の場合、適切に例外で異常停止。ODataApplicationExceptionの利用を想定。
 - 認証の実験。
-- 実験的に全文検索である `$search` をサポートしたものの、もう少し詳しいところが調べられていない。また全文検索で有効なのはアルファベットのみ。
+- 実験的に全文検索である `$search` をサポートしたものの、もう少し詳しいところが調べられていない。また全文検索で有効なのはアルファベットのみ。h2 database でここを深掘りしても不毛か?
+- ($search対応の後続となるため、しばらく対応できない) TODO Null (nullable) の対応。現在はコメントアウト.
