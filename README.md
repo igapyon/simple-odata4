@@ -1,3 +1,8 @@
+# simple-odata4
+
+このリポジトリ(https://github.com/igapyon/simple-odata4) の内容は Oiyokanプロジェクト(https://github.com/igapyon/oiyokan) に昇級(promotion)しました。
+以降の更新は基本的に Oiyokan 側に適用する予定です。
+
 # oiyokan
 
 Oiyokan is a simple OData v4 Server. (based on Apache Olingo / Spring Boot / h2 database)
